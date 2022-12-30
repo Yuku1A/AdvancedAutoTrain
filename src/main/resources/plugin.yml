@@ -1,0 +1,6 @@
+name: Advancedautotrain
+version: '${version}'
+main: io.github.yuku1a.advancedautotrain.Advancedautotrain
+api-version: 1.19
+depend: [ Train_Carts ]
+softdepend: [ SignLink ]

@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bergerkiller.bukkit.tc.signactions.SignAction;
 public final class Advancedautotrain extends JavaPlugin {
-    public final SignActionCStation signActionCStation = new SignActionCStation();
+    private final SignActionCStation signActionCStation = new SignActionCStation();
 
     @Override
     public void onLoad() {

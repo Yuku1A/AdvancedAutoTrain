@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.19.3-v1-SNAPSHOT'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.19.3-v1'
 }
 
 def targetJavaVersion = 17

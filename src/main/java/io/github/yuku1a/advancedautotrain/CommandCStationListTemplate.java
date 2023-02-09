@@ -15,6 +15,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (args.length == 0)
             return false;
         return switch (args[0]) {
+            case "save" -> save(sender);
+            case "load" -> load(sender);
             case "view" -> view(sender, args);
             default -> help(sender);
         };
@@ -61,6 +63,24 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "usage: ",
             "cslt view <template>"
         );
+        return true;
+    }
+
+    // saveコマンド
+    private boolean save(CommandSender sender) {
+        if (store.save())
+            sender.sendMessage("Save Successful!");
+        else
+            sender.sendMessage("Save Failed");
+        return true;
+    }
+
+    // loadコマンド
+    private boolean load(CommandSender sender) {
+        if (store.load())
+            sender.sendMessage("Data Loaded");
+        else
+            sender.sendMessage("Data Load Failed");
         return true;
     }
 

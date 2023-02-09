@@ -15,10 +15,54 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (args.length == 0)
             return false;
         return switch (args[0]) {
+            case "view" -> view(sender, args);
             default -> help(sender);
         };
     }
 
+    // viewコマンド
+    private boolean view(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、テンプレート指定で1つ
+        if (args.length != 2)
+            return viewHelp(sender);
+
+        // とりあえず取りに行く
+        var list = store.get(args[1]);
+
+        // 登録されてないときにnullが返ってくる
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+            return true;
+        }
+
+        // うまいこと内容を表示する
+        sender.sendMessage(
+            "----- " + args[1] + " template content -----",
+            "(index) (name) (line2) (line3) (line4) (eject) (block)");
+
+        // indexとともに内容を表示
+        for (int i = 0 ; i < list.size() ; i++){
+            sender.sendMessage(
+                i + " | " +
+                list.get(i).getName() + " | " +
+                list.get(i).getSignText()[0] + " | " +
+                list.get(i).getSignText()[1] + " | " +
+                list.get(i).getSignText()[2] + " | " +
+                list.get(i).isEjectPassenger() + " | " +
+                list.get(i).isBlockPassenger());
+        }
+
+        return true;
+    }
+
+    // viewコマンドのヘルプ
+    private boolean viewHelp(CommandSender sender) {
+        sender.sendMessage(
+            "usage: ",
+            "cslt view <template>"
+        );
+        return true;
+    }
 
     // helpコマンド
     private boolean help(CommandSender sender) {

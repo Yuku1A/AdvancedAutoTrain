@@ -4,18 +4,22 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bergerkiller.bukkit.tc.signactions.SignAction;
+
+import java.util.logging.Level;
+
 public final class Advancedautotrain extends JavaPlugin {
     private final SignActionCStation signActionCStation = new SignActionCStation();
     private CStationListTemplateStore templateStore;
 
     @Override
     public void onLoad() {
-
+        getLogger().log(Level.INFO, "loaded!");
     }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        // SignActionを登録する
         SignAction.register(signActionCStation);
 
         // yamlから戻す場合は登録しないといけないらしい

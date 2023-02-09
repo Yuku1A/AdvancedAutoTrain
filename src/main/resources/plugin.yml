@@ -4,3 +4,7 @@ main: io.github.yuku1a.advancedautotrain.Advancedautotrain
 api-version: 1.19
 depend: [ Train_Carts ]
 softdepend: [ SignLink ]
+commands:
+  cstationlisttemplate:
+    aliases: [cstationlisttemplate, cslt]
+    usage: /<command> <action> <arguments...>

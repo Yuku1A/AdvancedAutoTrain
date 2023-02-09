@@ -23,6 +23,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // 登録してから各種ロード
         templateStore = new CStationListTemplateStore(this);
+
+        // コマンドを登録
+        getCommand("cstationlisttemplate").setExecutor(new CommandCStationListTemplate(this));
     }
 
     @Override

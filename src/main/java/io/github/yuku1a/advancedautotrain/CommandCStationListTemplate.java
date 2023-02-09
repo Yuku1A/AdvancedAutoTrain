@@ -4,6 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+
 /**
  * cstationlisttemplate、csltコマンドを実装するクラス
  */
@@ -18,6 +20,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
+            case "add" -> add(sender, args);
             default -> help(sender);
         };
     }
@@ -63,6 +66,53 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "usage: ",
             "cslt view <template>"
         );
+        return true;
+    }
+
+    // addコマンド
+    private boolean add(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、テンプレート指定で1つ、パラメータが6つで計8つ
+        if (args.length != 8)
+            return addHelp(sender);
+
+        // 順番に気をつけて
+        String template = args[1];
+        var block = Boolean.parseBoolean(args[2]);
+        var eject = Boolean.parseBoolean(args[3]);
+        String section = args[4];
+        String speed = args[5];
+        String delay = args[6];
+        String name = args[7];
+
+        // stationのsignを生成する
+        var line2 = "station " + section;
+        var line3 = delay;
+        var line4 = "route continue " + speed;
+        var lines = new String[]{line2, line3, line4};
+
+        // CStationInfoを生成する
+        var info = new CStationInfo(name, lines, eject, block);
+
+        // templateを取り出していじる
+        var list = store.get(template);
+        if (list == null) {
+            list = new ArrayList<>();
+            store.set(template, list);
+        }
+
+        // infoをlistへ追加
+        list.add(info);
+
+        // 完了
+        sender.sendMessage("Add Successful!");
+        return true;
+    }
+
+    // addコマンドのヘルプ
+    private boolean addHelp(CommandSender sender) {
+        sender.sendMessage(
+            "usage:",
+            "cslt add <template> <blockpassenger> <eject> <section> <speed> <delay> <name>");
         return true;
     }
 

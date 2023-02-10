@@ -26,8 +26,72 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);
             case "copy" -> copy(sender, args);
+            case "insert" -> insert(sender, args);
+            case "replace" -> replace(sender, args);
             default -> help(sender);
         };
+    }
+
+    // replaceコマンド
+    private boolean replace(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレートで1つ、パラメータ指定で6つ、インデックス含め9つ
+        if (args.length != 9) {
+            return commandsHelp(
+                sender,
+                "cslt replace <template> <blockpassenger> <eject> <section> <speed> <delay> <name> <index>"
+            );
+        }
+
+        // テンプレート指定
+        var list = store.get(args[1]);
+        if (isNullList(sender, list))
+            return true;
+
+        // インデックスのチェック
+        var index = tryParseIndex(sender, list, args[8]);
+        if (index == -1)
+            return true;
+
+        // info生成
+        var info = infoFromStrings(args);
+
+        // 置き換え
+        list.set(index, info);
+
+        // おわり
+        sender.sendMessage("項目の置き換えが完了しました。");
+        return true;
+    }
+
+    // insertコマンド
+    private boolean insert(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレートで1つ、パラメータ指定で6つ、インデックス含め9つ
+        if (args.length != 9) {
+            return commandsHelp(
+                sender,
+                "cslt insert <template> <blockpassenger> <eject> <section> <speed> <delay> <name> <index>"
+            );
+        }
+
+        // テンプレート指定
+        var list = store.get(args[1]);
+        if (isNullList(sender, list))
+            return true;
+
+        // インデックスのチェック
+        var index = tryParseIndex(sender, list, args[8]);
+        if (index == -1)
+            return true;
+
+        // info生成
+        var info = infoFromStrings(args);
+
+        // 挿入
+        list.add(index, info);
+
+        // おわり
+        sender.sendMessage("項目の挿入が完了しました。");
+        return true;
     }
 
     // copyコマンド

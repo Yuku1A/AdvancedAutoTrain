@@ -15,7 +15,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // 引数0の場合はコマンドが指定されていない
         if (args.length == 0)
-            return false;
+            return help(sender);
         return switch (args[0]) {
             case "list" -> list(sender);
             case "save" -> save(sender);
@@ -200,7 +200,18 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // helpコマンド
     private boolean help(CommandSender sender) {
-        return true;
+        sender.sendMessage(
+            "CStationに対する動作のテンプレートを管理します",
+            "利用可能なコマンド: ",
+            "add: 項目を追加します",
+            "remove: 項目を削除します",
+            "view: 指定されたテンプレートの項目を表示します",
+            "list: テンプレートの一覧を表示します",
+            "removet: 指定したテンプレートを削除します",
+            "save: 全ての情報を保存します",
+            "load: 全ての情報の再読み込みを行います"
+        );
+        return false;
     }
 
     // プラグインが生成する用

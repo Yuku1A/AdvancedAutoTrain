@@ -21,11 +21,11 @@ public class CStationListStore {
     }
 
     /**
-     * TrainPropertiesをキーとしてCStationListを追加します。
+     * TrainPropertiesをキーとしてCStationListを格納します。
      * @param prop キー
      * @param list CStationList
      */
-    public void add(TrainProperties prop, CStationList list) {
+    public void put(TrainProperties prop, CStationList list) {
         map.put(prop, list);
     }
 

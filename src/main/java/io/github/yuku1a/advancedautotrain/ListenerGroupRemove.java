@@ -4,8 +4,6 @@ import com.bergerkiller.bukkit.tc.events.GroupRemoveEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.logging.Level;
-
 /**
  * Train(Group)削除の通知を受け取るためのクラスです。
  */

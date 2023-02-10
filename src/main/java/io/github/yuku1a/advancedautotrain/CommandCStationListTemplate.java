@@ -47,6 +47,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         store.set(args[2], new ArrayList<>(from));
 
         // おわり
+        sender.sendMessage("コピーが完了しました。");
         return true;
     }
 

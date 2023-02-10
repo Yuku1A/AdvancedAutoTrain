@@ -18,6 +18,14 @@ public class CStationListTemplateStore {
     private final Advancedautotrain plugin;
 
     /**
+     * 指定したKeyと紐づけられたテンプレートを削除します。
+     * @param key テンプレートを指定するKey
+     */
+    public void remove(String key) {
+        store.remove(key);
+    }
+
+    /**
      * すべてのキーのセットを取得します。
      * @return すべてのキー
      */

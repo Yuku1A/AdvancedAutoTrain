@@ -22,6 +22,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "load" -> load(sender);
             case "view" -> view(sender, args);
             case "add" -> add(sender, args);
+            case "remove" -> remove(sender, args);
+            case "removet" -> removet(sender, args);
             default -> help(sender);
         };
     }
@@ -36,6 +38,59 @@ public class CommandCStationListTemplate implements CommandExecutor {
         list.forEach(sender::sendMessage);
 
         // おわり
+        return true;
+    }
+
+    // removeコマンド
+    private boolean remove(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレートで1つ、インデックスで1つ
+        if (args.length != 3)
+            return commandsHelp(sender, "cslt remove <template> <index>");
+
+        // 指定されたテンプレートを取得
+        var list = store.get(args[1]);
+
+        // nullだと存在しない
+        if (list == null) {
+            sender.sendMessage("指定されたテンプレートは存在しません。");
+            return true;
+        }
+
+        // インデックスがintに変換できることを確認
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(args[2]);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage("インデックスは数値である必要があります。");
+            return true;
+        }
+
+        // インデックスが範囲外であれば処理をしない
+        if (index >= list.size()) {
+            sender.sendMessage("インデックスが範囲外です。");
+            return true;
+        }
+
+        // 実際の削除処理
+        list.remove(index);
+        sender.sendMessage("テンプレート " + args[1] + " の " + index + "番目の項目が削除されました。");
+
+        // おわり
+        return true;
+    }
+
+    // removetコマンド
+    private boolean removet(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレート指定で1つ
+        if (args.length != 2)
+            return commandsHelp(sender, "cslt removet <template>");
+
+        // 指定されたテンプレートを削除
+        store.remove(args[1]);
+        sender.sendMessage(
+            "指定されたテンプレート " + args[1] +
+            " は、削除されました。"
+        );
         return true;
     }
 

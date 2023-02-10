@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -15,6 +16,14 @@ public class CStationListTemplateStore {
     private final Map<String, List<CStationInfo>> store = new HashMap<>();
     private final File file;
     private final Advancedautotrain plugin;
+
+    /**
+     * すべてのキーのセットを取得します。
+     * @return すべてのキー
+     */
+    public Set<String> getKeySet() {
+        return store.keySet();
+    }
 
     /**
      * キーに対してリストを追加します。

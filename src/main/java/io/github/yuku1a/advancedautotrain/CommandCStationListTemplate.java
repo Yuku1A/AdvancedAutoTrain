@@ -74,15 +74,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // viewコマンドのヘルプ
-    private boolean viewHelp(CommandSender sender) {
-        sender.sendMessage(
-            "usage: ",
-            "cslt view <template>"
-        );
-        return true;
-    }
-
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、パラメータが6つで計8つ

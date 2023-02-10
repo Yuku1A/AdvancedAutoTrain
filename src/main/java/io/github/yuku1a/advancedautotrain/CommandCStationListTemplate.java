@@ -78,7 +78,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean add(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、パラメータが6つで計8つ
         if (args.length != 8) {
-            commandsHelp(
+            return commandsHelp(
                 sender,
                 "cslt add <template> <blockpassenger> <eject> <section> <speed> <delay> <name>"
             );

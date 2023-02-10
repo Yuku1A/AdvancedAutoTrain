@@ -76,20 +76,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (isNullList(sender, list))
             return true;
 
-        // インデックスがintに変換できることを確認
-        int index;
-        try {
-            index = Integer.parseUnsignedInt(args[2]);
-        } catch (NumberFormatException ignored) {
-            sender.sendMessage("インデックスは数値である必要があります。");
-            return true;
-        }
+        // 検査
+        var index = tryParseIndex(sender, list, args[2]);
 
-        // インデックスが範囲外であれば処理をしない
-        if (index >= list.size()) {
-            sender.sendMessage("インデックスが範囲外です。");
+        // ひっかかってたら弾く
+        if (index == -1)
             return true;
-        }
 
         // 実際の削除処理
         list.remove(index);
@@ -144,6 +136,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
                 list.get(i).isBlockPassenger());
         }
 
+        // おわり
         return true;
     }
 
@@ -157,23 +150,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
             );
         }
 
-        // 順番に気をつけて
+        // テンプレート指定
         String template = args[1];
-        var block = Boolean.parseBoolean(args[2]);
-        var eject = Boolean.parseBoolean(args[3]);
-        String section = args[4];
-        String speed = args[5];
-        String delay = args[6];
-        String name = args[7];
-
-        // stationのsignを生成する
-        var line2 = "station " + section;
-        var line3 = delay;
-        var line4 = "route continue " + speed;
-        var lines = new String[]{line2, line3, line4};
 
         // CStationInfoを生成する
-        var info = new CStationInfo(name, lines, eject, block);
+        var info = infoFromStrings(args);
 
         // templateを取り出していじる
         var list = store.get(template);
@@ -225,6 +206,49 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "insert: テンプレート内の指定された位置に項目を追加します"
         );
         return false;
+    }
+
+    // 生成用
+    private CStationInfo infoFromStrings(String[] args) {
+        // 取り出し、型変換
+        var block = Boolean.parseBoolean(args[2]);
+        var eject = Boolean.parseBoolean(args[3]);
+        String section = args[4];
+        String speed = args[5];
+        String delay = args[6];
+        String name = args[7];
+
+        // stationのsignを生成する
+        var line2 = "station " + section;
+        var line3 = delay;
+        var line4 = "route continue " + speed;
+        var lines = new String[]{line2, line3, line4};
+
+        // CStationInfoを生成して返す
+        return new CStationInfo(name, lines, eject, block);
+    }
+
+    /**
+     * 正常であればindexそのまま、不正だったら-1が返ってくる
+     */
+    private int tryParseIndex(CommandSender sender, List<CStationInfo> list, String strindex) {
+        // インデックスがintに変換できることを確認
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(strindex);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage("インデックスは数値である必要があります。");
+            return -1;
+        }
+
+        // インデックスが範囲外であれば処理をしない
+        if (index >= list.size()) {
+            sender.sendMessage("インデックスが範囲外です。");
+            return -1;
+        }
+
+        // 変換できた結果をreturn
+        return index;
     }
 
     // チェック用

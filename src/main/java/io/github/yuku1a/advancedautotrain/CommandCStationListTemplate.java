@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * cstationlisttemplate、csltコマンドを実装するクラス
@@ -39,10 +40,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var from = store.get(args[1]);
 
         // nullチェック
-        if (from == null) {
-            sender.sendMessage("コピー元が存在しません。");
+        if (isNullList(sender, from))
             return true;
-        }
 
         // storeへset
         store.set(args[2], new ArrayList<>(from));
@@ -74,10 +73,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var list = store.get(args[1]);
 
         // nullだと存在しない
-        if (list == null) {
-            sender.sendMessage("指定されたテンプレートは存在しません。");
+        if (isNullList(sender, list))
             return true;
-        }
 
         // インデックスがintに変換できることを確認
         int index;
@@ -127,10 +124,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var list = store.get(args[1]);
 
         // 登録されてないときにnullが返ってくる
-        if (list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+        if (isNullList(sender, list))
             return true;
-        }
 
         // うまいこと内容を表示する
         sender.sendMessage(
@@ -229,6 +224,16 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "replace: テンプレート内の指定された項目を入れ替えます",
             "insert: テンプレート内の指定された位置に項目を追加します"
         );
+        return false;
+    }
+
+    // チェック用
+    private boolean isNullList(CommandSender sender, List<CStationInfo> list) {
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+            return true;
+        }
         return false;
     }
 

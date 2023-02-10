@@ -24,8 +24,23 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "add" -> add(sender, args);
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);
+            case "copy" -> copy(sender, args);
             default -> help(sender);
         };
+    }
+
+    // copyコマンド
+    private boolean copy(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、コピー元と先指定で2つ
+        if (args.length != 3)
+            return commandsHelp(sender, "cslt copy <from> <to>");
+
+        // 普通にコピー
+        var from = store.get(args[1]);
+        store.set(args[2], new ArrayList<>(from));
+
+        // おわり
+        return true;
     }
 
     // listコマンド
@@ -209,7 +224,10 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "list: テンプレートの一覧を表示します",
             "removet: 指定したテンプレートを削除します",
             "save: 全ての情報を保存します",
-            "load: 全ての情報の再読み込みを行います"
+            "load: 全ての情報の再読み込みを行います",
+            "copy: テンプレートのコピーを行います",
+            "replace: テンプレート内の指定された項目を入れ替えます",
+            "insert: テンプレート内の指定された位置に項目を追加します"
         );
         return false;
     }

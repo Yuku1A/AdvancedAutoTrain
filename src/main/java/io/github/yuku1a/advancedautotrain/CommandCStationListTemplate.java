@@ -18,7 +18,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (args.length == 0)
             return help(sender);
         return switch (args[0]) {
-            case "list" -> list(sender);
+            case "list" -> list(sender, args);
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
@@ -116,12 +116,37 @@ public class CommandCStationListTemplate implements CommandExecutor {
     }
 
     // listコマンド
-    private boolean list(CommandSender sender) {
-        // storeからキーのコレクションを取得する
-        var list = store.getKeySet();
+    private boolean list(CommandSender sender, String[] args) {
+        // コマンドで1つ、ページで1つまで
+        if (args.length > 2)
+            return commandsHelp(sender, "cslt list <page>");
 
-        // それを全部出力
-        sender.sendMessage("----- template list -----");
+        // storeからキーのコレクションを取得する
+        var rawlist = new ArrayList<>(store.getKeySet());
+
+        // 数が少なければそのまま表示
+        if (rawlist.size() < 16){
+            sender.sendMessage("----- template list -----");
+            rawlist.forEach(sender::sendMessage);
+            return true;
+        }
+
+        String index;
+        // 指定がなかったらインデックスを1として扱う
+        if (args.length == 1)
+            index = "1";
+        else
+            index = args[1];
+
+        // ページングを丸投げ
+        var list = pager(sender, rawlist, index);
+
+        // listがnullだったら警告文とかも出てるのでおわり
+        if (list == null)
+            return true;
+
+        // 分割されたやつを表示
+        sender.sendMessage("----- template list page " + index + " -----");
         list.forEach(sender::sendMessage);
 
         // おわり
@@ -173,26 +198,67 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // viewコマンド
     private boolean view(CommandSender sender, String[] args) {
-        // コマンド指定で1つ、テンプレート指定で1つ
-        if (args.length != 2)
-            return commandsHelp(sender, "cslt view <template>");
+        // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
+        if ((2 > args.length) || (args.length > 3))
+            return commandsHelp(sender, "cslt view <template> <page>");
+
+        // 名前を出しておく
+        var templatename = args[1];
 
         // とりあえず取りに行く
-        var list = store.get(args[1]);
+        var rawlist = store.get(templatename);
 
         // 登録されてないときにnullが返ってくる
-        if (isNullList(sender, list))
+        if (isNullList(sender, rawlist))
             return true;
 
+        // 数が少なければそのまま表示
+        if (rawlist.size() < 16){
+            infoView(sender, templatename, rawlist, -1);
+            return true;
+        }
+
+        String index;
+        // 指定がなかったらインデックスを1として扱う
+        if (args.length == 2)
+            index = "1";
+        else
+            index = args[2];
+
+        // ページングを丸投げ
+        var list = pager(sender, rawlist, index);
+
+        // listがnullだったら警告文とかも出てるのでおわり
+        if (list == null)
+            return true;
+
+        // 分割されたやつを表示
+        infoView(sender, templatename, list, tryParsePageIndex(sender, index));
+
+        // おわり
+        return true;
+    }
+
+    // infoを表示する用
+    private void infoView(CommandSender sender, String name, List<CStationInfo> list, int pageindex) {
+        // indexが-1だったらページ指定がないことにする
+        if (pageindex == -1)
+            sender.sendMessage("----- " + name + " template content -----");
+        else
+            sender.sendMessage("----- " + name + " template content page " + (pageindex + 1) + " -----");
+
         // うまいこと内容を表示する
-        sender.sendMessage(
-            "----- " + args[1] + " template content -----",
-            "(index) (name) (line2) (line3) (line4) (eject) (block)");
+        sender.sendMessage("(index) (name) (line2) (line3) (line4) (eject) (block)");
 
         // indexとともに内容を表示
+        int index;
         for (int i = 0 ; i < list.size() ; i++){
+            if (pageindex != -1)
+                index = i + 15 * pageindex;
+            else
+                index = i;
             sender.sendMessage(
-                i + " | " +
+                index + " | " +
                 list.get(i).getName() + " | " +
                 list.get(i).getSignText()[0] + " | " +
                 list.get(i).getSignText()[1] + " | " +
@@ -200,9 +266,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
                 list.get(i).isEjectPassenger() + " | " +
                 list.get(i).isBlockPassenger());
         }
-
-        // おわり
-        return true;
     }
 
     // addコマンド
@@ -273,6 +336,31 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return false;
     }
 
+    // ページング用
+    private <T> List<T> pager(CommandSender sender, List<T> list, String indexstr) {
+        // インデックス
+        int index = tryParsePageIndex(sender, indexstr);
+
+        // インデックスのチェック
+        if (index == -1)
+            return null;
+
+        // 計算してはみ出ないかチェック
+        var from = 15 * index;
+        if (from >= list.size()) {
+            sender.sendMessage("指定されたページは存在しません。");
+            return null;
+        }
+
+        // 終端が計算してはみ出たらうまいこと収める
+        var to = 15 + index * 15;
+        if (to >= list.size())
+            to = list.size() - 1;
+
+        // Listをうまいこと切り出し
+        return list.subList(from, to);
+    }
+
     // 生成用
     private CStationInfo infoFromStrings(String[] args) {
         // 取り出し、型変換
@@ -291,6 +379,23 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // CStationInfoを生成して返す
         return new CStationInfo(name, lines, eject, block);
+    }
+
+    private int tryParsePageIndex(CommandSender sender, String indexstr) {
+        int index;
+        // ページのインデックスが正しいか検証する
+        try {
+            index = Integer.parseUnsignedInt(indexstr);
+        } catch (Exception ignored) {
+            sender.sendMessage("ページは1以上の数値で指定してください。");
+            return -1;
+        }
+        if (index < 1){
+            sender.sendMessage("ページは1以上の数値で指定してください。");
+            return -1;
+        }
+
+        return index - 1;
     }
 
     /**

@@ -37,6 +37,14 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // 普通にコピー
         var from = store.get(args[1]);
+
+        // nullチェック
+        if (from == null) {
+            sender.sendMessage("コピー元が存在しません。");
+            return true;
+        }
+
+        // storeへset
         store.set(args[2], new ArrayList<>(from));
 
         // おわり

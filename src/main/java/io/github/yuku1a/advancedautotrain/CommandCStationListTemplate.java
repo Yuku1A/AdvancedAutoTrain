@@ -213,14 +213,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // 各コマンド用のヘルプをちょっと楽に実装する
-    private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage(
-            "usage:",
-            usage);
-        return true;
-    }
-
     // helpコマンド
     private boolean help(CommandSender sender) {
         sender.sendMessage(
@@ -238,6 +230,14 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "insert: テンプレート内の指定された位置に項目を追加します"
         );
         return false;
+    }
+
+    // 各コマンド用のヘルプをちょっと楽に実装する
+    private boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage(
+            "usage:",
+            usage);
+        return true;
     }
 
     // プラグインが生成する用

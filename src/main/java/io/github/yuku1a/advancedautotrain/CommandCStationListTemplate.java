@@ -43,7 +43,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ
         if (args.length != 2)
-            return viewHelp(sender);
+            return commandsHelp(sender, "cslt view <template>");
 
         // とりあえず取りに行く
         var list = store.get(args[1]);
@@ -86,8 +86,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、パラメータが6つで計8つ
-        if (args.length != 8)
-            return addHelp(sender);
+        if (args.length != 8) {
+            commandsHelp(
+                sender,
+                "cslt add <template> <blockpassenger> <eject> <section> <speed> <delay> <name>"
+            );
+        }
 
         // 順番に気をつけて
         String template = args[1];
@@ -122,14 +126,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // addコマンドのヘルプ
-    private boolean addHelp(CommandSender sender) {
-        sender.sendMessage(
-            "usage:",
-            "cslt add <template> <blockpassenger> <eject> <section> <speed> <delay> <name>");
-        return true;
-    }
-
     // saveコマンド
     private boolean save(CommandSender sender) {
         if (store.save())
@@ -145,6 +141,14 @@ public class CommandCStationListTemplate implements CommandExecutor {
             sender.sendMessage("Data Loaded");
         else
             sender.sendMessage("Data Load Failed");
+        return true;
+    }
+
+    // 各コマンド用のヘルプをちょっと楽に実装する
+    private boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage(
+            "usage:",
+            usage);
         return true;
     }
 

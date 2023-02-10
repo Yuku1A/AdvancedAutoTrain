@@ -17,12 +17,26 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (args.length == 0)
             return false;
         return switch (args[0]) {
+            case "list" -> list(sender);
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
             case "add" -> add(sender, args);
             default -> help(sender);
         };
+    }
+
+    // listコマンド
+    private boolean list(CommandSender sender) {
+        // storeからキーのコレクションを取得する
+        var list = store.getKeySet();
+
+        // それを全部出力
+        sender.sendMessage("----- template list -----");
+        list.forEach(sender::sendMessage);
+
+        // おわり
+        return true;
     }
 
     // viewコマンド

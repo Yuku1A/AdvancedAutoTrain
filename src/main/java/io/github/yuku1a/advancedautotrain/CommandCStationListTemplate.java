@@ -139,7 +139,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             index = args[1];
 
         // ページングを丸投げ
-        var list = pager(sender, rawlist, index);
+        var list = CommandUtil.pager(sender, rawlist, index);
 
         // listがnullだったら警告文とかも出てるのでおわり
         if (list == null)
@@ -218,22 +218,31 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
         }
 
-        String index;
+        String indexstr;
         // 指定がなかったらインデックスを1として扱う
         if (args.length == 2)
-            index = "1";
+            indexstr = "1";
         else
-            index = args[2];
+            indexstr = args[2];
+
+        // インデックスをパース
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(indexstr) - 1;
+        } catch (Exception e) {
+            sender.sendMessage("ページ番号は1以上の数値で指定してください。");
+            return true;
+        }
 
         // ページングを丸投げ
-        var list = pager(sender, rawlist, index);
+        var list = CommandUtil.pager(sender, rawlist, index);
 
         // listがnullだったら警告文とかも出てるのでおわり
         if (list == null)
             return true;
 
         // 分割されたやつを表示
-        infoView(sender, templatename, list, tryParsePageIndex(sender, index));
+        infoView(sender, templatename, list, index);
 
         // おわり
         return true;
@@ -254,7 +263,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         int index;
         for (int i = 0 ; i < list.size() ; i++){
             if (pageindex != -1)
-                index = i + 15 * pageindex;
+                index = CommandUtil.calcPagingIndex(i, pageindex);
             else
                 index = i;
             sender.sendMessage(
@@ -336,31 +345,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return false;
     }
 
-    // ページング用
-    private <T> List<T> pager(CommandSender sender, List<T> list, String indexstr) {
-        // インデックス
-        int index = tryParsePageIndex(sender, indexstr);
-
-        // インデックスのチェック
-        if (index == -1)
-            return null;
-
-        // 計算してはみ出ないかチェック
-        var from = 15 * index;
-        if (from >= list.size()) {
-            sender.sendMessage("指定されたページは存在しません。");
-            return null;
-        }
-
-        // 終端が計算してはみ出たらうまいこと収める
-        var to = 15 + index * 15;
-        if (to >= list.size())
-            to = list.size() - 1;
-
-        // Listをうまいこと切り出し
-        return list.subList(from, to);
-    }
-
     // 生成用
     private CStationInfo infoFromStrings(String[] args) {
         // 取り出し、型変換
@@ -379,23 +363,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // CStationInfoを生成して返す
         return new CStationInfo(name, lines, eject, block);
-    }
-
-    private int tryParsePageIndex(CommandSender sender, String indexstr) {
-        int index;
-        // ページのインデックスが正しいか検証する
-        try {
-            index = Integer.parseUnsignedInt(indexstr);
-        } catch (Exception ignored) {
-            sender.sendMessage("ページは1以上の数値で指定してください。");
-            return -1;
-        }
-        if (index < 1){
-            sender.sendMessage("ページは1以上の数値で指定してください。");
-            return -1;
-        }
-
-        return index - 1;
     }
 
     /**

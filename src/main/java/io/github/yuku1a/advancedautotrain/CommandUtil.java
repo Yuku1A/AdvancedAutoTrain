@@ -71,4 +71,17 @@ public class CommandUtil {
     public static int calcPagingIndex(int index, int pageindex) {
         return index + 15 * pageindex;
     }
+
+    /**
+     * 最大のページ番号を計算します。
+     * @param list 元リスト
+     * @return 最大のページ番号(1から始まる)
+     */
+    public static int calcMaxPageIndex(List<?> list) {
+        // 15個ずつ表示するので、それ+最後の余り部分の数を合わせる
+        if ((list.size() % 15) > 0)
+            return (list.size() / 15) + 1;
+        else
+            return (list.size() / 15);
+    }
 }

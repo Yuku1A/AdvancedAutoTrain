@@ -146,7 +146,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // 分割されたやつを表示
-        sender.sendMessage("----- template list page " + index + " -----");
+        sender.sendMessage(
+            "----- template list page " +
+            index + " of " + CommandUtil.calcMaxPageIndex(rawlist) +
+            " -----"
+        );
         list.forEach(sender::sendMessage);
 
         // おわり
@@ -214,7 +218,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // 数が少なければそのまま表示
         if (rawlist.size() < 16){
-            infoView(sender, templatename, rawlist, -1);
+            infoView(sender, templatename, rawlist, -1, 0);
             return true;
         }
 
@@ -242,19 +246,26 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // 分割されたやつを表示
-        infoView(sender, templatename, list, index);
+        infoView(sender, templatename, list, index, CommandUtil.calcMaxPageIndex(rawlist));
 
         // おわり
         return true;
     }
 
     // infoを表示する用
-    private void infoView(CommandSender sender, String name, List<CStationInfo> list, int pageindex) {
+    private void infoView(CommandSender sender, String name, List<CStationInfo> list,
+                          int pageindex, int maxpageindex) {
         // indexが-1だったらページ指定がないことにする
         if (pageindex == -1)
             sender.sendMessage("----- " + name + " template content -----");
-        else
-            sender.sendMessage("----- " + name + " template content page " + (pageindex + 1) + " -----");
+        else {
+            sender.sendMessage(
+                "----- " + name + " template content page " +
+                (pageindex + 1) + " of " + maxpageindex +
+                " -----"
+            );
+        }
+
 
         // うまいこと内容を表示する
         sender.sendMessage("(index) (name) (line2) (line3) (line4) (eject) (block)");

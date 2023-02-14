@@ -14,7 +14,7 @@ public class CommandUtil {
      * @param sender CommandSender
      * @param list 切り出し元のリスト
      * @param indexstr ページ番号(1から始まる)(入力されたものを直接使用することを想定しています)
-     * @return 切り出されたリスト
+     * @return 切り出されたリスト、nullの場合失敗
      * @param <T> リストに格納される要素の型
      */
     public static <T> List<T> pager(CommandSender sender, List<T> list, String indexstr) {
@@ -36,7 +36,7 @@ public class CommandUtil {
      * @param sender CommandSender
      * @param list 切り出し元のリスト
      * @param index ページ番号(0から始まる)
-     * @return 切り出されたリスト
+     * @return 切り出されたリスト、nullの場合失敗
      * @param <T> リストに格納される要素の型
      */
     public static <T> List<T> pager(CommandSender sender, List<T> list, int index) {

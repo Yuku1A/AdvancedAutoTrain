@@ -14,13 +14,11 @@ cstation
 
 そして
 ```
-cslt add (template) (blockpassenger) (eject) (section) (speed) (delay) (name)
+cslt add (template) (section) (speed) (delay) (name)
 ```
 とコマンドを打つ(クライアントの場合はスラッシュを先頭につける)  
 これらはそれぞれ  
 (template): リストの名前  
-(blockpassenger): 乗車不能にするかどうか(trueかfalseのみ)  
-(eject): 強制的に降車させるかどうか(trueかfalseのみ)  
 (section): 発車時に看板からどれぐらいの距離で設定された速度に達するか(メートル単位)  
 (speed): 発車させるスピード  
 (delay): 停車時間  

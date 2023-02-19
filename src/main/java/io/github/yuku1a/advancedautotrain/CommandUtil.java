@@ -2,6 +2,7 @@ package io.github.yuku1a.advancedautotrain;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,6 +41,10 @@ public class CommandUtil {
      * @param <T> リストに格納される要素の型
      */
     public static <T> List<T> pager(CommandSender sender, List<T> list, int index) {
+        // listがemptyか確認
+        if (list.isEmpty())
+            return list;
+
         // ページ番号が0以下じゃないか確認
         if (index < 0){
             sender.sendMessage("ページは1以上の数値で指定してください。");
@@ -56,7 +61,7 @@ public class CommandUtil {
         // 終端が計算してはみ出たらうまいこと収める
         var to = 15 + index * 15;
         if (to >= list.size())
-            to = list.size() - 1;
+            to = list.size();
 
         // Listをうまいこと切り出し
         return list.subList(from, to);
@@ -81,7 +86,12 @@ public class CommandUtil {
         // 15個ずつ表示するので、それ+最後の余り部分の数を合わせる
         if ((list.size() % 15) > 0)
             return (list.size() / 15) + 1;
-        else
-            return (list.size() / 15);
+        else {
+            if (list.size() < 16)
+                return 1;
+            else
+                return (list.size() / 15);
+        }
+
     }
 }

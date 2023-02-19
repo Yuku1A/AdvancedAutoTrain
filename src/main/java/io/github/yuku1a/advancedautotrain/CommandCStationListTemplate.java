@@ -268,7 +268,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
 
         // うまいこと内容を表示する
-        sender.sendMessage("(index) (name) (line2) (line3) (line4) (eject) (block)");
+        sender.sendMessage("(index) (name) (line2) (line3) (line4)");
 
         // indexとともに内容を表示
         int index;
@@ -282,19 +282,17 @@ public class CommandCStationListTemplate implements CommandExecutor {
                 list.get(i).getName() + " | " +
                 list.get(i).getSignText()[0] + " | " +
                 list.get(i).getSignText()[1] + " | " +
-                list.get(i).getSignText()[2] + " | " +
-                list.get(i).isEjectPassenger() + " | " +
-                list.get(i).isBlockPassenger());
+                list.get(i).getSignText()[2]);
         }
     }
 
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
-        // コマンド指定で1つ、テンプレート指定で1つ、パラメータが6つで計8つ
-        if (args.length != 8) {
+        // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計8つ
+        if (args.length != 6) {
             return commandsHelp(
                 sender,
-                "cslt add <template> <blockpassenger> <eject> <section> <speed> <delay> <name>"
+                "cslt add <template> <section> <speed> <delay> <name>"
             );
         }
 
@@ -359,12 +357,10 @@ public class CommandCStationListTemplate implements CommandExecutor {
     // 生成用
     private CStationInfo infoFromStrings(String[] args) {
         // 取り出し、型変換
-        var block = Boolean.parseBoolean(args[2]);
-        var eject = Boolean.parseBoolean(args[3]);
-        String section = args[4];
-        String speed = args[5];
-        String delay = args[6];
-        String name = args[7];
+        String section = args[2];
+        String speed = args[3];
+        String delay = args[4];
+        String name = args[5];
 
         // stationのsignを生成する
         var line2 = "station " + section;
@@ -373,7 +369,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var lines = new String[]{line2, line3, line4};
 
         // CStationInfoを生成して返す
-        return new CStationInfo(name, lines, eject, block);
+        return new CStationInfo(name, lines);
     }
 
     /**

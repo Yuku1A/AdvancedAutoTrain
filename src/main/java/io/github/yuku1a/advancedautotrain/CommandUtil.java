@@ -2,7 +2,6 @@ package io.github.yuku1a.advancedautotrain;
 
 import org.bukkit.command.CommandSender;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

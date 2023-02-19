@@ -22,19 +22,13 @@ public class SignActionCStation extends SignAction {
 
     @Override
     public void execute(SignActionEvent info) {
-        // まずTrain(Group)に関連付けられているかどうかで蹴ってみる
-        if (!info.hasGroup())
-            return;
-
         // SignActionTypeを取得しておく
         var type = info.getAction();
 
-        // どれぐらいのイベントを蹴れるのか試してみる
-        // ここに書いてある分のイベントは蹴っても問題なさそう
+        // ここに書いてある以外のイベントをすべて蹴る
         switch (type){
-            case MEMBER_ENTER,
-                MEMBER_UPDATE,
-                MEMBER_LEAVE -> { return; }
+            case GROUP_ENTER,
+                GROUP_LEAVE-> {  }
             default -> { }
         }
 
@@ -60,16 +54,7 @@ public class SignActionCStation extends SignAction {
             return;
 
         // fakesignをあまり頻繁に作りたくないので作らずに済む場合先に返す
-        if (type == SignActionType.GROUP_UPDATE) {
-            // ejectとblockの処理
-            // ejectがtrueだったら乗ってるエンティティを追い出す
-            if (stationinfo.isEjectPassenger())
-                train.eject();
-            // blockがtrueだったら乗車できなくする
-            // blockがfalseだったら乗れるようにする
-            train.getProperties().setPlayersEnter(!stationinfo.isBlockPassenger());
-            return;
-        } else if(type == SignActionType.GROUP_LEAVE) {
+        if(type == SignActionType.GROUP_LEAVE) {
             // stationlistを次に進める
             stationlist.forward();
             return;

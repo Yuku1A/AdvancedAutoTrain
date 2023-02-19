@@ -12,7 +12,7 @@ import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
  * Configurable Station SignActionを実装するためのクラス
  */
 public class SignActionCStation extends SignAction {
-    private Advancedautotrain plugin;
+    private final Advancedautotrain plugin;
     @Override
     public boolean match(SignActionEvent info) {
         if (info.getMode() == SignActionMode.NONE)

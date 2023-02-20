@@ -57,6 +57,9 @@ public class SignActionCStation extends SignAction {
         if(type == SignActionType.GROUP_LEAVE) {
             // stationlistを次に進める
             stationlist.forward();
+
+            // イベントを動かす
+            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(name));
             return;
         }
 

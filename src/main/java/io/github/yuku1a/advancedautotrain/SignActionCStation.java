@@ -86,6 +86,11 @@ public class SignActionCStation extends SignAction {
     }
 
     @Override
+    public boolean isRailSwitcher(SignActionEvent info) {
+        return true;
+    }
+
+    @Override
     public boolean build(SignChangeActionEvent e) {
         return SignBuildOptions.create()
             .setName("cstation").handle(e.getPlayer());

@@ -28,8 +28,8 @@ public class SignActionCStation extends SignAction {
         // ここに書いてある以外のイベントをすべて蹴る
         switch (type){
             case GROUP_ENTER,
-                GROUP_LEAVE-> {  }
-            default -> { }
+                GROUP_LEAVE -> {  }
+            default -> { return; }
         }
 
         // 看板につけられた名前を取得

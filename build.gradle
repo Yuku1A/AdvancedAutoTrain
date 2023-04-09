@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.19.3-v1'
+    compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.19.4-v1'
     compileOnly 'org.bergerhealer.cloud.commandframework:cloud-paper:1.8.0-SNAPSHOT'
     compileOnly 'org.bergerhealer.cloud.commandframework:cloud-annotations:1.8.0-SNAPSHOT'
     compileOnly 'org.bergerhealer.cloud.commandframework:cloud-minecraft-extras:1.8.0-SNAPSHOT'

@@ -34,11 +34,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // replaceコマンド
     private boolean replace(CommandSender sender, String[] args) {
-        // コマンドで1つ、テンプレートで1つ、パラメータ指定で6つ、インデックス含め9つ
-        if (args.length != 9) {
+        // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
+        if (args.length != 7) {
             return commandsHelp(
                 sender,
-                "cslt replace <template> <blockpassenger> <eject> <section> <speed> <delay> <name> <index>"
+                "cslt replace <template>  <section> <speed> <delay> <name> <index>"
             );
         }
 
@@ -48,7 +48,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // インデックスのチェック
-        var index = tryParseIndex(sender, list, args[8]);
+        var index = tryParseIndex(sender, list, args[6]);
         if (index == -1)
             return true;
 
@@ -65,11 +65,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // insertコマンド
     private boolean insert(CommandSender sender, String[] args) {
-        // コマンドで1つ、テンプレートで1つ、パラメータ指定で6つ、インデックス含め9つ
-        if (args.length != 9) {
+        // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
+        if (args.length != 7) {
             return commandsHelp(
                 sender,
-                "cslt insert <template> <blockpassenger> <eject> <section> <speed> <delay> <name> <index>"
+                "cslt insert <template> <section> <speed> <delay> <name> <index>"
             );
         }
 
@@ -79,7 +79,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // インデックスのチェック
-        var index = tryParseIndex(sender, list, args[8]);
+        var index = tryParseIndex(sender, list, args[6]);
         if (index == -1)
             return true;
 

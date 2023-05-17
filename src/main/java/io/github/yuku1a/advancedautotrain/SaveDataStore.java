@@ -76,7 +76,7 @@ public class SaveDataStore<T> {
     /**
      * データを取得します。
      * @param key キー
-     * @return データ
+     * @return データ、なければnull
      */
     public T get(String key) {
         return store.get(key);

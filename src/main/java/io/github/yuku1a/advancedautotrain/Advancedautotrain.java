@@ -34,6 +34,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // 登録してから各種ロード
         templateStore = new CStationListTemplateStore(this);
+        templateStore.load();
 
         // イベントの登録
         getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);

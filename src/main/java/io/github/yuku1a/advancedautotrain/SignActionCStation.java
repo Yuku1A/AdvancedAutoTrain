@@ -49,6 +49,10 @@ public class SignActionCStation extends SignAction {
         // CStationListからInfoを取り出す
         var stationinfo = stationlist.get();
 
+        // stationinfoがnullだった場合はリストが空
+        if (stationinfo == null)
+            return;
+
         // 名前と一致しなければなかったことにする
         if (!name.equals(stationinfo.getName()))
             return;

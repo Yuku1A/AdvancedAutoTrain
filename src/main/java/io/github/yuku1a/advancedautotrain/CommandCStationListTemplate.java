@@ -108,7 +108,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // storeへset
-        store.set(args[2], new ArrayList<>(from));
+        store.put(args[2], new ArrayList<>(from));
 
         // おわり
         sender.sendMessage("コピーが完了しました。");
@@ -122,7 +122,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return commandsHelp(sender, "cslt list <page>");
 
         // storeからキーのコレクションを取得する
-        var rawlist = new ArrayList<>(store.getKeySet());
+        var rawlist = store.keysList();
 
         // 数が少なければそのまま表示
         if (rawlist.size() < 16){
@@ -306,7 +306,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var list = store.get(template);
         if (list == null) {
             list = new ArrayList<>();
-            store.set(template, list);
+            store.put(template, list);
         }
 
         // infoをlistへ追加

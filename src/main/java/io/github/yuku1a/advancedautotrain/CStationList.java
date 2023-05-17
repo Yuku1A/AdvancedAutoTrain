@@ -28,9 +28,11 @@ public class CStationList {
 
     /**
      * 現在のCStationInfoを取得します
-     * @return 現在のCStationInfo
+     * @return 現在のCStationInfo、ない場合はnull
      */
     public CStationInfo get() {
+        if (list.isEmpty())
+            return null;
         return list.get(index);
     }
 

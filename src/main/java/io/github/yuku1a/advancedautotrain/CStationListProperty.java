@@ -12,6 +12,7 @@ import com.bergerkiller.bukkit.tc.properties.api.PropertyParser;
 import com.bergerkiller.bukkit.tc.properties.api.context.PropertyParseContext;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -51,8 +52,14 @@ public final class CStationListProperty implements ITrainProperty<CStationList> 
         // ここにコマンドの入力がある
         var input = ctx.input();
 
+        var list = templateStore.get(input);
+
+        // 存在しない場合は要素のないリストを作ってどうにかする
+        if (list == null)
+            list = new ArrayList<CStationInfo>();
+
         // コマンドの入力を元にテンプレートを取得してCStationListを作成
-        return new CStationList(templateStore.get(input));
+        return new CStationList(list);
     }
 
     // なぜかわからないけど機能しないので放置

@@ -44,8 +44,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // テンプレート指定
         var list = store.get(args[1]);
-        if (isNullList(sender, list))
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
+        }
 
         // インデックスのチェック
         var index = CommandUtil.tryParseIndex(sender, list, args[6]);
@@ -75,8 +79,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // テンプレート指定
         var list = store.get(args[1]);
-        if (isNullList(sender, list))
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
+        }
 
         // インデックスのチェック
         var index = CommandUtil.tryParseIndex(sender, list, args[6]);
@@ -104,8 +112,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var from = store.get(args[1]);
 
         // nullチェック
-        if (isNullList(sender, from))
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (from == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
+        }
 
         // storeへset
         store.put(args[2], new ArrayList<>(from));
@@ -167,8 +179,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var list = store.get(args[1]);
 
         // nullだと存在しない
-        if (isNullList(sender, list))
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
+        }
 
         // 検査
         var index = CommandUtil.tryParseIndex(sender, list, args[2]);
@@ -213,8 +229,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var rawlist = store.get(templatename);
 
         // 登録されてないときにnullが返ってくる
-        if (isNullList(sender, rawlist))
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (rawlist == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
+        }
 
         // 数が少なければそのまま表示
         if (rawlist.size() < 16){
@@ -370,16 +390,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // CStationInfoを生成して返す
         return new CStationInfo(name, lines);
-    }
-
-    // チェック用
-    private boolean isNullList(CommandSender sender, List<CStationInfo> list) {
-        // nullが投げ込まれたら相応のメッセージを出すだけ
-        if (list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
-        }
-        return false;
     }
 
     // プラグインが生成する用

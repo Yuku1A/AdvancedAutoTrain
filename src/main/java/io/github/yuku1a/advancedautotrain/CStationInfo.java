@@ -13,23 +13,25 @@ import java.util.Map;
 public class CStationInfo implements ConfigurationSerializable {
     private final String Name;
     private String[] SignText = null;
-    private String[] SignText;
+    private final String Announce;
 
     /**
      * @param name Stationを指定するための名前
      * @param signText Stationのsignのテキスト(2行目から4行目)
+     * @param announce Stationに入るときに乗客に送信するメッセージ、ない場合はnullを使用できる
      */
-    public CStationInfo(String name, String[] signText) {
+    public CStationInfo(String name, String[] signText, String announce) {
         Name = name;
         if (signText != null) {
             if( signText.length == 3 )
                 SignText = signText;
         }
+        Announce = announce;
     }
 
     /**
      * Stationを指定するための名前
-     * @return Stationを指定するための名前
+     * @return Stationを指定するための名前、なければnull
      */
     public String getName() {
         return Name;
@@ -37,10 +39,18 @@ public class CStationInfo implements ConfigurationSerializable {
 
     /**
      * Stationのsignのテキスト(2行目から4行目)
-     * @return Stationのsignのテキスト(2行目から4行目)
+     * @return Stationのsignのテキスト(2行目から4行目)、なければnull
      */
     public String[] getSignText() {
         return SignText;
+    }
+
+    /**
+     * Stationに入るときに乗客に送信するメッセージ
+     * @return Stationに入るときに乗客に送信するメッセージ、ない場合はnull
+     */
+    public String getAnnounce(){
+        return Announce;
     }
 
     @Override
@@ -48,6 +58,7 @@ public class CStationInfo implements ConfigurationSerializable {
         var map = new HashMap<String, Object>();
         map.put("Name", Name);
         map.put("SignText", new ArrayList<>(Arrays.asList(SignText)));
+        map.put("Announce", Announce);
         return map;
     }
 
@@ -56,6 +67,7 @@ public class CStationInfo implements ConfigurationSerializable {
         var Name = (String) map.get("Name");
         var SignTextList = (ArrayList<String>) map.get("SignText");
         var SignText = SignTextList.toArray(new String[0]);
-        return new CStationInfo(Name, SignText);
+        var Announce = (String) map.get("Announce");
+        return new CStationInfo(Name, SignText, Announce);
     }
 }

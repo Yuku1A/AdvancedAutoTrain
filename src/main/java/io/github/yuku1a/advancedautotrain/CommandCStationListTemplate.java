@@ -22,84 +22,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
-            case "add" -> add(sender, args);
+            case "add","replace","insert" -> add(sender, args);
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);
             case "copy" -> copy(sender, args);
-            case "insert" -> insert(sender, args);
-            case "replace" -> replace(sender, args);
             default -> help(sender);
         };
-    }
-
-    // replaceコマンド
-    private boolean replace(CommandSender sender, String[] args) {
-        // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
-        if (args.length != 7) {
-            return CommandUtil.commandsHelp(
-                sender,
-                "cslt replace <template>  <section> <speed> <delay> <name> <index>"
-            );
-        }
-
-        // テンプレート指定
-        var list = store.get(args[1]);
-        // チェック用
-        // nullが投げ込まれたら相応のメッセージを出すだけ
-        if (list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
-        }
-
-        // インデックスのチェック
-        var index = CommandUtil.tryParseIndex(sender, list, args[6]);
-        if (index == -1)
-            return true;
-
-        // info生成
-        var info = infoFromStrings(args);
-
-        // 置き換え
-        list.set(index, info);
-
-        // おわり
-        sender.sendMessage("項目の置き換えが完了しました。");
-        return true;
-    }
-
-    // insertコマンド
-    private boolean insert(CommandSender sender, String[] args) {
-        // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
-        if (args.length != 7) {
-            return CommandUtil.commandsHelp(
-                sender,
-                "cslt insert <template> <section> <speed> <delay> <name> <index>"
-            );
-        }
-
-        // テンプレート指定
-        var list = store.get(args[1]);
-        // チェック用
-        // nullが投げ込まれたら相応のメッセージを出すだけ
-        if (list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
-        }
-
-        // インデックスのチェック
-        var index = CommandUtil.tryParseIndex(sender, list, args[6]);
-        if (index == -1)
-            return true;
-
-        // info生成
-        var info = infoFromStrings(args);
-
-        // 挿入
-        list.add(index, info);
-
-        // おわり
-        sender.sendMessage("項目の挿入が完了しました。");
-        return true;
     }
 
     // copyコマンド
@@ -308,32 +236,100 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
-        // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計8つ
-        if (args.length != 6) {
-            return CommandUtil.commandsHelp(
-                sender,
-                "cslt add <template> <section> <speed> <delay> <name>"
-            );
+        // 引数のヘルプ用のテキスト
+        var argtext = "<template> <acceleration> <speed> <delay> <name> [announce]";
+
+        if (args[0].equals("add")) {
+            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ、オプションありで7つ
+            if ((6 > args.length) || (args.length > 7)) {
+                return CommandUtil.commandsHelp(
+                    sender,
+                    "cslt add " + argtext
+                );
+            }
+        } else if(args[0].equals("replace") || args[0].equals("insert")) {
+            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つとインデックスで計7つ、オプションありで8つ
+            if ((7 > args.length) || (args.length > 8)) {
+                return CommandUtil.commandsHelp(
+                    sender,
+                    "cslt " + args[0] + " " + argtext + " <index>"
+                );
+            }
+        } else {
+            return false;
         }
 
         // テンプレート指定
-        String template = args[1];
+        var template = args[1];
+
+        // 取り出し、型変換
+        var section = args[2];
+        var speed = args[3];
+        var delay = args[4];
+        var name = args[5];
+
+        // stationのsignを生成する
+        var line2 = "station " + section;
+        var line3 = delay;
+        var line4 = "route continue " + speed;
+        var lines = new String[]{line2, line3, line4};
+
+        // announceとindexを取り出す
+        String announce;
+        // addの7個ある場合のみ6にannounceがある
+        if ((args.length == 7) && (args[0].equals("add")))
+            announce = args[6];
+        // それ以外は8個ある場合のみ6にannounceがある(7個だとそこにindexがある)
+        else if(args.length == 8)
+            announce = args[6];
+        else
+            announce = null;
 
         // CStationInfoを生成する
-        var info = infoFromStrings(args);
+        var info = new CStationInfo(name, lines, announce);
 
-        // templateを取り出していじる
-        var list = store.get(template);
-        if (list == null) {
+        // テンプレートがちゃんとあるのを確認する
+        // テンプレート指定
+        var list = store.get(args[1]);
+        // チェック用
+        // add以外の操作だと元リストがないと意味がなくはある
+        if (!args[0].equals("add") && list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+            return true;
+        }
+        // addかつnullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
+        else if (list == null) {
             list = new ArrayList<>();
             store.put(template, list);
         }
 
-        // infoをlistへ追加
-        list.add(info);
+        // add以外だとindexが存在するので読み取る
+        int index = -1;
 
-        // 完了
-        sender.sendMessage("Add Successful!");
+        if (!args[0].equals("add")) {
+            index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
+            // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
+            if (index == -1)
+                return true;
+        }
+
+        // addコマンドだとそのままinfoをlistへ追加、そのまま完了
+        switch (args[0]) {
+            case "add" -> {
+                list.add(info);
+                sender.sendMessage("要素の追加を完了しました。");
+            }
+            case "replace" -> {
+                list.set(index, info);
+                sender.sendMessage("項目の置き換えが完了しました。");
+            }
+            case "insert" -> {
+                list.add(index, info);
+                sender.sendMessage("項目の挿入が完了しました。");
+            }
+        }
+
+        // 終わり
         return true;
     }
 
@@ -354,24 +350,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "insert: テンプレート内の指定された位置に項目を追加します"
         );
         return false;
-    }
-
-    // 生成用
-    private CStationInfo infoFromStrings(String[] args) {
-        // 取り出し、型変換
-        String section = args[2];
-        String speed = args[3];
-        String delay = args[4];
-        String name = args[5];
-
-        // stationのsignを生成する
-        var line2 = "station " + section;
-        var line3 = delay;
-        var line4 = "route continue " + speed;
-        var lines = new String[]{line2, line3, line4};
-
-        // CStationInfoを生成して返す
-        return new CStationInfo(name, lines);
     }
 
     // ボイラープレートじみたコード類

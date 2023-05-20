@@ -3,6 +3,7 @@ package io.github.yuku1a.advancedautotrain;
 import com.bergerkiller.bukkit.tc.events.SignActionEvent;
 import com.bergerkiller.bukkit.tc.events.SignChangeActionEvent;
 import com.bergerkiller.bukkit.tc.signactions.SignAction;
+import com.bergerkiller.bukkit.tc.signactions.SignActionAnnounce;
 import com.bergerkiller.bukkit.tc.signactions.SignActionStation;
 import com.bergerkiller.bukkit.tc.signactions.SignActionMode;
 import com.bergerkiller.bukkit.tc.signactions.SignActionType;
@@ -71,6 +72,12 @@ public class SignActionCStation extends SignAction {
         // SignTextのnullチェック
         if (stationinfo.getSignText() == null)
             return;
+
+        // announceをする、nullだったらなし
+        if (stationinfo.getAnnounce() != null) {
+            SignActionAnnounce.sendMessage(info, train, stationinfo.getAnnounce());
+        }
+
         // fakesignの準備
         var rail = info.getRailPiece();
         var face = info.getTrackedSign().getFacing();

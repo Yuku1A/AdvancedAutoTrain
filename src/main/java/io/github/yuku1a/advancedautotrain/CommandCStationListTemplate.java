@@ -26,6 +26,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);
             case "copy" -> copy(sender, args);
+            case "info" -> info(sender, args);
             default -> help(sender);
         };
     }
@@ -217,7 +218,41 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // infoを表示する用
+    // infoコマンド
+    private boolean info(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、テンプレート指定で1つ、インデックス指定で計3つ
+        if (args.length != 3)
+            return CommandUtil.commandsHelp(sender, "cslt info <template> <index>");
+
+        // 名前を出しておく
+        var templatename = args[1];
+
+        // とりあえず取りに行く
+        var list = store.get(templatename);
+
+        // 登録されてないときにnullが返ってくる
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (list == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+            return true;
+        }
+
+        // インデックスをパース
+        int index = CommandUtil.tryParseIndex(sender, list, args[2]);
+
+        // -1だと機能しない値かつちゃんとメッセージが出てるので蹴る
+        if (index == -1)
+            return true;
+
+        // 表示
+        infoViewOne(sender, list.get(index), index);
+
+        // おわり
+        return true;
+    }
+
+    // info(コマンドではない)を表示する用
     private void infoView(CommandSender sender, String name, List<CStationInfo> list,
                           int pageindex, int maxpageindex) {
         // indexが-1だったらページ指定がないことにする
@@ -231,9 +266,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
             );
         }
 
-
         // うまいこと内容を表示する
-        sender.sendMessage("(index) (name) (line2) (line3) (line4)");
+        sender.sendMessage("(index) (name) (accel) (delay) (speed) (announce)");
 
         // indexとともに内容を表示
         int index;
@@ -242,13 +276,37 @@ public class CommandCStationListTemplate implements CommandExecutor {
                 index = CommandUtil.calcPagingIndex(i, pageindex);
             else
                 index = i;
-            sender.sendMessage(
-                index + " | " +
-                list.get(i).getName() + " | " +
-                list.get(i).getSignText()[0] + " | " +
-                list.get(i).getSignText()[1] + " | " +
-                list.get(i).getSignText()[2]);
+            infoViewSimple(sender, list.get(i), index, true);
         }
+    }
+
+    private void infoViewSimple(CommandSender sender, CStationInfo info, int index, boolean announcecut) {
+        if (info.getSignText() == null) {
+            sender.sendMessage(index + " | " + "broken data");
+        }
+        var accel = info.getSignText()[0].replace("station ", "");
+        var speed = info.getSignText()[2].replace("route continue ", "");
+        var announce = info.getAnnounce();
+        if (announce == null)
+            announce = "";
+        else if (announcecut && announce.length() >= 10)
+            announce = announce.substring(0, 9) + "...";
+        sender.sendMessage(
+            index + " | " +
+                info.getName() + " | " +
+                accel + " | " +
+                // これはdelay
+                info.getSignText()[1] + " | " +
+                speed + " | " +
+                announce
+        );
+    }
+
+    // infoを一つだけ表示する用
+    private void infoViewOne(CommandSender sender, CStationInfo info, int index) {
+        // うまいこと内容を表示する
+        sender.sendMessage("(index) (name) (accel) (delay) (speed) (announce)");
+        infoViewSimple(sender, info, index, false);
     }
 
     // helpコマンド

@@ -8,3 +8,14 @@ commands:
   cstationlisttemplate:
     aliases: [cstationlisttemplate, cslt]
     usage: /<command> <action> <arguments...>
+permissions:
+  advancedautotrain.*:
+    default: false
+    children:
+      advancedautotrain.admin: true
+  advancedautotrain.admin:
+    default: op
+    children:
+      advancedautotrain.use: true
+  advancedautotrain.use:
+    default: op

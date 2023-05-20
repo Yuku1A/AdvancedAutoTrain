@@ -12,11 +12,35 @@ import java.util.List;
  */
 public class CommandCStationListTemplate implements CommandExecutor {
     private final CStationListTemplateStore store;
+
+    // 一般的なコマンドを使用するためのパーミッション
+    private final String UsePermission = "advancedautotrain.use";
+
+    // 管理用コマンドを使用するためのパーミッション
+    private final String AdminPermission = "advancedautotrain.admin";
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
         // 引数0の場合はコマンドが指定されていない
         if (args.length == 0)
             return help(sender);
+
+        // 管理用コマンドだけ追加の権限チェック
+        switch (args[0]) {
+            case "load","save" -> {
+                if (!sender.hasPermission(AdminPermission)){
+                    sender.sendMessage("必要な権限がありません");
+                    return true;
+                }
+            }
+        }
+
+        // コマンドごとに分岐やる、この構文めちゃ便利
         return switch (args[0]) {
             case "list" -> list(sender, args);
             case "save" -> save(sender);
@@ -319,12 +343,16 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "view: 指定されたテンプレートの項目を表示します",
             "list: テンプレートの一覧を表示します",
             "removet: 指定したテンプレートを削除します",
-            "save: 全ての情報を保存します",
-            "load: 全ての情報の再読み込みを行います",
             "copy: テンプレートのコピーを行います",
             "replace: テンプレート内の指定された項目を入れ替えます",
             "insert: テンプレート内の指定された位置に項目を追加します"
         );
+        if (sender.hasPermission(AdminPermission)) {
+            sender.sendMessage(
+                "save: 全ての情報を保存します",
+                "load: 全ての情報の再読み込みを行います"
+            );
+        }
         return false;
     }
 

@@ -337,24 +337,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // saveコマンド
-    private boolean save(CommandSender sender) {
-        if (store.save())
-            sender.sendMessage("Save Successful!");
-        else
-            sender.sendMessage("Save Failed");
-        return true;
-    }
-
-    // loadコマンド
-    private boolean load(CommandSender sender) {
-        if (store.load())
-            sender.sendMessage("Data Loaded");
-        else
-            sender.sendMessage("Data Load Failed");
-        return true;
-    }
-
     // helpコマンド
     private boolean help(CommandSender sender) {
         sender.sendMessage(
@@ -390,6 +372,25 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // CStationInfoを生成して返す
         return new CStationInfo(name, lines);
+    }
+
+    // ボイラープレートじみたコード類
+    // saveコマンド
+    private boolean save(CommandSender sender) {
+        if (store.save())
+            sender.sendMessage("Save Successful!");
+        else
+            sender.sendMessage("Save Failed");
+        return true;
+    }
+
+    // loadコマンド
+    private boolean load(CommandSender sender) {
+        if (store.load())
+            sender.sendMessage("Data Loaded");
+        else
+            sender.sendMessage("Data Load Failed");
+        return true;
     }
 
     // プラグインが生成する用

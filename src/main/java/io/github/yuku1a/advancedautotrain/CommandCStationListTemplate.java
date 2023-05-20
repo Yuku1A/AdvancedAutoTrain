@@ -36,7 +36,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean replace(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
         if (args.length != 7) {
-            return commandsHelp(
+            return CommandUtil.commandsHelp(
                 sender,
                 "cslt replace <template>  <section> <speed> <delay> <name> <index>"
             );
@@ -48,7 +48,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // インデックスのチェック
-        var index = tryParseIndex(sender, list, args[6]);
+        var index = CommandUtil.tryParseIndex(sender, list, args[6]);
         if (index == -1)
             return true;
 
@@ -67,7 +67,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean insert(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、パラメータ指定で4つ、インデックス含め9つ
         if (args.length != 7) {
-            return commandsHelp(
+            return CommandUtil.commandsHelp(
                 sender,
                 "cslt insert <template> <section> <speed> <delay> <name> <index>"
             );
@@ -79,7 +79,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // インデックスのチェック
-        var index = tryParseIndex(sender, list, args[6]);
+        var index = CommandUtil.tryParseIndex(sender, list, args[6]);
         if (index == -1)
             return true;
 
@@ -98,7 +98,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean copy(CommandSender sender, String[] args) {
         // コマンド指定で1つ、コピー元と先指定で2つ
         if (args.length != 3)
-            return commandsHelp(sender, "cslt copy <from> <to>");
+            return CommandUtil.commandsHelp(sender, "cslt copy <from> <to>");
 
         // 普通にコピー
         var from = store.get(args[1]);
@@ -119,7 +119,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean list(CommandSender sender, String[] args) {
         // コマンドで1つ、ページで1つまで
         if (args.length > 2)
-            return commandsHelp(sender, "cslt list <page>");
+            return CommandUtil.commandsHelp(sender, "cslt list <page>");
 
         // storeからキーのコレクションを取得する
         var rawlist = store.keysList();
@@ -161,7 +161,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean remove(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、インデックスで1つ
         if (args.length != 3)
-            return commandsHelp(sender, "cslt remove <template> <index>");
+            return CommandUtil.commandsHelp(sender, "cslt remove <template> <index>");
 
         // 指定されたテンプレートを取得
         var list = store.get(args[1]);
@@ -171,7 +171,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
 
         // 検査
-        var index = tryParseIndex(sender, list, args[2]);
+        var index = CommandUtil.tryParseIndex(sender, list, args[2]);
 
         // ひっかかってたら弾く
         if (index == -1)
@@ -189,7 +189,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean removet(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ
         if (args.length != 2)
-            return commandsHelp(sender, "cslt removet <template>");
+            return CommandUtil.commandsHelp(sender, "cslt removet <template>");
 
         // 指定されたテンプレートを削除
         store.remove(args[1]);
@@ -204,7 +204,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
         if ((2 > args.length) || (args.length > 3))
-            return commandsHelp(sender, "cslt view <template> <page>");
+            return CommandUtil.commandsHelp(sender, "cslt view <template> <page>");
 
         // 名前を出しておく
         var templatename = args[1];
@@ -290,7 +290,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private boolean add(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計8つ
         if (args.length != 6) {
-            return commandsHelp(
+            return CommandUtil.commandsHelp(
                 sender,
                 "cslt add <template> <section> <speed> <delay> <name>"
             );
@@ -372,29 +372,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return new CStationInfo(name, lines);
     }
 
-    /**
-     * 正常であればindexそのまま、不正だったら-1が返ってくる
-     */
-    private int tryParseIndex(CommandSender sender, List<CStationInfo> list, String strindex) {
-        // インデックスがintに変換できることを確認
-        int index;
-        try {
-            index = Integer.parseUnsignedInt(strindex);
-        } catch (NumberFormatException ignored) {
-            sender.sendMessage("インデックスは数値である必要があります。");
-            return -1;
-        }
-
-        // インデックスが範囲外であれば処理をしない
-        if (index >= list.size()) {
-            sender.sendMessage("インデックスが範囲外です。");
-            return -1;
-        }
-
-        // 変換できた結果をreturn
-        return index;
-    }
-
     // チェック用
     private boolean isNullList(CommandSender sender, List<CStationInfo> list) {
         // nullが投げ込まれたら相応のメッセージを出すだけ
@@ -403,14 +380,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
             return true;
         }
         return false;
-    }
-
-    // 各コマンド用のヘルプをちょっと楽に実装する
-    private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage(
-            "usage:",
-            usage);
-        return true;
     }
 
     // プラグインが生成する用

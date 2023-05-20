@@ -93,4 +93,44 @@ public class CommandUtil {
         }
 
     }
+
+    /**
+     * 正常であればindexそのまま、不正だったら-1が返ってくる
+     * @param sender CommandSender
+     * @param list リスト
+     * @param strindex stringで表現されるインデックス
+     * @return パースされたindex、パースできなかった場合-1
+     */
+    public static int tryParseIndex(CommandSender sender, List<CStationInfo> list, String strindex) {
+        // インデックスがintに変換できることを確認
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(strindex);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage("インデックスは数値である必要があります。");
+            return -1;
+        }
+
+        // インデックスが範囲外であれば処理をしない
+        if (index >= list.size()) {
+            sender.sendMessage("インデックスが範囲外です。");
+            return -1;
+        }
+
+        // 変換できた結果をreturn
+        return index;
+    }
+
+    /**
+     * 各コマンド用のヘルプをちょっと楽に実装する
+     * @param sender CommandSender
+     * @param usage "usage:"の次の行に表示する使用法
+     * @return onCommandのreturnに使うためのtrue
+     */
+    public static boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage(
+            "usage:",
+            usage);
+        return true;
+    }
 }

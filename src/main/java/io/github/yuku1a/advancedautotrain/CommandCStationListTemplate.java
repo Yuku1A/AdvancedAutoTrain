@@ -30,70 +30,102 @@ public class CommandCStationListTemplate implements CommandExecutor {
         };
     }
 
-    // copyコマンド
-    private boolean copy(CommandSender sender, String[] args) {
-        // コマンド指定で1つ、コピー元と先指定で2つ
-        if (args.length != 3)
-            return CommandUtil.commandsHelp(sender, "cslt copy <from> <to>");
+    // addコマンド
+    private boolean add(CommandSender sender, String[] args) {
+        // 引数のヘルプ用のテキスト
+        var argtext = "<template> <acceleration> <speed> <delay> <name> [announce]";
 
-        // 普通にコピー
-        var from = store.get(args[1]);
+        if (args[0].equals("add")) {
+            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ、オプションありで7つ
+            if ((6 > args.length) || (args.length > 7)) {
+                return CommandUtil.commandsHelp(
+                    sender,
+                    "cslt add " + argtext
+                );
+            }
+        } else if(args[0].equals("replace") || args[0].equals("insert")) {
+            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つとインデックスで計7つ、オプションありで8つ
+            if ((7 > args.length) || (args.length > 8)) {
+                return CommandUtil.commandsHelp(
+                    sender,
+                    "cslt " + args[0] + " " + argtext + " <index>"
+                );
+            }
+        } else {
+            return false;
+        }
 
-        // nullチェック
+        // テンプレート指定
+        var template = args[1];
+
+        // 取り出し、型変換
+        var section = args[2];
+        var speed = args[3];
+        var delay = args[4];
+        var name = args[5];
+
+        // stationのsignを生成する
+        var line2 = "station " + section;
+        var line3 = delay;
+        var line4 = "route continue " + speed;
+        var lines = new String[]{line2, line3, line4};
+
+        // announceとindexを取り出す
+        String announce;
+        // addの7個ある場合のみ6にannounceがある
+        if ((args.length == 7) && (args[0].equals("add")))
+            announce = args[6];
+            // それ以外は8個ある場合のみ6にannounceがある(7個だとそこにindexがある)
+        else if(args.length == 8)
+            announce = args[6];
+        else
+            announce = null;
+
+        // CStationInfoを生成する
+        var info = new CStationInfo(name, lines, announce);
+
+        // テンプレートがちゃんとあるのを確認する
+        // テンプレート指定
+        var list = store.get(args[1]);
         // チェック用
-        // nullが投げ込まれたら相応のメッセージを出すだけ
-        if (from == null) {
+        // add以外の操作だと元リストがないと意味がなくはある
+        if (!args[0].equals("add") && list == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
             return true;
         }
-
-        // storeへset
-        store.put(args[2], new ArrayList<>(from));
-
-        // おわり
-        sender.sendMessage("コピーが完了しました。");
-        return true;
-    }
-
-    // listコマンド
-    private boolean list(CommandSender sender, String[] args) {
-        // コマンドで1つ、ページで1つまで
-        if (args.length > 2)
-            return CommandUtil.commandsHelp(sender, "cslt list <page>");
-
-        // storeからキーのコレクションを取得する
-        var rawlist = store.keysList();
-
-        // 数が少なければそのまま表示
-        if (rawlist.size() < 16){
-            sender.sendMessage("----- template list -----");
-            rawlist.forEach(sender::sendMessage);
-            return true;
+        // addかつnullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
+        else if (list == null) {
+            list = new ArrayList<>();
+            store.put(template, list);
         }
 
-        String index;
-        // 指定がなかったらインデックスを1として扱う
-        if (args.length == 1)
-            index = "1";
-        else
-            index = args[1];
+        // add以外だとindexが存在するので読み取る
+        int index = -1;
 
-        // ページングを丸投げ
-        var list = CommandUtil.pager(sender, rawlist, index);
+        if (!args[0].equals("add")) {
+            index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
+            // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
+            if (index == -1)
+                return true;
+        }
 
-        // listがnullだったら警告文とかも出てるのでおわり
-        if (list == null)
-            return true;
+        // addコマンドだとそのままinfoをlistへ追加、そのまま完了
+        switch (args[0]) {
+            case "add" -> {
+                list.add(info);
+                sender.sendMessage("要素の追加を完了しました。");
+            }
+            case "replace" -> {
+                list.set(index, info);
+                sender.sendMessage("項目の置き換えが完了しました。");
+            }
+            case "insert" -> {
+                list.add(index, info);
+                sender.sendMessage("項目の挿入が完了しました。");
+            }
+        }
 
-        // 分割されたやつを表示
-        sender.sendMessage(
-            "----- template list page " +
-            index + " of " + CommandUtil.calcMaxPageIndex(rawlist) +
-            " -----"
-        );
-        list.forEach(sender::sendMessage);
-
-        // おわり
+        // 終わり
         return true;
     }
 
@@ -126,21 +158,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         sender.sendMessage("テンプレート " + args[1] + " の " + index + "番目の項目が削除されました。");
 
         // おわり
-        return true;
-    }
-
-    // removetコマンド
-    private boolean removet(CommandSender sender, String[] args) {
-        // コマンドで1つ、テンプレート指定で1つ
-        if (args.length != 2)
-            return CommandUtil.commandsHelp(sender, "cslt removet <template>");
-
-        // 指定されたテンプレートを削除
-        store.remove(args[1]);
-        sender.sendMessage(
-            "指定されたテンプレート " + args[1] +
-            " は、削除されました。"
-        );
         return true;
     }
 
@@ -234,105 +251,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         }
     }
 
-    // addコマンド
-    private boolean add(CommandSender sender, String[] args) {
-        // 引数のヘルプ用のテキスト
-        var argtext = "<template> <acceleration> <speed> <delay> <name> [announce]";
-
-        if (args[0].equals("add")) {
-            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ、オプションありで7つ
-            if ((6 > args.length) || (args.length > 7)) {
-                return CommandUtil.commandsHelp(
-                    sender,
-                    "cslt add " + argtext
-                );
-            }
-        } else if(args[0].equals("replace") || args[0].equals("insert")) {
-            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つとインデックスで計7つ、オプションありで8つ
-            if ((7 > args.length) || (args.length > 8)) {
-                return CommandUtil.commandsHelp(
-                    sender,
-                    "cslt " + args[0] + " " + argtext + " <index>"
-                );
-            }
-        } else {
-            return false;
-        }
-
-        // テンプレート指定
-        var template = args[1];
-
-        // 取り出し、型変換
-        var section = args[2];
-        var speed = args[3];
-        var delay = args[4];
-        var name = args[5];
-
-        // stationのsignを生成する
-        var line2 = "station " + section;
-        var line3 = delay;
-        var line4 = "route continue " + speed;
-        var lines = new String[]{line2, line3, line4};
-
-        // announceとindexを取り出す
-        String announce;
-        // addの7個ある場合のみ6にannounceがある
-        if ((args.length == 7) && (args[0].equals("add")))
-            announce = args[6];
-        // それ以外は8個ある場合のみ6にannounceがある(7個だとそこにindexがある)
-        else if(args.length == 8)
-            announce = args[6];
-        else
-            announce = null;
-
-        // CStationInfoを生成する
-        var info = new CStationInfo(name, lines, announce);
-
-        // テンプレートがちゃんとあるのを確認する
-        // テンプレート指定
-        var list = store.get(args[1]);
-        // チェック用
-        // add以外の操作だと元リストがないと意味がなくはある
-        if (!args[0].equals("add") && list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
-        }
-        // addかつnullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
-        else if (list == null) {
-            list = new ArrayList<>();
-            store.put(template, list);
-        }
-
-        // add以外だとindexが存在するので読み取る
-        int index = -1;
-
-        if (!args[0].equals("add")) {
-            index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
-            // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
-            if (index == -1)
-                return true;
-        }
-
-        // addコマンドだとそのままinfoをlistへ追加、そのまま完了
-        switch (args[0]) {
-            case "add" -> {
-                list.add(info);
-                sender.sendMessage("要素の追加を完了しました。");
-            }
-            case "replace" -> {
-                list.set(index, info);
-                sender.sendMessage("項目の置き換えが完了しました。");
-            }
-            case "insert" -> {
-                list.add(index, info);
-                sender.sendMessage("項目の挿入が完了しました。");
-            }
-        }
-
-        // 終わり
-        return true;
-    }
-
     // helpコマンド
     private boolean help(CommandSender sender) {
         sender.sendMessage(
@@ -353,6 +271,88 @@ public class CommandCStationListTemplate implements CommandExecutor {
     }
 
     // ボイラープレートじみたコード類
+    // listコマンド
+    private boolean list(CommandSender sender, String[] args) {
+        // コマンドで1つ、ページで1つまで
+        if (args.length > 2)
+            return CommandUtil.commandsHelp(sender, "cslt list <page>");
+
+        // storeからキーのコレクションを取得する
+        var rawlist = store.keysList();
+
+        // 数が少なければそのまま表示
+        if (rawlist.size() < 16){
+            sender.sendMessage("----- template list -----");
+            rawlist.forEach(sender::sendMessage);
+            return true;
+        }
+
+        String index;
+        // 指定がなかったらインデックスを1として扱う
+        if (args.length == 1)
+            index = "1";
+        else
+            index = args[1];
+
+        // ページングを丸投げ
+        var list = CommandUtil.pager(sender, rawlist, index);
+
+        // listがnullだったら警告文とかも出てるのでおわり
+        if (list == null)
+            return true;
+
+        // 分割されたやつを表示
+        sender.sendMessage(
+            "----- template list page " +
+                index + " of " + CommandUtil.calcMaxPageIndex(rawlist) +
+                " -----"
+        );
+        list.forEach(sender::sendMessage);
+
+        // おわり
+        return true;
+    }
+
+    // removetコマンド
+    private boolean removet(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレート指定で1つ
+        if (args.length != 2)
+            return CommandUtil.commandsHelp(sender, "cslt removet <template>");
+
+        // 指定されたテンプレートを削除
+        store.remove(args[1]);
+        sender.sendMessage(
+            "指定されたテンプレート " + args[1] +
+                " は、削除されました。"
+        );
+        return true;
+    }
+
+    // copyコマンド
+    private boolean copy(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、コピー元と先指定で2つ
+        if (args.length != 3)
+            return CommandUtil.commandsHelp(sender, "cslt copy <from> <to>");
+
+        // 普通にコピー
+        var from = store.get(args[1]);
+
+        // nullチェック
+        // チェック用
+        // nullが投げ込まれたら相応のメッセージを出すだけ
+        if (from == null) {
+            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+            return true;
+        }
+
+        // storeへset
+        store.put(args[2], new ArrayList<>(from));
+
+        // おわり
+        sender.sendMessage("コピーが完了しました。");
+        return true;
+    }
+
     // saveコマンド
     private boolean save(CommandSender sender) {
         if (store.save())

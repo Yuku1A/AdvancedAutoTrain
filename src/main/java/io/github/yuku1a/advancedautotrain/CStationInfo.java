@@ -12,17 +12,19 @@ import java.util.Map;
  */
 public class CStationInfo implements ConfigurationSerializable {
     private final String Name;
+    private String[] SignText = null;
     private String[] SignText;
 
     /**
-     *
      * @param name Stationを指定するための名前
      * @param signText Stationのsignのテキスト(2行目から4行目)
      */
     public CStationInfo(String name, String[] signText) {
         Name = name;
-        if( signText.length == 3 )
-            SignText = signText;
+        if (signText != null) {
+            if( signText.length == 3 )
+                SignText = signText;
+        }
     }
 
     /**

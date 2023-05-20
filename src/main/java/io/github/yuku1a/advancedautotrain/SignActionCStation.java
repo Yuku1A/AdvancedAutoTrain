@@ -68,6 +68,9 @@ public class SignActionCStation extends SignAction {
         }
 
         // ↓の処理はGROUP_ENTER時のもの
+        // SignTextのnullチェック
+        if (stationinfo.getSignText() == null)
+            return;
         // fakesignの準備
         var rail = info.getRailPiece();
         var face = info.getTrackedSign().getFacing();

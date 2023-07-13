@@ -21,6 +21,7 @@ public class CStationList {
     /**
      * すでにあるCStationInfoのListからクラスを生成します
      * @param list すでに生成されたList
+     * @throws NullPointerException 入力されたListがnullだった場合
      */
     public CStationList(List<CStationInfo> list) {
         this.list = new ArrayList<>(list);

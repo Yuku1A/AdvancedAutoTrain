@@ -63,8 +63,11 @@ public class SignActionCStation extends SignAction {
             // stationlistを次に進める
             stationlist.forward();
 
+            // 列車の名前を取得
+            var trainName = train.getProperties().getTrainName();
+
             // イベントを動かす
-            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(name));
+            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(name, trainName));
             return;
         }
 

@@ -9,6 +9,7 @@ import org.bukkit.event.HandlerList;
 public class CStationLeaveEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final String cStationName;
+    private final String trainName;
 
     @Override
     public HandlerList getHandlers() {
@@ -29,9 +30,20 @@ public class CStationLeaveEvent extends Event {
 
     /**
      * コンストラクタ
+     *
      * @param cStationName CStationの名前
+     * @param trainName 列車の名前
      */
-    public CStationLeaveEvent(String cStationName) {
+    public CStationLeaveEvent(String cStationName, String trainName) {
         this.cStationName = cStationName;
+        this.trainName = trainName;
+    }
+
+    /**
+     * このCStationを離れた列車の名前
+     * @return 列車の名前
+     */
+    public String getTrainName() {
+        return trainName;
     }
 }

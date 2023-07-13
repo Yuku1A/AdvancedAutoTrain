@@ -139,14 +139,20 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "add" -> {
                 list.add(info);
                 sender.sendMessage("要素の追加を完了しました。");
+                // 追加したものの内容を表示する
+                infoViewOne(sender, info, list.size() - 1);
             }
             case "replace" -> {
                 list.set(index, info);
                 sender.sendMessage("項目の置き換えが完了しました。");
+                // 追加したものの内容を表示する
+                infoViewOne(sender, info, index);
             }
             case "insert" -> {
                 list.add(index, info);
                 sender.sendMessage("項目の挿入が完了しました。");
+                // 追加したものの内容を表示する
+                infoViewOne(sender, info, index);
             }
         }
 

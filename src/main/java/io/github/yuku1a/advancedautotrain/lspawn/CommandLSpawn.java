@@ -1,0 +1,279 @@
+package io.github.yuku1a.advancedautotrain.lspawn;
+
+import com.bergerkiller.bukkit.common.utils.ParseUtil;
+import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
+import io.github.yuku1a.advancedautotrain.Advancedautotrain;
+import io.github.yuku1a.advancedautotrain.CommandUtil;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+
+public class CommandLSpawn implements CommandExecutor {
+    private final Advancedautotrain plugin;
+    private final ScheduledSpawnSetStore store;
+
+    CommandLSpawn(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getSpawnListStore();
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 引数が0のときはコマンドが指定されていない
+        if (args.length == 0)
+            return false;
+
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "view" -> view(sender, args);
+            case "copy" -> copy(sender, args);
+            case "rmlist", "removelist" -> removelist(sender, args);
+            case "create" -> create(sender, args);
+            case "replace", "add" -> add(sender, args);
+            case "remove" -> remove(sender, args);
+            default -> help(sender);
+        };
+    }
+
+    private boolean list(CommandSender sender, String[] args) {
+        // コマンドで1、ページで1
+        if (args.length > 2)
+            return commandsHelp(sender, "lspn list <page>");
+
+        // キー一覧の取得
+        var rawlist = store.keysList();
+
+        // 指定がなければ1ページ扱い
+        String index = args.length == 1 ? "1" : args[1];
+
+        // ページング
+        var list = CommandUtil.pager(sender, rawlist, index);
+
+        // nullだとエラー
+        if (list == null)
+            return true;
+
+        // 表示
+        // UI
+        sender.sendMessage(
+            "----- list of spawnlist page " + index + " of " +
+            CommandUtil.calcMaxPageIndex(rawlist) + " page -----"
+        );
+
+        list.forEach(sender::sendMessage);
+
+        return true;
+    }
+
+    // ↓ここからリストへの操作
+    private boolean view(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、リスト指定で1つ、ページ指定で1つ
+        if (2 > args.length || args.length > 3)
+            return commandsHelp(sender, "lspn view <listname> <page>");
+
+        // キーの取得
+        var key = args[1];
+
+        // 取りに行く
+        var set = store.get(key);
+
+        // なかったらnullが返ってくるのでチェック
+        if (set == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // リストに変換
+        var rawlist = set.asList();
+
+        // ページ数指定の取得、なかったら1扱い
+        String index = args.length == 2 ? "1" : args[2];
+
+        // ページング
+        var list = CommandUtil.pager(sender, rawlist, index);
+
+        // 分割されたのがnullだったら終わり
+        if (list == null)
+            return true;
+
+        // 時間表示のセットアップ
+        var fmt = new TimeDurationFormat("HH:mm:ss");
+
+        // 表示する
+        // UI
+        sender.sendMessage(
+            "----- spawnlist " + key +
+            " page " + index + " of " + CommandUtil.calcMaxPageIndex(rawlist) + " -----"
+        );
+
+        // タイマーと時刻表示
+        sender.sendMessage(
+            "timer: " + set.getTimerkey() + " | " +
+            fmt.format(set.getTimer().currentTime())
+        );
+
+        // UI
+        sender.sendMessage("(time) (trainname) (savedtrainname) (cstationlist)");
+
+        // 情報の表示
+        list.forEach((v) -> sender.sendMessage(
+            fmt.format(v.getScheduletime()) + " | " +
+            v.getSpawnTrainName() + " | " +
+            v.getSavedTrainName() + " | " +
+            v.getcStationListTemplateName()
+        ));
+
+        return true;
+    }
+
+    private boolean copy(CommandSender sender, String[] args) {
+        // コマンド1、元で1、先で1
+        if (args.length != 3)
+            return commandsHelp(sender, "lspn copy <from> <to>");
+
+        // 元があるか確認
+        var from = store.get(args[1]);
+
+        if (from == null) {
+            sender.sendMessage("指定されたリストは存在しません");
+            return true;
+        }
+
+        // 実行
+        var to = new ScheduledSpawnSet(from.asList(), from.getTimerkey());
+        to.enable(plugin);
+        store.put(args[2], to);
+
+        // おわり
+        sender.sendMessage("コピーが完了しました。");
+        return true;
+    }
+
+    private boolean removelist(CommandSender sender, String[] args) {
+        // コマンドで1、リストで1
+        if (args.length != 2)
+            return commandsHelp(sender, "lspn rmlist <list>");
+
+        // 削除
+        store.remove(args[1]);
+
+        // おわり
+        sender.sendMessage("削除完了しました");
+        return true;
+    }
+
+    private boolean create(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、リスト指定で1つ、タイマー指定で1つ
+        if (args.length != 3)
+            return commandsHelp(sender, "lspn create <listname> <timer>");
+
+        // タイマーがあるかどうかだけ確認
+        if (!plugin.getOperationTimerStore().containsKey(args[2])) {
+            sender.sendMessage("指定されたタイマーは存在しません。");
+            return true;
+        }
+
+        // 普通に作る
+        var set = new ScheduledSpawnSet(args[2]);
+        if (!set.enable(plugin)) {
+            sender.sendMessage("指定されたタイマーは存在しません。");
+            return true;
+        }
+
+        // ちゃんとしたものを登録する
+        store.put(args[1], set);
+
+        // おわり
+        sender.sendMessage("リストを作成しました");
+        return true;
+    }
+
+    // ↓ここから個別の項目に対しての操作
+    private boolean remove(CommandSender sender, String[] args) {
+        // コマンドで1、リストで1、時間指定で1
+        if (args.length != 3)
+            return commandsHelp(sender, "lspn remove <list> <time>");
+
+        // リストを出す
+        var list = store.get(args[1]);
+
+        if (list == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // 時間を出す
+        var time = ParseUtil.parseTime(args[2]);
+
+        // 削除
+        list.remove(time);
+
+        // おわり
+        sender.sendMessage("指定された項目を削除しました。");
+        return true;
+    }
+
+    // addとreplaceを兼ねる
+    private boolean add(CommandSender sender, String[] args) {
+        // コマンドで1つ、リストで1つ、
+        // savedtrainname、cstationlist、時刻、trainname(なくてもいい)で3~4
+        // 合計5か6個
+        if (5 > args.length || args.length > 6) {
+            return commandsHelp(
+                sender,
+                "lspn " + args[0] + " <listname> " +
+                "<savedtrainname> <cstationlist> <time> <trainname?>"
+            );
+        }
+
+        // リストがあるかどうか確認する
+        var set = store.get(args[1]);
+
+        if (set == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // 引数の取り出し
+        var savedtrainname = args[2];
+        var cstationlist = args[3];
+        var timetext = args[4];
+        String trainname = args.length == 6 ? args[5] : null;
+
+        // 時刻指定が正確かチェックする
+        var time = ParseUtil.parseTime(timetext);
+
+        // 新規登録の代わりに置き換え
+        set.remove(time);
+        set.add(new ScheduledSpawn(time, savedtrainname, cstationlist, trainname));
+
+        // おわり
+        sender.sendMessage("登録完了しました");
+        return true;
+    }
+
+    private boolean help(CommandSender sender) {
+        sender.sendMessage(
+            "usage: ",
+            "add: 項目をリストに追加、入れ替え",
+            "remove: 項目をリストから削除",
+            "copy: リストをコピー",
+            "view: リストの内容を表示",
+            "rmlist: リストを削除",
+            "create: リストを作成",
+            "list: リストの一覧"
+        );
+        return true;
+    }
+
+    private boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage("usage: ", usage);
+        return true;
+    }
+}

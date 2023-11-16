@@ -6,6 +6,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
+import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -30,6 +31,14 @@ public final class Advancedautotrain extends JavaPlugin {
     private CStationListProperty cStationListProperty;
     private CStationListTemplateStore templateStore;
     private OperationTimerStore operationTimerStore;
+
+    private ScheduledSpawnSetStore spawnListStore;
+//    public LSpawnSignManager getSpawnSignManager() {
+//        return lSpawnSignManager;
+//    }
+    public ScheduledSpawnSetStore getSpawnListStore() {
+        return spawnListStore;
+    }
 
     public OperationTimerStore getOperationTimerStore() {
         return operationTimerStore;
@@ -73,6 +82,13 @@ public final class Advancedautotrain extends JavaPlugin {
         ConfigurationSerialization.registerClass(ScheduledSignSet.class);
         signListStore = new ScheduledSignSetStore(this);
         signListStore.load();
+
+        // LSpawn関連の初期化
+        spawnListStore = new ScheduledSpawnSetStore(this);
+        spawnListStore.load();
+//        lSpawnSignManager = new LSpawnSignManager(this);
+//        lSpawnSignManager.load();
+//        SignAction.register(new SignActionLSpawn(this));
 
         getLogger().log(Level.INFO, "loaded!");
     }

@@ -1,5 +1,7 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
+import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,9 +12,22 @@ import com.bergerkiller.bukkit.tc.signactions.SignAction;
 import java.util.logging.Level;
 
 public final class Advancedautotrain extends JavaPlugin {
+
+    // 一般的なコマンドを使用するためのパーミッション
+    public final String UsePermission = "advancedautotrain.use";
+
+    // 管理用コマンドを使用するためのパーミッション
+    public final String AdminPermission = "advancedautotrain.admin";
+
+    // このプラグインのもの
     private SignActionCStation signActionCStation;
     private CStationListProperty cStationListProperty;
     private CStationListTemplateStore templateStore;
+    private OperationTimerStore operationTimerStore;
+
+    public OperationTimerStore getOperationTimerStore() {
+        return operationTimerStore;
+    }
     private IPropertyRegistry propreg;
     private TrainCarts trainCarts;
     public TrainCarts getTrainCarts(){

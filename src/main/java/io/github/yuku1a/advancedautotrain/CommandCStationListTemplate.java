@@ -12,47 +12,12 @@ import java.util.List;
  */
 public class CommandCStationListTemplate implements CommandExecutor {
     private final CStationListTemplateStore store;
+    private final Advancedautotrain plugin;
 
-    // 一般的なコマンドを使用するためのパーミッション
-    private final String UsePermission = "advancedautotrain.use";
-
-    // 管理用コマンドを使用するためのパーミッション
-    private final String AdminPermission = "advancedautotrain.admin";
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-        // 引数0の場合はコマンドが指定されていない
-        if (args.length == 0)
-            return help(sender);
-
-        // 管理用コマンドだけ追加の権限チェック
-        switch (args[0]) {
-            case "load","save" -> {
-                if (!sender.hasPermission(AdminPermission)){
-                    sender.sendMessage("必要な権限がありません");
-                    return true;
-                }
-            }
-        }
-
-        // コマンドごとに分岐やる、この構文めちゃ便利
-        return switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "save" -> save(sender);
-            case "load" -> load(sender);
-            case "view" -> view(sender, args);
-            case "add","replace","insert" -> add(sender, args);
-            case "remove" -> remove(sender, args);
-            case "removet" -> removet(sender, args);
-            case "copy" -> copy(sender, args);
-            case "info" -> info(sender, args);
-            default -> help(sender);
-        };
+    // プラグインが生成する用
+    public CommandCStationListTemplate(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getCStationListTemplateStore();
     }
 
     // addコマンド
@@ -339,27 +304,40 @@ public class CommandCStationListTemplate implements CommandExecutor {
         infoViewSimple(sender, info, index, false);
     }
 
-    // helpコマンド
-    private boolean help(CommandSender sender) {
-        sender.sendMessage(
-            "CStationに対する動作のテンプレートを管理します",
-            "利用可能なコマンド: ",
-            "add: 項目を追加します",
-            "remove: 項目を削除します",
-            "view: 指定されたテンプレートの項目を表示します",
-            "list: テンプレートの一覧を表示します",
-            "removet: 指定したテンプレートを削除します",
-            "copy: テンプレートのコピーを行います",
-            "replace: テンプレート内の指定された項目を入れ替えます",
-            "insert: テンプレート内の指定された位置に項目を追加します"
-        );
-        if (sender.hasPermission(AdminPermission)) {
-            sender.sendMessage(
-                "save: 全ての情報を保存します",
-                "load: 全ての情報の再読み込みを行います"
-            );
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
         }
-        return false;
+        // 引数0の場合はコマンドが指定されていない
+        if (args.length == 0)
+            return help(sender);
+
+        // 管理用コマンドだけ追加の権限チェック
+        switch (args[0]) {
+            case "load","save" -> {
+                if (!sender.hasPermission(plugin.AdminPermission)){
+                    sender.sendMessage("必要な権限がありません");
+                    return true;
+                }
+            }
+        }
+
+        // コマンドごとに分岐やる、この構文めちゃ便利
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "save" -> save(sender);
+            case "load" -> load(sender);
+            case "view" -> view(sender, args);
+            case "add","replace","insert" -> add(sender, args);
+            case "remove" -> remove(sender, args);
+            case "removet" -> removet(sender, args);
+            case "copy" -> copy(sender, args);
+            case "info" -> info(sender, args);
+            default -> help(sender);
+        };
     }
 
     // ボイラープレートじみたコード類
@@ -463,8 +441,26 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
-    // プラグインが生成する用
-    public CommandCStationListTemplate(Advancedautotrain plugin) {
-        store = plugin.getCStationListTemplateStore();
+    // helpコマンド
+    private boolean help(CommandSender sender) {
+        sender.sendMessage(
+            "CStationに対する動作のテンプレートを管理します",
+            "利用可能なコマンド: ",
+            "add: 項目を追加します",
+            "remove: 項目を削除します",
+            "view: 指定されたテンプレートの項目を表示します",
+            "list: テンプレートの一覧を表示します",
+            "removet: 指定したテンプレートを削除します",
+            "copy: テンプレートのコピーを行います",
+            "replace: テンプレート内の指定された項目を入れ替えます",
+            "insert: テンプレート内の指定された位置に項目を追加します"
+        );
+        if (sender.hasPermission(plugin.AdminPermission)) {
+            sender.sendMessage(
+                "save: 全ての情報を保存します",
+                "load: 全ての情報の再読み込みを行います"
+            );
+        }
+        return false;
     }
 }

@@ -14,13 +14,31 @@ public final class Advancedautotrain extends JavaPlugin {
     private CStationListProperty cStationListProperty;
     private CStationListTemplateStore templateStore;
     private IPropertyRegistry propreg;
-
+    private TrainCarts trainCarts;
+    public TrainCarts getTrainCarts(){
+        return trainCarts;
+    }
     @Override
     public void onLoad() {
-        var traincarts = getPlugin(TrainCarts.class);
-        propreg = traincarts.getPropertyRegistry();
+        // TrainCartsの参照の取得
+        trainCarts = getPlugin(TrainCarts.class);
+        propreg = trainCarts.getPropertyRegistry();
+
+        // CStationの初期化
+        // 他のものが動かないのでデータ系から有効化する
+        // yamlから戻す場合は登録しないといけないらしい
+        ConfigurationSerialization.registerClass(CStationInfo.class);
+        // 登録してから各種ロード
+        templateStore = new CStationListTemplateStore(this);
+        templateStore.load();
+        // CStationListPropertyの初期化
         cStationListProperty = new CStationListProperty();
         propreg.register(cStationListProperty);
+        // SignActionを登録する
+        signActionCStation = new SignActionCStation(this);
+        SignAction.register(signActionCStation);
+
+
         getLogger().log(Level.INFO, "loaded!");
     }
 
@@ -28,25 +46,11 @@ public final class Advancedautotrain extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
-        // 他のものが動かないのでデータ系から有効化する
-        // yamlから戻す場合は登録しないといけないらしい
-        ConfigurationSerialization.registerClass(CStationInfo.class);
-
-        // 登録してから各種ロード
-        templateStore = new CStationListTemplateStore(this);
-        templateStore.load();
-
         // イベントの登録
         getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);
 
-        // SignActionを登録する
-        signActionCStation = new SignActionCStation(this);
-        SignAction.register(signActionCStation);
-
-        // CStationListPropertyをenableにする
+        // Cstation絡みのenable
         cStationListProperty.enable(this);
-
-        // コマンドを登録
         getCommand("cstationlisttemplate").setExecutor(new CommandCStationListTemplate(this));
     }
 
@@ -54,9 +58,10 @@ public final class Advancedautotrain extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         // 各種登録解除
+        // CStation絡みの処理
+        // CStation絡みの登録解除
         SignAction.unregister(signActionCStation);
         propreg.unregister(cStationListProperty);
-
         // 終了前にデータを保存する
         templateStore.save();
     }

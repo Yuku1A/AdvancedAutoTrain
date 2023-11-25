@@ -88,6 +88,10 @@ public final class Advancedautotrain extends JavaPlugin {
         propreg.unregister(cStationListProperty);
         // 終了前にデータを保存する
         templateStore.save();
+
+        // OPTimer絡みの処理
+        operationTimerStore.freeze();
+        operationTimerStore.save();
     }
 
     /**

@@ -1,16 +1,17 @@
-package io.github.yuku1a.extremeautotrain;
+package io.github.yuku1a.advancedautotrain.arrivallist;
 
 import com.bergerkiller.bukkit.sl.API.Variables;
 import com.bergerkiller.bukkit.tc.ArrivalSigns;
+import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CStationLeaveEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class CStationLeaveListener implements Listener {
-    private final ExtremeAutoTrain plugin;
+    private final Advancedautotrain plugin;
     private final ScheduledSignSetStore store;
 
-    public CStationLeaveListener(ExtremeAutoTrain plugin) {
+    public CStationLeaveListener(Advancedautotrain plugin) {
         this.plugin = plugin;
         this.store = plugin.getSignListStore();
     }

@@ -1,5 +1,6 @@
-package io.github.yuku1a.extremeautotrain;
+package io.github.yuku1a.advancedautotrain.arrivallist;
 
+import io.github.yuku1a.advancedautotrain.schedaction.ScheduledAction;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.HashMap;

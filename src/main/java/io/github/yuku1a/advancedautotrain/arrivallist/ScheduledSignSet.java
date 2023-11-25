@@ -1,4 +1,6 @@
-package io.github.yuku1a.extremeautotrain;
+package io.github.yuku1a.advancedautotrain.arrivallist;
+
+import io.github.yuku1a.advancedautotrain.schedaction.ScheduledActionSet;
 
 import java.util.Collection;
 import java.util.List;

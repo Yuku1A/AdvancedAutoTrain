@@ -1,7 +1,8 @@
-package io.github.yuku1a.extremeautotrain;
+package io.github.yuku1a.advancedautotrain.arrivallist;
 
 import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
+import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,10 +10,10 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 
 public class CommandArrivalList implements CommandExecutor {
-    private final ExtremeAutoTrain plugin;
+    private final Advancedautotrain plugin;
     private final ScheduledSignSetStore store;
 
-    public CommandArrivalList(ExtremeAutoTrain plugin) {
+    public CommandArrivalList(Advancedautotrain plugin) {
         this.plugin = plugin;
         store = plugin.getSignListStore();
     }

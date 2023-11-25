@@ -1,4 +1,4 @@
-package io.github.yuku1a.extremeautotrain;
+package io.github.yuku1a.advancedautotrain.arrivallist;
 
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import org.bukkit.command.CommandSender;

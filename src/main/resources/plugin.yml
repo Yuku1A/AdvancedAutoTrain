@@ -11,6 +11,9 @@ commands:
   operationtimer:
     aliases: [ operationtimer, optimer ]
     usage: /<command> <action> <arguments...>
+  arrivallist:
+    aliases: [ ar, arrivallist ]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

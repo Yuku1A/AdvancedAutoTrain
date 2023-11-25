@@ -1,5 +1,10 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.arrivallist.CStationLeaveListener;
+import io.github.yuku1a.advancedautotrain.arrivallist.CommandArrivalList;
+import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
+import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
+import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
@@ -28,6 +33,10 @@ public final class Advancedautotrain extends JavaPlugin {
 
     public OperationTimerStore getOperationTimerStore() {
         return operationTimerStore;
+    }
+    private ScheduledSignSetStore signListStore;
+    public  ScheduledSignSetStore getSignListStore(){
+        return signListStore;
     }
     private IPropertyRegistry propreg;
     private TrainCarts trainCarts;
@@ -59,6 +68,12 @@ public final class Advancedautotrain extends JavaPlugin {
         operationTimerStore = new OperationTimerStore(this);
         operationTimerStore.load();
 
+        // ArrivalListの初期化
+        ConfigurationSerialization.registerClass(ScheduledSign.class);
+        ConfigurationSerialization.registerClass(ScheduledSignSet.class);
+        signListStore = new ScheduledSignSetStore(this);
+        signListStore.load();
+
         getLogger().log(Level.INFO, "loaded!");
     }
 
@@ -76,6 +91,11 @@ public final class Advancedautotrain extends JavaPlugin {
         // OPTimer絡みのenable
         operationTimerStore.restore();
         getCommand("operationtimer").setExecutor(new CommandOperationTimer(this));
+
+        // ArrivalList絡みのenable
+        signListStore.enable();
+        getCommand("arrivallist").setExecutor(new CommandArrivalList(this));
+        getServer().getPluginManager().registerEvents(new CStationLeaveListener(this), this);
     }
 
     @Override
@@ -92,6 +112,9 @@ public final class Advancedautotrain extends JavaPlugin {
         // OPTimer絡みの処理
         operationTimerStore.freeze();
         operationTimerStore.save();
+
+        // ArrivalListの処理
+        signListStore.save();
     }
 
     /**

@@ -1,5 +1,6 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -53,6 +54,10 @@ public final class Advancedautotrain extends JavaPlugin {
         signActionCStation = new SignActionCStation(this);
         SignAction.register(signActionCStation);
 
+        // OperationTimerの初期化
+        ConfigurationSerialization.registerClass(OperationTimer.class);
+        operationTimerStore = new OperationTimerStore(this);
+        operationTimerStore.load();
 
         getLogger().log(Level.INFO, "loaded!");
     }
@@ -67,6 +72,10 @@ public final class Advancedautotrain extends JavaPlugin {
         // Cstation絡みのenable
         cStationListProperty.enable(this);
         getCommand("cstationlisttemplate").setExecutor(new CommandCStationListTemplate(this));
+
+        // OPTimer絡みのenable
+        operationTimerStore.restore();
+        getCommand("operationtimer").setExecutor(new CommandOperationTimer(this));
     }
 
     @Override

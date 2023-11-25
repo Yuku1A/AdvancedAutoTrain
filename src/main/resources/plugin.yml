@@ -8,6 +8,9 @@ commands:
   cstationlisttemplate:
     aliases: [cstationlisttemplate, cslt]
     usage: /<command> <action> <arguments...>
+  operationtimer:
+    aliases: [ operationtimer, optimer ]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

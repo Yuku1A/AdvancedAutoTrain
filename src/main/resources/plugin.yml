@@ -14,6 +14,9 @@ commands:
   arrivallist:
     aliases: [ ar, arrivallist ]
     usage: /<command> <action> <arguments...>
+  lspawn:
+    aliases: [ lspawn, lspn ]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

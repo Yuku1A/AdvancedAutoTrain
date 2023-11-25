@@ -5,6 +5,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.CommandArrivalList;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
+import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
@@ -112,6 +113,10 @@ public final class Advancedautotrain extends JavaPlugin {
         signListStore.enable();
         getCommand("arrivallist").setExecutor(new CommandArrivalList(this));
         getServer().getPluginManager().registerEvents(new CStationLeaveListener(this), this);
+
+        // LSpawn絡みのenable
+        spawnListStore.enable();
+        getCommand("lspawn").setExecutor(new CommandLSpawn(this));
     }
 
     @Override
@@ -131,6 +136,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // ArrivalListの処理
         signListStore.save();
+
+        // ScheduledSpawn絡みの処理
+        spawnListStore.save();
     }
 
     /**

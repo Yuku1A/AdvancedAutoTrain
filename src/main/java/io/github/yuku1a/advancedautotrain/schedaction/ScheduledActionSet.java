@@ -73,7 +73,8 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
     }
 
     /**
-     * このセットを有効化します。
+     * このセットを有効化します。<br>
+     * OperationTimerの読み込みが完了した段階で実行できます。
      * @param plugin このクラスを実装するプラグイン
      * @return 有効化が成功したかどうか
      */

@@ -10,6 +10,9 @@ public class ScheduledSpawnSetStore extends SaveDataStore<ScheduledSpawnSet> {
         this.plugin = plugin;
     }
 
+    /**
+     * OperationTimerの読み込み後いつでも実行できます
+     */
     public void enable() {
         getStore().forEach((k, v) -> v.enable(plugin));
     }

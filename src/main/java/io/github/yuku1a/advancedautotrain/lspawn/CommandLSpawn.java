@@ -12,7 +12,7 @@ public class CommandLSpawn implements CommandExecutor {
     private final Advancedautotrain plugin;
     private final ScheduledSpawnSetStore store;
 
-    CommandLSpawn(Advancedautotrain plugin) {
+    public CommandLSpawn(Advancedautotrain plugin) {
         this.plugin = plugin;
         store = plugin.getSpawnListStore();
     }

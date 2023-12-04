@@ -13,7 +13,7 @@ import org.bukkit.block.data.Rail;
 
 public class LSpawnSign {
     private final Advancedautotrain plugin;
-    private final OfflineSign offlineSign;
+    private OfflineSign offlineSign;
     private String firstLine;
     private String secondLineOptions;
     private String spawnListName;
@@ -22,9 +22,6 @@ public class LSpawnSign {
 
     public LSpawnSign(Advancedautotrain plugin, String firstLine, String secondLineOptions, String spawnListName, OfflineSign offlineSign) {
         this.plugin = plugin;
-        this.firstLine = firstLine;
-        this.secondLineOptions = secondLineOptions;
-        this.spawnListName = spawnListName;
         this.offlineSign = offlineSign;
         plugin.getSpawnListStore().get(spawnListName);
     }
@@ -76,6 +73,11 @@ public class LSpawnSign {
             warmUp();
     }
 
+    public void updateState(OfflineSign offlineSign) {
+        this.offlineSign = offlineSign;
+        this.selfParse();
+    }
+
     private void spawn() {
         // warmUp()でチャンクがロードされていない場合諦める
         if (!chunkHolder.isLoaded())
@@ -86,7 +88,7 @@ public class LSpawnSign {
         var rail = RailLookup.discoverRailPieceFromSign(signBlock);
         var fakesign = new TrackedFakeSignimpl(rail, BlockUtil.getFacing(signBlock));
         fakesign.setLine(0, firstLine);
-        fakesign.setLine(1, "spawn " + secondLineOptions);
+        fakesign.setLine(1, "spawn" + secondLineOptions);
         fakesign.setLine(2, spawnList.getNextAction().getSavedTrainName());
 
         // 実行
@@ -108,5 +110,15 @@ public class LSpawnSign {
         chunkHolder.loadChunk();
     }
 
+    private void selfParse() {
+        firstLine = offlineSign.getLine(0);
+        var secondLine = offlineSign.getLine(1);
+        var index = secondLine.indexOf(" ");
+        if (index == -1)
+            secondLineOptions = "";
+        else
+            secondLineOptions = secondLine.substring(index);
+        spawnListName = offlineSign.getLine(2);
+    }
 
 }

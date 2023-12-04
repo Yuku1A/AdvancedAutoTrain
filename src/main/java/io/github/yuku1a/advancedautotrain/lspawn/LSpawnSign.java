@@ -45,6 +45,9 @@ public class LSpawnSign {
             warmUp();
     }
 
+    /**
+     * OfflineSignから情報をアップデートします。
+     */
     public void updateState(OfflineSign offlineSign) {
         this.offlineSign = offlineSign;
         this.selfParse();
@@ -69,7 +72,10 @@ public class LSpawnSign {
         spawnSign.spawn(event);
     }
 
-    private void unloadChunk(){
+    /**
+     * 保持しているチャンクがあった場合アンロードします。
+     */
+    public void unloadChunk() {
         if (chunkHolder != null)
             chunkHolder.unloadChunk();
     }

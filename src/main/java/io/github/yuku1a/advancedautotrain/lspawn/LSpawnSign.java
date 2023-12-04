@@ -17,35 +17,10 @@ public class LSpawnSign {
     private ScheduledSpawnSet spawnList;
     private ChunkHolderFromOffilineSign chunkHolder = null;
 
-    public LSpawnSign(Advancedautotrain plugin, String firstLine, String secondLineOptions, String spawnListName, OfflineSign offlineSign) {
+    public LSpawnSign(Advancedautotrain plugin, OfflineSign offlineSign) {
         this.plugin = plugin;
         this.offlineSign = offlineSign;
-        plugin.getSpawnListStore().get(spawnListName);
-    }
-
-    public String getFirstLine(){
-        return firstLine;
-    }
-
-    public void setFirstLine(String firstLine) {
-        this.firstLine = firstLine;
-    }
-
-    public String getSecondLineOptions() {
-        return secondLineOptions;
-    }
-
-    public void setSecondLineOptions(String secondLineOptions) {
-        this.secondLineOptions = secondLineOptions;
-    }
-
-    public String getSpawnListName() {
-        return spawnListName;
-    }
-
-    public void setSpawnListName(String spawnListName) {
-        this.spawnListName = spawnListName;
-        spawnList = plugin.getSpawnListStore().get(spawnListName);
+        this.selfParse();
     }
 
     /**
@@ -116,6 +91,7 @@ public class LSpawnSign {
         else
             secondLineOptions = secondLine.substring(index);
         spawnListName = offlineSign.getLine(2);
+        this.spawnList = plugin.getSpawnListStore().get(this.spawnListName);
     }
 
 }

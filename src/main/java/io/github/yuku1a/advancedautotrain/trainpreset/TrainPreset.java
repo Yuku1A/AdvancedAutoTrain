@@ -2,7 +2,9 @@ package io.github.yuku1a.advancedautotrain.trainpreset;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,9 +14,9 @@ public class TrainPreset implements ConfigurationSerializable {
     private final String trainName;
     private final String cstationListName;
     private final String routeName;
-    private final String tag;
+    private final List<String> tag;
 
-    public TrainPreset(String trainName, String cstationListName, String routeName, String tag) {
+    public TrainPreset(String trainName, String cstationListName, String routeName, List<String> tag) {
         this.trainName = trainName;
         this.cstationListName = cstationListName;
         this.routeName = routeName;
@@ -33,17 +35,18 @@ public class TrainPreset implements ConfigurationSerializable {
         return routeName;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
+    @SuppressWarnings("unchecked")
     public static TrainPreset deserialize(Map<String, Object> map) {
         return new TrainPreset(
             (String) map.get("trainName"),
             (String) map.get("cstationListName"),
             (String) map.get("routeName"),
-            (String) map.get("tag")
+            (ArrayList<String>) map.get("tag")
         );
+    }
+
+    public List<String> getTag() {
+        return tag;
     }
 
     @Override

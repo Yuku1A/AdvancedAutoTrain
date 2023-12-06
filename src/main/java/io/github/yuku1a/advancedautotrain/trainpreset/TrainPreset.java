@@ -16,6 +16,13 @@ public class TrainPreset implements ConfigurationSerializable {
     private final String routeName;
     private final List<String> tag;
 
+    /**
+     * コンストラクタ。設定されていない要素にはnullを使用してください。
+     * @param trainName 列車につける(ついている)名前
+     * @param cstationListName CStationListの名前
+     * @param routeName DestinationRouteの名前
+     * @param tag 列車につけるタグ
+     */
     public TrainPreset(String trainName, String cstationListName, String routeName, List<String> tag) {
         this.trainName = trainName;
         this.cstationListName = cstationListName;

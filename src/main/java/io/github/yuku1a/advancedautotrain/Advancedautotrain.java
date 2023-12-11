@@ -27,32 +27,42 @@ public final class Advancedautotrain extends JavaPlugin {
     // 管理用コマンドを使用するためのパーミッション
     public final String AdminPermission = "advancedautotrain.admin";
 
-    // このプラグインのもの
-    private SignActionCStation signActionCStation;
-    private CStationListProperty cStationListProperty;
-    private CStationListTemplateStore templateStore;
-    private OperationTimerStore operationTimerStore;
-
-    private ScheduledSpawnSetStore spawnListStore;
-//    public LSpawnSignManager getSpawnSignManager() {
-//        return lSpawnSignManager;
-//    }
-    public ScheduledSpawnSetStore getSpawnListStore() {
-        return spawnListStore;
-    }
-
-    public OperationTimerStore getOperationTimerStore() {
-        return operationTimerStore;
-    }
-    private ScheduledSignSetStore signListStore;
-    public  ScheduledSignSetStore getSignListStore(){
-        return signListStore;
-    }
+    // TrainCarts関連
     private IPropertyRegistry propreg;
     private TrainCarts trainCarts;
     public TrainCarts getTrainCarts(){
         return trainCarts;
     }
+
+
+    // このプラグインのもの
+    // CStation関連
+    private SignActionCStation signActionCStation;
+    private CStationListProperty cStationListProperty;
+    public CStationListProperty getcStationListProperty() { return cStationListProperty; }
+    private CStationListTemplateStore templateStore;
+    public CStationListTemplateStore getCStationListTemplateStore(){
+        return templateStore;
+    }
+
+    // OPTimer関連
+    private OperationTimerStore operationTimerStore;
+    public OperationTimerStore getOperationTimerStore() {
+        return operationTimerStore;
+    }
+
+    // LSpawn関連
+    private ScheduledSpawnSetStore spawnListStore;
+    public ScheduledSpawnSetStore getSpawnListStore() {
+        return spawnListStore;
+    }
+
+    // ArrivalSign関連
+    private ScheduledSignSetStore signListStore;
+    public  ScheduledSignSetStore getSignListStore(){
+        return signListStore;
+    }
+
     @Override
     public void onLoad() {
         // TrainCartsの参照の取得
@@ -73,7 +83,7 @@ public final class Advancedautotrain extends JavaPlugin {
         signActionCStation = new SignActionCStation(this);
         SignAction.register(signActionCStation);
 
-        // OperationTimerの初期化
+        // OPTimerの初期化
         ConfigurationSerialization.registerClass(OperationTimer.class);
         operationTimerStore = new OperationTimerStore(this);
         operationTimerStore.load();
@@ -98,12 +108,10 @@ public final class Advancedautotrain extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
-        // イベントの登録
-        getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);
-
         // Cstation絡みのenable
         cStationListProperty.enable(this);
         getCommand("cstationlisttemplate").setExecutor(new CommandCStationListTemplate(this));
+        getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);
 
         // OPTimer絡みのenable
         operationTimerStore.restore();
@@ -137,21 +145,7 @@ public final class Advancedautotrain extends JavaPlugin {
         // ArrivalListの処理
         signListStore.save();
 
-        // ScheduledSpawn絡みの処理
+        // LSpawn絡みの処理
         spawnListStore.save();
-    }
-
-    /**
-     * CStationListPropertyのプラグインによって管理されるインスタンスを取得します
-     * @return CStationListPropertyのインスタンス
-     */
-    public CStationListProperty getcStationListProperty() { return cStationListProperty; }
-
-    /**
-     * CStationListTemplateStoreのプラグインによって管理されるインスタンスを取得します
-     * @return CStationListTemplateStoreのインスタンス
-     */
-    public CStationListTemplateStore getCStationListTemplateStore(){
-        return templateStore;
     }
 }

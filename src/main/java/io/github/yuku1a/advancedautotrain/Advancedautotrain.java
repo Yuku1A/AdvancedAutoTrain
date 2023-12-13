@@ -10,6 +10,7 @@ import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
+import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -62,6 +63,10 @@ public final class Advancedautotrain extends JavaPlugin {
     public  ScheduledSignSetStore getSignListStore(){
         return signListStore;
     }
+
+    // TrainPreset関連
+    private TrainPresetStore trainPresetStore;
+    public TrainPresetStore getTrainPresetStore() { return trainPresetStore; }
 
     @Override
     public void onLoad() {

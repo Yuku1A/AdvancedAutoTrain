@@ -10,6 +10,8 @@ import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
+import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
+import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetExecutor;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -106,6 +108,10 @@ public final class Advancedautotrain extends JavaPlugin {
 //        lSpawnSignManager.load();
 //        SignAction.register(new SignActionLSpawn(this));
 
+        // TrainPreset関連の初期化
+        trainPresetStore = new TrainPresetStore(this);
+        trainPresetStore.load();
+
         getLogger().log(Level.INFO, "loaded!");
     }
 
@@ -130,6 +136,11 @@ public final class Advancedautotrain extends JavaPlugin {
         // LSpawn絡みのenable
         spawnListStore.enable();
         getCommand("lspawn").setExecutor(new CommandLSpawn(this));
+
+        // TrainPreset絡みのenable
+        getCommand("tpreset").setExecutor(new CommandTrainPreset(this));
+        getServer().getPluginManager().registerEvents(new TrainPresetExecutor(this, trainPresetStore), this);
+
     }
 
     @Override

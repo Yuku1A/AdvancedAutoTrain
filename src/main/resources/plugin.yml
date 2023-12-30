@@ -17,6 +17,9 @@ commands:
   lspawn:
     aliases: [ lspawn, lspn ]
     usage: /<command> <action> <arguments...>
+  tpreset:
+    aliases: [tpreset]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

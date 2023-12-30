@@ -5,6 +5,7 @@ import com.bergerkiller.bukkit.tc.events.GroupCreateEvent;
 import com.bergerkiller.bukkit.tc.properties.TrainPropertiesStore;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CStationList;
+import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -18,10 +19,9 @@ public class TrainPresetExecutor implements Listener {
     }
 
     @EventHandler
-    public void onGroupCreate(GroupCreateEvent event) {
-        var train = event.getGroup();
-        var prop = train.getProperties();
-        var name = prop.getTrainName();
+    public void onTrainSpawn(NamedTrainSpawnEvent event) {
+        var name = event.getTrainName();
+        var train = event.getTrain();
 
         // セーブされた列車についてる名前(どういう名前でセーブされたかではない)に
         // 紐づいたpresetを探して適用を試みる

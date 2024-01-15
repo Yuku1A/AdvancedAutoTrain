@@ -65,7 +65,7 @@ public class LSpawnSignManager {
     }
 
     public void enable() {
-        this.task.start(20, 20);
+        this.task.start(10, 10);
     }
 
     public void disable() {

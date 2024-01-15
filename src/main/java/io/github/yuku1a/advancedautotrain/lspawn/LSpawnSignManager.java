@@ -15,9 +15,7 @@ import java.util.Map;
 
 public class LSpawnSignManager {
     private final Advancedautotrain plugin;
-
     private final Task task;
-
     private final Map<OfflineSignSide, LSpawnSign> spawnSignList;
 
     public LSpawnSignManager(Advancedautotrain plugin) {

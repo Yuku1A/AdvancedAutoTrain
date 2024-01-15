@@ -67,6 +67,7 @@ public class LSpawnSignManager {
     }
 
     public void disable() {
+        this.plugin.getTrainCarts().getOfflineSigns().unregisterHandler(LSpawnSignMetadata.class);
         this.task.stop();
     }
 

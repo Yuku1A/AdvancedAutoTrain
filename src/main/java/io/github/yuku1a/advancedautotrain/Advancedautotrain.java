@@ -8,6 +8,9 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
 import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
+import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawn;
+import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSet;
+import io.github.yuku1a.advancedautotrain.lspawn.SignActionLSpawn;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
@@ -107,11 +110,13 @@ public final class Advancedautotrain extends JavaPlugin {
         signListStore.load();
 
         // LSpawn関連の初期化
+        ConfigurationSerialization.registerClass(ScheduledSpawn.class);
+        ConfigurationSerialization.registerClass(ScheduledSpawnSet.class);
         spawnListStore = new ScheduledSpawnSetStore(this);
         spawnListStore.load();
-//        lSpawnSignManager = new LSpawnSignManager(this);
-//        lSpawnSignManager.load();
-//        SignAction.register(new SignActionLSpawn(this));
+        lSpawnSignManager = new LSpawnSignManager(this);
+        lSpawnSignManager.load();
+        SignAction.register(new SignActionLSpawn(this));
 
         // TrainPreset関連の初期化
         ConfigurationSerialization.registerClass(TrainPreset.class);
@@ -143,6 +148,7 @@ public final class Advancedautotrain extends JavaPlugin {
         spawnListStore.enable();
         getCommand("lspawn").setExecutor(new CommandLSpawn(this));
         getServer().getPluginManager().registerEvents(new NamedTrainSpawnEventExecutor(this), this);
+        lSpawnSignManager.enable();
 
         // TrainPreset絡みのenable
         getCommand("tpreset").setExecutor(new CommandTrainPreset(this));
@@ -170,5 +176,6 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // LSpawn絡みの処理
         spawnListStore.save();
+        lSpawnSignManager.disable();
     }
 }

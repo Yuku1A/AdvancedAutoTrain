@@ -6,6 +6,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
+import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
 import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
@@ -60,6 +61,8 @@ public final class Advancedautotrain extends JavaPlugin {
     public ScheduledSpawnSetStore getSpawnListStore() {
         return spawnListStore;
     }
+    private LSpawnSignManager lSpawnSignManager;
+    public LSpawnSignManager getLSpawnSignManager() { return lSpawnSignManager; }
 
     // ArrivalSign関連
     private ScheduledSignSetStore signListStore;

@@ -13,6 +13,7 @@ import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
 import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
+import io.github.yuku1a.advancedautotrain.trainpreset.TrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetExecutor;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetStore;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -113,6 +114,7 @@ public final class Advancedautotrain extends JavaPlugin {
 //        SignAction.register(new SignActionLSpawn(this));
 
         // TrainPreset関連の初期化
+        ConfigurationSerialization.registerClass(TrainPreset.class);
         trainPresetStore = new TrainPresetStore(this);
         trainPresetStore.load();
 

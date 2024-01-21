@@ -11,39 +11,18 @@ import java.util.Map;
  */
 public class ScheduledSpawn extends ScheduledAction implements ConfigurationSerializable {
     private final String savedTrainName;
-    private final String cStationListTemplateName;
     private final String spawnTrainName;
 
     /**
      * コンストラクタ。
      * @param scheduleTime 予定時刻
      * @param savedTrainName TrainCartsでセーブされている列車の名前
-     * @param cStationListTemplateName CStationListのテンプレートの名前
      * @param spawnTrainName スポーンしたときの列車の名前(nullの場合はセーブされた列車の名前)
      */
-    public ScheduledSpawn(long scheduleTime, String savedTrainName,
-                          String cStationListTemplateName, String spawnTrainName) {
+    public ScheduledSpawn(long scheduleTime, String savedTrainName, String spawnTrainName) {
         super(scheduleTime);
         this.savedTrainName = savedTrainName;
-        this.cStationListTemplateName = cStationListTemplateName;
         this.spawnTrainName = spawnTrainName == null ? savedTrainName : spawnTrainName;
-    }
-
-    public static ScheduledSpawn deserialize(Map<String, Object> map) {
-        return new ScheduledSpawn(
-            Long.parseLong((String) map.get("scheduleTime")),
-            (String) map.get("savedTrainName"),
-            (String) map.get("cStationListTemplateName"),
-            (String) map.get("spawnTrainName")
-        );
-    }
-
-    /**
-     * CStationListのテンプレートの名前
-     * @return CStationListのテンプレートの名前
-     */
-    public String getcStationListTemplateName() {
-        return cStationListTemplateName;
     }
 
     /**
@@ -62,12 +41,19 @@ public class ScheduledSpawn extends ScheduledAction implements ConfigurationSeri
         return spawnTrainName;
     }
 
+    public static ScheduledSpawn deserialize(Map<String, Object> map) {
+        return new ScheduledSpawn(
+            Long.parseLong((String) map.get("scheduleTime")),
+            (String) map.get("savedTrainName"),
+            (String) map.get("spawnTrainName")
+        );
+    }
+
     @Override
     public Map<String, Object> serialize() {
         var map = new HashMap<String, Object>();
         map.put("scheduleTime", Long.valueOf(getScheduletime()).toString());
         map.put("savedTrainName", savedTrainName);
-        map.put("cStationListTemplateName", cStationListTemplateName);
         map.put("spawnTrainName", spawnTrainName);
         return map;
     }

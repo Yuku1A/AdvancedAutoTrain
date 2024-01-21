@@ -177,5 +177,8 @@ public final class Advancedautotrain extends JavaPlugin {
         // LSpawn絡みの処理
         spawnListStore.save();
         lSpawnSignManager.disable();
+
+        // TrainPreset絡みの処理
+        trainPresetStore.save();
     }
 }

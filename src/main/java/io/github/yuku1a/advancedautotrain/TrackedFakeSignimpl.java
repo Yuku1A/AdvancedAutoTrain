@@ -7,11 +7,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 public class TrackedFakeSignimpl extends RailLookup.TrackedFakeSign {
-    private final String[] store = new String[4];
+    private final String[] store;
     private final BlockFace face;
     public TrackedFakeSignimpl(RailPiece rail, BlockFace face) {
         super(rail);
         this.face = face;
+        this.store = new String[]{"", "", "", ""};
     }
 
     @Override

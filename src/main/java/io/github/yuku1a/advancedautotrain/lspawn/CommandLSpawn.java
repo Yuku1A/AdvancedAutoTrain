@@ -222,7 +222,7 @@ public class CommandLSpawn implements CommandExecutor {
         // コマンドで1つ、リストで1つ、
         // savedtrainname、時刻で2
         // 合計4個
-        if (5 > args.length || args.length > 6) {
+        if (args.length != 4) {
             return commandsHelp(
                 sender,
                 "lspn " + args[0] + " <listname> " +

@@ -70,6 +70,7 @@ public class LSpawnSign {
         var event = fakesign.createEvent(SignActionType.REDSTONE_ON);
         var spawnSign = plugin.getTrainCarts().getSpawnSignManager().create(event);
         spawnSign.spawn(event);
+        spawnList.forward();
     }
 
     /**

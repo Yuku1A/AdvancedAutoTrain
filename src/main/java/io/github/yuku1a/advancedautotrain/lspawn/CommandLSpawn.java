@@ -119,14 +119,12 @@ public class CommandLSpawn implements CommandExecutor {
         );
 
         // UI
-        sender.sendMessage("(time) (trainname) (savedtrainname) (cstationlist)");
+        sender.sendMessage("(time) (savedtrainname)");
 
         // 情報の表示
         list.forEach((v) -> sender.sendMessage(
             fmt.format(v.getScheduletime()) + " | " +
-            v.getSpawnTrainName() + " | " +
-            v.getSavedTrainName() + " | " +
-            v.getcStationListTemplateName()
+            v.getSavedTrainName()
         ));
 
         return true;
@@ -222,13 +220,13 @@ public class CommandLSpawn implements CommandExecutor {
     // addとreplaceを兼ねる
     private boolean add(CommandSender sender, String[] args) {
         // コマンドで1つ、リストで1つ、
-        // savedtrainname、cstationlist、時刻、trainname(なくてもいい)で3~4
-        // 合計5か6個
+        // savedtrainname、時刻で2
+        // 合計4個
         if (5 > args.length || args.length > 6) {
             return commandsHelp(
                 sender,
                 "lspn " + args[0] + " <listname> " +
-                "<savedtrainname> <cstationlist> <time> <trainname?>"
+                "<savedtrainname> <time>"
             );
         }
 
@@ -242,16 +240,14 @@ public class CommandLSpawn implements CommandExecutor {
 
         // 引数の取り出し
         var savedtrainname = args[2];
-        var cstationlist = args[3];
-        var timetext = args[4];
-        String trainname = args.length == 6 ? args[5] : null;
+        var timetext = args[3];
 
         // 時刻指定が正確かチェックする
         var time = ParseUtil.parseTime(timetext);
 
         // 新規登録の代わりに置き換え
         set.remove(time);
-        set.add(new ScheduledSpawn(time, savedtrainname, cstationlist, trainname));
+        set.add(new ScheduledSpawn(time, savedtrainname, null));
 
         // おわり
         sender.sendMessage("登録完了しました");

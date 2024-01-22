@@ -1,8 +1,13 @@
 # AdvancedAutoTrain
-TrainCarts Addon for Automated Operation
+TrainCarts Addon for Automated Operation  
+TrainCartsでの列車の自動運行の構築を楽にするプラグイン
 
-# つかいかた
-※()で囲まれた部分は括弧を含め好きな内容に置き換える
+## 依存プラグイン
+[TrainCarts](https://modrinth.com/plugin/traincarts)  
+[SignLink](https://www.spigotmc.org/resources/signlink.39593/)
+
+## つかいかた
+※()で囲まれた部分は括弧を含め好きな内容に置き換える  
 通常のTrainCartsの看板と同じ方法で
 ```
 [+train]
@@ -32,7 +37,3 @@ cslt add (template) (section) (speed) (delay) (name)
 
 # そのほか
 他に必要なことがあれば```cslt```とだけコマンドを打つとヘルプが表示されるのでそれを見るべし
-
-# リンクなど
-↓TrainCarts本体  
-https://www.spigotmc.org/resources/traincarts.39592/

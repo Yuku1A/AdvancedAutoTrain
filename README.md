@@ -8,3 +8,6 @@ TrainCartsでの列車の自動運行の構築を楽にするプラグイン
 
 ## つかいかた
 [CStation](docs/CStation.md)について
+
+## 注意事項
+このプラグインは、TrainCartsの`destroyAllOnShutdown`という機能が有効化されていることを前提とした仕様になっています。

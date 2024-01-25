@@ -46,10 +46,12 @@ public class TrainPresetExecutor implements Listener {
             prop.set(plugin.getcStationListProperty(), new CStationList(csl));
 
         // DestinationRoute
-        var route = plugin.getTrainCarts().getRouteManager().findRoute(preset.getRouteName());
-        if (!route.isEmpty()) {
-            prop.setDestinationRoute(route);
-            prop.setDestination(route.get(0));
+        if (preset.getRouteName() != null) {
+            var route = plugin.getTrainCarts().getRouteManager().findRoute(preset.getRouteName());
+            if (!route.isEmpty()) {
+                prop.setDestinationRoute(route);
+                prop.setDestination(route.get(0));
+            }
         }
 
         // Tag

@@ -6,6 +6,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 列車がイベントを発火したことの記録
+ */
 public class TrainRecord implements ConfigurationSerializable {
     /**
      * イベントが記録された場所

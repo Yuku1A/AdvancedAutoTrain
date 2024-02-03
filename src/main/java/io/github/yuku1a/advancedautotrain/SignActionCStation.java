@@ -44,37 +44,42 @@ public class SignActionCStation extends SignAction {
 
         // TrainPropertiesにListが関連付けされていないとnullになるのでチェック
         // そのままなかったことに
-        if (stationlist == null)
+        if (stationlist == null) {
+            fireEvent(info, name, false);
             return;
+        }
 
         // CStationListからInfoを取り出す
         var stationinfo = stationlist.get();
 
         // stationinfoがnullだった場合はリストが空
-        if (stationinfo == null)
+        if (stationinfo == null) {
+            fireEvent(info, name, false);
             return;
+        }
 
         // 名前と一致しなければなかったことにする
-        if (!name.equals(stationinfo.getName()))
+        if (!name.equals(stationinfo.getName())) {
+            fireEvent(info, name, false);
             return;
+        }
 
         // fakesignをあまり頻繁に作りたくないので作らずに済む場合先に返す
         if(type == SignActionType.GROUP_LEAVE) {
             // stationlistを次に進める
             stationlist.forward();
 
-            // 列車の名前を取得
-            var trainName = train.getProperties().getTrainName();
-
             // イベントを動かす
-            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(info.getRailLocation(), train, name, true));
+            fireEvent(info, name, true);
             return;
         }
 
         // ↓の処理はGROUP_ENTER時のもの
         // SignTextのnullチェック
-        if (stationinfo.getSignText() == null)
+        if (stationinfo.getSignText() == null) {
+            fireEvent(info, name, true);
             return;
+        }
 
         // announceをする、nullだったらなし
         if (stationinfo.getAnnounce() != null) {
@@ -100,10 +105,20 @@ public class SignActionCStation extends SignAction {
 
         // station看板を実行する、GROUP_ENTERの1回だけでよさそう
         SignActionStation.executeAll(fevent);
+        fireEvent(info, name, true);
     }
 
-    private void fireEvent(SignActionEvent event, String name, boolean acted) {
+    private void fireEvent(SignActionEvent event, String CStationName, boolean acted) {
+        // 必要な情報を集めてイベントを発火
+        var railloc = event.getRailLocation();
+        var train = event.getGroup();
 
+        switch (event.getAction()) {
+            case GROUP_ENTER ->
+                plugin.getServer().getPluginManager().callEvent(new CStationEnterEvent(railloc, train, CStationName, acted));
+            case GROUP_LEAVE ->
+                plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(railloc, train, CStationName, acted));
+        }
     }
 
     @Override

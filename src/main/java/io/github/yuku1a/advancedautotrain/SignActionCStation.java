@@ -67,7 +67,7 @@ public class SignActionCStation extends SignAction {
             var trainName = train.getProperties().getTrainName();
 
             // イベントを動かす
-            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(name, trainName));
+            plugin.getServer().getPluginManager().callEvent(new CStationLeaveEvent(info.getRailLocation(), train, name, true));
             return;
         }
 
@@ -100,6 +100,10 @@ public class SignActionCStation extends SignAction {
 
         // station看板を実行する、GROUP_ENTERの1回だけでよさそう
         SignActionStation.executeAll(fevent);
+    }
+
+    private void fireEvent(SignActionEvent event, String name, boolean acted) {
+
     }
 
     @Override

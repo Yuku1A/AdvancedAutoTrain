@@ -80,7 +80,7 @@ public class CStationLeaveListener implements Listener {
         }
 
         // この時間で生成
-        var action = new ScheduledSign(currenttime, event.getTrainName());
+        var action = new ScheduledSign(currenttime, event.getTrain().getProperties().getTrainName());
 
         // そして登録
         set.add(action);

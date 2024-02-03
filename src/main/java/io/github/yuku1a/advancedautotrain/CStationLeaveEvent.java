@@ -1,49 +1,59 @@
 package io.github.yuku1a.advancedautotrain;
 
+import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
+import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * CStationから列車が離れたことを通知するイベント
+ * 列車がCStationから出たことを示すイベント
  */
-public class CStationLeaveEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
-    private final String cStationName;
-    private final String trainName;
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+public class CStationLeaveEvent extends Event{
+    /**
+     * イベントが発火されたレールの位置
+     * @return イベントが発火されたレールの位置
+     */
+    public Location getRailLocation(){ return railLocation; }
+    private final Location railLocation;
 
     /**
-     * CStationの名前
-     * @return CStationの名前
+     * このイベントを発火した列車
+     * @return このイベントを発火した列車
      */
-    public String getCStationName() {
-        return cStationName;
-    }
+    public MinecartGroup getTrain() { return train; }
+    private final MinecartGroup train;
+
+    /**
+     * このイベントを発火した看板につけられている名前
+     * @return このイベントを発火した看板につけられている名前
+     */
+    public String getCStationName() { return CStationName; }
+    private final String CStationName;
+
+    /**
+     * このイベントを発火した列車がこの看板で停車するかどうか
+     * @return このイベントを発火した列車がこの看板で停車するかどうか
+     */
+    public boolean isActed() { return acted; }
+    private final boolean acted;
 
     /**
      * コンストラクタ
+     * @param railLocation イベントが発火したレールの位置
+     * @param train イベントを発火した列車
+     * @param CStationName イベントを発火した看板につけられた名前
+     * @param acted イベントを発火した看板に列車が停車したかどうか
      *
-     * @param cStationName CStationの名前
-     * @param trainName 列車の名前
      */
-    public CStationLeaveEvent(String cStationName, String trainName) {
-        this.cStationName = cStationName;
-        this.trainName = trainName;
+    public CStationLeaveEvent(Location railLocation, MinecartGroup train, String CStationName, boolean acted) {
+        this.railLocation = railLocation;
+        this.train = train;
+        this.CStationName = CStationName;
+        this.acted = acted;
     }
 
-    /**
-     * このCStationを離れた列車の名前
-     * @return 列車の名前
-     */
-    public String getTrainName() {
-        return trainName;
-    }
+    private static final HandlerList handlers = new HandlerList();
+    @Override
+    public HandlerList getHandlers() { return handlers; }
+    public static HandlerList getHandlerList() { return handlers; }
 }

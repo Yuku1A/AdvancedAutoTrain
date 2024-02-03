@@ -5,6 +5,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TrainRecordの時間付き記録
+ */
 public class TrainRecordEntry implements ConfigurationSerializable {
     /**
      * イベントが記録された(相対的な)時間

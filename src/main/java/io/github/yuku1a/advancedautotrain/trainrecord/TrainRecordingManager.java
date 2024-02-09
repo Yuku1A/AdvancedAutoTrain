@@ -1,7 +1,6 @@
 package io.github.yuku1a.advancedautotrain.trainrecord;
 
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -11,7 +10,7 @@ import java.util.List;
  * イベントを記録する列車の指定と<br>
  * 実際にワールドにある列車の紐づけを行うためのクラス
  */
-public class TrainRecordingManager implements Listener {
+public class TrainRecordingManager {
     private final IdentityHashMap<MinecartGroup, String> trainMap = new IdentityHashMap<>();
     private final List<String> recordingTrainNameList = new ArrayList<>();
 

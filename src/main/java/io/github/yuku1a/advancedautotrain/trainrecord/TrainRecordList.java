@@ -20,7 +20,17 @@ public class TrainRecordList implements ConfigurationSerializable {
      * 記録を開始する
      */
     public void startRecord() {
+        startRecord(null);
+    }
+
+    /**
+     * 記録を開始すると同時にイベントを一つ記録する
+     * @param trainRecord 記録するイベント、なければnull
+     */
+    public void startRecord(TrainRecord trainRecord) {
         this.startTime = System.currentTimeMillis();
+        if (trainRecord != null)
+            trainRecords.add(new TrainRecordEntry(0, trainRecord));
     }
 
     /**

@@ -1,8 +1,6 @@
 package io.github.yuku1a.advancedautotrain.trainrecord;
 
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
-import com.bergerkiller.bukkit.tc.events.GroupRemoveEvent;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -59,10 +57,4 @@ public class TrainRecordingManager implements Listener {
     public String getTrainName(MinecartGroup train) {
         return trainMap.get(train);
     }
-
-    @EventHandler
-    public void onGroupRemove(GroupRemoveEvent event) {
-        trainMap.remove(event.getGroup());
-    }
-
 }

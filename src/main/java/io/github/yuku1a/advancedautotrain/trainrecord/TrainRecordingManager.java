@@ -30,7 +30,7 @@ public class TrainRecordingManager implements Listener {
      * ワールドにある列車と名前の紐づけを解除します。
      * @param train ワールドにある列車
      */
-    public void recordingUnRegister(MinecartGroup train) {
+    public void endRecording(MinecartGroup train) {
         trainMap.remove(train);
     }
 
@@ -38,7 +38,7 @@ public class TrainRecordingManager implements Listener {
      * 指定した列車のイベントの記録を終了します。
      * @param trainName イベントの記録を終了する列車の名前
      */
-    public void endRecording(String trainName) {
+    public void recordingUnRegister(String trainName) {
         recordingTrainNameList.remove(trainName);
     }
 

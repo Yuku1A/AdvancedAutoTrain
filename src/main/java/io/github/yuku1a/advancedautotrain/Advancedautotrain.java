@@ -19,6 +19,7 @@ import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetExecutor;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetStore;
+import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordStore;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordingManager;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -82,6 +83,8 @@ public final class Advancedautotrain extends JavaPlugin {
     // TrainRecord関連
     private TrainRecordingManager trainRecordingManager;
     public TrainRecordingManager getTrainRecordingManager() { return trainRecordingManager; }
+    private TrainRecordStore trainRecordStore;
+    public TrainRecordStore getTrainRecordStore() { return trainRecordStore; }
 
     @Override
     public void onLoad() {

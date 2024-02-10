@@ -17,136 +17,6 @@ import java.util.TreeSet;
  * deserialize()などを実装してください。
  */
 public abstract class ScheduledActionSet<T extends ScheduledAction> implements TimerListener, ConfigurationSerializable {
-    private final String timerkey;
-    private final NavigableSet<ScheduledAction> set;
-    private OperationTimer timer = null;
-    private T nextAction = null;
-
-    /**
-     * 既存のScheduledActionのリストからScheduledActionSetを生成します。
-     * @param operationTimer 基準とするタイマー
-     * @param collection 既存のScheduledActionのコレクション
-     */
-    public ScheduledActionSet(Collection<T> collection, String operationTimer) {
-        // 渡されたCollectionから生成する
-        set = new TreeSet<>(collection);
-
-        // 仕方なくkeyのみ
-        timerkey = operationTimer;
-
-        // 何もないとバグるので入れる
-        // できればコンストラクタに例外をつけたいが呼び出し側がめんどいのでやめ
-        if (!set.isEmpty())
-            nextAction = as(set.first());
-    }
-
-    /**
-     * 新規にScheduledActionSetを生成します。
-     * @param operationTimer 基準とするタイマー
-     */
-    public ScheduledActionSet(String operationTimer) {
-        this(Collections.emptySet(), operationTimer);
-    }
-
-    /**
-     * 次のアクションを取得します。
-     * @return 次のアクション。クラス生成時に空のコレクションが登録されていればnull
-     */
-    public T getNextAction() {
-        return nextAction;
-    }
-
-    /**
-     * このセットが基準としているタイマーを取得します。
-     * @return このセットが基準としているタイマー
-     */
-    public OperationTimer getTimer() {
-        return timer;
-    }
-
-    /**
-     * このセットが基準とするタイマーの名前を取得します。
-     * @return このセットが基準とするタイマーの名前
-     */
-    public String getTimerkey() {
-        return timerkey;
-    }
-
-    /**
-     * このセットを有効化します。<br>
-     * OperationTimerの読み込みが完了して以降いつでも実行できます。
-     * @param plugin このクラスを実装するプラグイン
-     * @return 有効化が成功したかどうか
-     */
-    public boolean enable(Advancedautotrain plugin) {
-        this.timer = plugin.getOperationTimerStore().get(timerkey);
-        if (isValid()) {
-            timer.registerActionSet(this);
-            reCalculate();
-        }
-        return isValid();
-    }
-
-    /**
-     * このクラスが正常かどうか
-     * @return このクラスが正常かどうか
-     */
-    public boolean isValid() {
-        if (paused)
-            return false;
-        return timer != null;
-    }
-
-    /**
-     * このセットに格納されている要素の一覧をリストとして取得します。
-     * @return 変更不可能なリスト
-     */
-    @SuppressWarnings("unchecked")
-    public List<T> asList() {
-        return (List<T>) List.copyOf(set);
-    }
-
-    /**
-     * アクションの予定を削除します。
-     * @param actionTime アクションが予定されている時刻
-     */
-    public void remove(long actionTime) {
-        set.remove(new ScheduledAction(actionTime));
-        reCalculate();
-    }
-
-    /**
-     * このセットからアクションが取得されるのを一時停止します。
-     */
-    public void pause() {
-        if (paused)
-            return;
-
-        paused = true;
-        nextAction = null;
-    }
-
-    private boolean paused = false;
-
-    /**
-     * このセットからアクションが取得されるのが一時停止されている場合、再開します。
-     */
-    public void resume() {
-        if (!paused)
-            return;
-
-        paused = false;
-        reCalculate();
-    }
-
-    /**
-     * アクションの予定を追加します。
-     * @param action アクション
-     */
-    public void add(T action) {
-        set.add(action);
-        reCalculate();
-    }
 
     /**
      * 次のタスクの予定時刻までの時間を計算します。
@@ -238,11 +108,6 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
         nextAction = as(set.higher(nextAction));
     }
 
-    @Override
-    public void onTimerModify() {
-        reCalculate();
-    }
-
     /**
      * nextActionを再計算します。
      */
@@ -266,6 +131,139 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
 
         // そうでないなら現在時刻の次にあるオブジェクトをセット
         nextAction = as(set.higher(new ScheduledAction(currentTime)));
+    }
+
+    /**
+     * このクラスが正常かどうか
+     * @return このクラスが正常かどうか
+     */
+    public boolean isValid() {
+        if (paused)
+            return false;
+        return timer != null;
+    }
+
+    /**
+     * このセットからアクションが取得されるのを一時停止します。
+     */
+    public void pause() {
+        if (paused)
+            return;
+
+        paused = true;
+        nextAction = null;
+    }
+
+    /**
+     * このセットからアクションが取得されるのが一時停止されている場合、再開します。
+     */
+    public void resume() {
+        if (!paused)
+            return;
+
+        paused = false;
+        reCalculate();
+    }
+    private boolean paused = false;
+
+    /**
+     * このセットを有効化します。<br>
+     * OperationTimerの読み込みが完了して以降いつでも実行できます。
+     * @param plugin このクラスを実装するプラグイン
+     * @return 有効化が成功したかどうか
+     */
+    public boolean enable(Advancedautotrain plugin) {
+        this.timer = plugin.getOperationTimerStore().get(timerkey);
+        if (isValid()) {
+            timer.registerActionSet(this);
+            reCalculate();
+        }
+        return isValid();
+    }
+
+    /**
+     * このセットに格納されている要素の一覧をリストとして取得します。
+     * @return 変更不可能なリスト
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> asList() {
+        return (List<T>) List.copyOf(set);
+    }
+
+    /**
+     * アクションの予定を削除します。
+     * @param actionTime アクションが予定されている時刻
+     */
+    public void remove(long actionTime) {
+        set.remove(new ScheduledAction(actionTime));
+        reCalculate();
+    }
+
+    /**
+     * アクションの予定を追加します。
+     * @param action アクション
+     */
+    public void add(T action) {
+        set.add(action);
+        reCalculate();
+    }
+    private final NavigableSet<ScheduledAction> set;
+    /**
+     * 次のアクションを取得します。
+     * @return 次のアクション。クラス生成時に空のコレクションが登録されていればnull
+     */
+    public T getNextAction() {
+        return nextAction;
+    }
+    private T nextAction = null;
+
+    /**
+     * このセットが基準としているタイマーを取得します。
+     * @return このセットが基準としているタイマー
+     */
+    public OperationTimer getTimer() {
+        return timer;
+    }
+    private OperationTimer timer = null;
+
+    /**
+     * このセットが基準とするタイマーの名前を取得します。
+     * @return このセットが基準とするタイマーの名前
+     */
+    public String getTimerkey() {
+        return timerkey;
+    }
+    private final String timerkey;
+
+    /**
+     * 既存のScheduledActionのリストからScheduledActionSetを生成します。
+     * @param operationTimer 基準とするタイマー
+     * @param collection 既存のScheduledActionのコレクション
+     */
+    public ScheduledActionSet(Collection<T> collection, String operationTimer) {
+        // 渡されたCollectionから生成する
+        set = new TreeSet<>(collection);
+
+        // 仕方なくkeyのみ
+        timerkey = operationTimer;
+
+        // 何もないとバグるので入れる
+        // できればコンストラクタに例外をつけたいが呼び出し側がめんどいのでやめ
+        if (!set.isEmpty())
+            nextAction = as(set.first());
+    }
+
+    /**
+     * 新規にScheduledActionSetを生成します。
+     * @param operationTimer 基準とするタイマー
+     */
+    public ScheduledActionSet(String operationTimer) {
+        this(Collections.emptySet(), operationTimer);
+    }
+
+    @Override
+    public void onTimerModify() {
+        reCalculate();
     }
 
     @SuppressWarnings("unchecked")

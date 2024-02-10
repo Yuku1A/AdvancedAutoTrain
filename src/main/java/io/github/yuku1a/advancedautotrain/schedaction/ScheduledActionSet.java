@@ -148,18 +148,13 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
     }
 
     /**
-     * 指定された時刻に設定されているアクションを<br>
+     * 任意のアクションをこのクラスから<br>
      * 即座に実行するように設定します。
-     * @param actionTime アクションの時刻
-     * @return 設定できたかどうか
+     * @param action アクション
      */
-    public boolean setImmediate(long actionTime) {
-        if (!set.contains(new ScheduledAction(actionTime)))
-            return false;
-
+    public void setImmediate(T action) {
         immediate = true;
-        nextAction = as(set.ceiling(new ScheduledAction(actionTime)));
-        return true;
+        nextAction = action;
     }
 
     private void resetImmediate() {

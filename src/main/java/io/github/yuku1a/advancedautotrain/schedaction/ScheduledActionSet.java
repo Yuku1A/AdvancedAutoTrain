@@ -23,6 +23,10 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      * @return 次のタスクまでの時間、異常であったり停止されていればMAX_VALUE
      */
     public long remaining() {
+        // immediateは計算せずに実行できるので0で返す
+        if (immediate)
+            return 0;
+
         // ちゃんと有効化されていないなら異常値を返す
         if (!isValid())
             return Long.MAX_VALUE;
@@ -95,6 +99,12 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      * nextActionを一つ進めます。
      */
     public void forward() {
+        // immediateが設定してあったら、
+        // 時間に合わない可能性が高いので
+        // 再計算する(再計算の過程でimmediateが解除される)
+        if (immediate)
+            reCalculate();
+
         if (set.isEmpty())
             return;
 
@@ -112,6 +122,10 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      * nextActionを再計算します。
      */
     public void reCalculate() {
+        // immediateが設定してあったら元に戻す
+        if (immediate)
+            resetImmediate();
+
         // 正常じゃなければ蹴る
         if (!isValid())
             return;
@@ -132,6 +146,28 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
         // そうでないなら現在時刻の次にあるオブジェクトをセット
         nextAction = as(set.higher(new ScheduledAction(currentTime)));
     }
+
+    /**
+     * 指定された時刻に設定されているアクションを<br>
+     * 即座に実行するように設定します。
+     * @param actionTime アクションの時刻
+     * @return 設定できたかどうか
+     */
+    public boolean setImmediate(long actionTime) {
+        if (!set.contains(new ScheduledAction(actionTime)))
+            return false;
+
+        immediate = true;
+        nextAction = as(set.ceiling(new ScheduledAction(actionTime)));
+        return true;
+    }
+
+    private void resetImmediate() {
+        immediate = false;
+        nextAction = null;
+    }
+
+    private boolean immediate = false;
 
     /**
      * このクラスが正常かどうか

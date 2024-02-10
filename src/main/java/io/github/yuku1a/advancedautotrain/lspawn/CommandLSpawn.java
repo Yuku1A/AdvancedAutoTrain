@@ -37,6 +37,9 @@ public class CommandLSpawn implements CommandExecutor {
             case "create" -> create(sender, args);
             case "replace", "add" -> add(sender, args);
             case "remove" -> remove(sender, args);
+            case "pause" -> pause(sender, args);
+            case "resume" -> resume(sender, args);
+            case "imm" -> immediate(sender, args);
             default -> help(sender);
         };
     }
@@ -192,6 +195,71 @@ public class CommandLSpawn implements CommandExecutor {
         return true;
     }
 
+    private boolean pause(CommandSender sender, String[] args) {
+        // コマンドで1、リストで1
+        if (args.length != 2)
+            return commandsHelp(sender, "lspn pause <list>");
+
+        // リストを出し検証
+        var list = store.get(args[1]);
+        if (list == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // 止める
+        list.pause();
+        sender.sendMessage("リスト " + args[1] + " の動作を一時停止しました。");
+        return true;
+    }
+
+    private boolean resume(CommandSender sender, String[] args) {
+        // コマンドで1、リストで1
+        if (args.length != 2)
+            return commandsHelp(sender, "lspn pause <list>");
+
+        // リストを出し検証
+        var list = store.get(args[1]);
+        if (list == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // 動かす
+        list.resume();
+        sender.sendMessage("リスト " + args[1] + " の動作を再開しました。");
+        return true;
+    }
+
+    private boolean immediate(CommandSender sender, String[] args) {
+        // コマンドで1、リストで1、内容で1
+        if (args.length != 3) {
+            return commandsHelp(sender, "lspn imm <list> <savedtrainname>");
+        }
+
+        // リストを出し検証
+        var list = store.get(args[1]);
+        if (list == null) {
+            sender.sendMessage("指定されたリストは存在しません。");
+            return true;
+        }
+
+        // 引数の取り出し
+        var savedtrainname = args[2];
+
+        // 新規登録の代わりに置き換え
+        list.setImmediate(new ScheduledSpawn(0, savedtrainname, null));
+
+        // おわり
+        sender.sendMessage("登録した列車がすぐにスポーンします。");
+        // UI
+        sender.sendMessage("(savedtrainname)");
+
+        // 情報の表示
+        sender.sendMessage(args[2]);
+        return true;
+    }
+
     // ↓ここから個別の項目に対しての操作
     private boolean remove(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、時間指定で1
@@ -263,7 +331,10 @@ public class CommandLSpawn implements CommandExecutor {
             "view: リストの内容を表示",
             "rmlist: リストを削除",
             "create: リストを作成",
-            "list: リストの一覧"
+            "list: リストの一覧",
+            "pause: スポーンの一時停止",
+            "resume: スポーンの再開",
+            "imm: 指定した列車の即時スポーン"
         );
         return true;
     }

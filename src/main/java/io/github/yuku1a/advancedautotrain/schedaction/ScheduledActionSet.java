@@ -124,7 +124,7 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
 
     /**
      * 次のタスクの予定時刻までの時間を計算します。
-     * @return 次のタスクまでの時間
+     * @return 次のタスクまでの時間、異常であったり停止されていればMAX_VALUE
      */
     public long remaining() {
         // ちゃんと有効化されていないなら異常値を返す

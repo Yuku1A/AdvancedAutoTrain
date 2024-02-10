@@ -46,7 +46,7 @@ public class TrainRecordList implements ConfigurationSerializable {
      * 内部リストのプレビュー(変更不可能)
      * @return 内部リストのプレビュー(変更不可能)
      */
-    public List<TrainRecordEntry> preview() {
+    public List<TrainRecordEntry> asList() {
         return Collections.unmodifiableList(trainRecords);
     }
 

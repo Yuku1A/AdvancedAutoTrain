@@ -110,6 +110,10 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
         if (immediate)
             reCalculate();
 
+        // pause時は再計算もされずnextActionがnullなのでやらない
+        if (!isValid())
+            return;
+
         if (set.isEmpty())
             return;
 

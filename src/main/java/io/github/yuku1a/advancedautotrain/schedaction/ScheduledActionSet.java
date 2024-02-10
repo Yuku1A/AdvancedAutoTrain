@@ -92,6 +92,8 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      * @return このクラスが正常かどうか
      */
     public boolean isValid() {
+        if (paused)
+            return false;
         return timer != null;
     }
 
@@ -110,6 +112,30 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      */
     public void remove(long actionTime) {
         set.remove(new ScheduledAction(actionTime));
+        reCalculate();
+    }
+
+    /**
+     * このセットからアクションが取得されるのを一時停止します。
+     */
+    public void pause() {
+        if (paused)
+            return;
+
+        paused = true;
+        nextAction = null;
+    }
+
+    private boolean paused = false;
+
+    /**
+     * このセットからアクションが取得されるのが一時停止されている場合、再開します。
+     */
+    public void resume() {
+        if (!paused)
+            return;
+
+        paused = false;
         reCalculate();
     }
 

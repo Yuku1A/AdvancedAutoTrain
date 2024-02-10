@@ -251,7 +251,7 @@ public class CommandLSpawn implements CommandExecutor {
         list.setImmediate(new ScheduledSpawn(0, savedtrainname, null));
 
         // おわり
-        sender.sendMessage("登録した列車がすぐにスポーンします。");
+        sender.sendMessage("登録した列車が約10秒後にスポーンします。");
         // UI
         sender.sendMessage("(savedtrainname)");
 

@@ -24,8 +24,13 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      */
     public long remaining() {
         // immediateは計算せずに実行できるので0で返す
-        if (immediate)
-            return 0;
+        if (immediate){
+            long immremain = immediateTime - System.currentTimeMillis();
+            if (immremain < 0)
+                return 0;
+            else
+                return immremain;
+        }
 
         // ちゃんと有効化されていないなら異常値を返す
         if (!isValid())
@@ -154,15 +159,18 @@ public abstract class ScheduledActionSet<T extends ScheduledAction> implements T
      */
     public void setImmediate(T action) {
         immediate = true;
+        immediateTime = System.currentTimeMillis() + 10000;
         nextAction = action;
     }
 
     private void resetImmediate() {
         immediate = false;
+        immediateTime = Long.MAX_VALUE;
         nextAction = null;
     }
 
     private boolean immediate = false;
+    private long immediateTime = Long.MAX_VALUE;
 
     /**
      * このクラスが正常かどうか

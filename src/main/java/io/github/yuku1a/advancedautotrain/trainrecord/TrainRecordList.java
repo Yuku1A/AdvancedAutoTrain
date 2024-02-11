@@ -54,7 +54,7 @@ public class TrainRecordList implements ConfigurationSerializable {
      * 特定の記録の時間をずらす<br>
      * リストの途中の項目をずらすと<br>
      * 最後の項目まで連動して同じだけずれる
-     * @param index preview()で得られるリストにおけるインデックス
+     * @param index asList()で得られるリストにおけるインデックス
      * @param addendTime ずらす時間(プラスでもマイナスでもいい)
      */
     public void timeModify(int index, long addendTime) {

@@ -43,6 +43,10 @@ public class TrainRecordExecutor implements Listener {
         if (recordlist == null)
             return;
 
+        // 通過ならleaveだけで十分
+        if (!event.isActed())
+            return;
+
         recordlist.record(new TrainRecord(event.getRailLocation(), event.getCStationName(), "cstation", "cstation_enter", event.isActed()));
     }
 

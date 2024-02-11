@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 列車がイベントを発火したことの記録
+ * 列車がイベントを発火したことの記録<br>
+ * それぞれの項目にnullを記録できる
  */
 public class TrainRecord implements ConfigurationSerializable {
     /**

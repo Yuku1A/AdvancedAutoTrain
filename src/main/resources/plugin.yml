@@ -2,8 +2,7 @@ name: Advancedautotrain
 version: '${version}'
 main: io.github.yuku1a.advancedautotrain.Advancedautotrain
 api-version: 1.19
-depend: [ Train_Carts ]
-softdepend: [ SignLink ]
+depend: [ Train_Carts, SignLink]
 commands:
   cstationlisttemplate:
     aliases: [cstationlisttemplate, cslt]

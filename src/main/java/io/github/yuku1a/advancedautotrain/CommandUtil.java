@@ -101,7 +101,7 @@ public class CommandUtil {
      * @param strindex stringで表現されるインデックス
      * @return パースされたindex、パースできなかった場合-1
      */
-    public static int tryParseIndex(CommandSender sender, List<CStationInfo> list, String strindex) {
+    public static int tryParseIndex(CommandSender sender, List<?> list, String strindex) {
         // インデックスがintに変換できることを確認
         int index;
         try {

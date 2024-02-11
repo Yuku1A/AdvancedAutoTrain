@@ -1,15 +1,12 @@
 package io.github.yuku1a.advancedautotrain.trainrecord;
 
-import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
-import io.github.yuku1a.advancedautotrain.CStationInfo;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CommandTrainRecord implements CommandExecutor {

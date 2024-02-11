@@ -19,6 +19,11 @@ import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetExecutor;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetStore;
+import io.github.yuku1a.advancedautotrain.trainrecord.CommandTrainRecord;
+import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecord;
+import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordEntry;
+import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordExecutor;
+import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordList;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordStore;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordingManager;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -131,6 +136,13 @@ public final class Advancedautotrain extends JavaPlugin {
         trainPresetStore = new TrainPresetStore(this);
         trainPresetStore.load();
 
+        ConfigurationSerialization.registerClass(TrainRecord.class);
+        ConfigurationSerialization.registerClass(TrainRecordEntry.class);
+        ConfigurationSerialization.registerClass(TrainRecordList.class);
+        trainRecordStore = new TrainRecordStore(this);
+        trainRecordStore.load();
+        trainRecordingManager = new TrainRecordingManager();
+
         getLogger().log(Level.INFO, "loaded!");
     }
 
@@ -162,6 +174,9 @@ public final class Advancedautotrain extends JavaPlugin {
         getCommand("tpreset").setExecutor(new CommandTrainPreset(this));
         getServer().getPluginManager().registerEvents(new TrainPresetExecutor(this, trainPresetStore), this);
 
+        // TrainRecord絡みのenable
+        getCommand("trec").setExecutor(new CommandTrainRecord(this));
+        getServer().getPluginManager().registerEvents(new TrainRecordExecutor(this), this);
     }
 
     @Override
@@ -188,5 +203,8 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // TrainPreset絡みの処理
         trainPresetStore.save();
+
+        // TrainRecord絡みの処理
+        trainRecordStore.save();
     }
 }

@@ -19,6 +19,9 @@ commands:
   tpreset:
     aliases: [tpreset]
     usage: /<command> <action> <arguments...>
+  trec:
+    aliases: [trec]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

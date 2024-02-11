@@ -21,7 +21,7 @@ public class TrainRecordExecutor implements Listener {
         var recordList = new TrainRecordList();
         var loc = train.middle().getBlock().getLocation();
         // spawnを記録する
-        var record = new TrainRecord(loc, "spawn", "spawn", "spawn", true);
+        var record = new TrainRecord(loc, null, "spawn", "spawn", true);
         recordList.startRecord(record);
         // 作ったものを登録
         store.put(trainname, recordList);
@@ -72,7 +72,7 @@ public class TrainRecordExecutor implements Listener {
         }
 
         // 消滅を記録する
-        recordlist.record(new TrainRecord(train.middle().getBlock().getLocation(), "destroy", "destroy", "destroy", true));
+        recordlist.record(new TrainRecord(train.middle().getBlock().getLocation(), null, "destroy", "destroy", true));
         // 後処理
         endRecording(train);
     }

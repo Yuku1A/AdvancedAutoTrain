@@ -72,7 +72,7 @@ public class TrainRecordExecutor implements Listener {
         }
 
         // 消滅を記録する
-        recordlist.record(new TrainRecord(train.middle().getBlock().getLocation(), null, "destroy", "destroy", true));
+        recordlist.record(new TrainRecord(train.getProperties().getLocation().getLocation(), null, "destroy", "destroy", true));
         // 後処理
         endRecording(train);
     }

@@ -69,15 +69,6 @@ public class TrainRecordExecutor implements Listener {
     @EventHandler
     public void onGroupRemove(GroupRemoveEvent event) {
         var train = event.getGroup();
-        var recordlist = getRecordList(train);
-        // 何もなければ先に帰したいが一応安全のために
-        if (recordlist == null) {
-            endRecording(train);
-            return;
-        }
-
-        // 消滅を記録する
-        recordlist.record(new TrainRecord(train.getProperties().getLocation().getLocation(), null, "destroy", "destroy", true));
         // 後処理
         endRecording(train);
     }

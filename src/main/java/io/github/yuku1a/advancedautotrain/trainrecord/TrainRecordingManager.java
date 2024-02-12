@@ -46,14 +46,16 @@ public class TrainRecordingManager {
      * 他のイベントの記録に使用できるようにします。
      * @param train ワールドに実際にある列車
      * @param trainName 列車の名前
+     * @return 実際に紐づけを行ったかどうか
      */
-    public void startRecording(MinecartGroup train, String trainName) {
+    public boolean startRecording(MinecartGroup train, String trainName) {
         // 事前にrecordingすることになっていなかったら登録しない
         if (!recordingTrainNameList.contains(trainName))
-            return;
+            return false;
 
         // 事前にrecordingすることになっていれば登録する
         trainMap.put(train, trainName);
+        return true;
     }
 
     /**

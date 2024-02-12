@@ -16,10 +16,15 @@ public class TrainRecordExecutor implements Listener {
         var train = event.getTrain();
         var trainname = event.getTrainName();
         // RecordingManagerに列車と名前の紐づけを登録
-        recman.startRecording(train, trainname);
+        boolean isRecording = recman.startRecording(train, trainname);
+
+        // recmanに事前登録がなければ弾く
+        if (!isRecording)
+            return;
+
         // 新しいTrainRecordListを作る
         var recordList = new TrainRecordList();
-        var loc = train.middle().getBlock().getLocation();
+        var loc = train.getProperties().getLocation().getLocation();
         // spawnを記録する
         var record = new TrainRecord(loc, null, "spawn", "spawn", true);
         recordList.startRecord(record);

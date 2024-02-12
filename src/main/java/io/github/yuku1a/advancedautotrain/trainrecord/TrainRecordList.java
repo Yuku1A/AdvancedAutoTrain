@@ -61,7 +61,7 @@ public class TrainRecordList implements ConfigurationSerializable {
         // indexから終わりの部分までを作り直して入れ替える
         for (int i = index; i < trainRecords.size(); i++) {
             var oldRecord = trainRecords.get(i);
-            trainRecords.set(index, new TrainRecordEntry(
+            trainRecords.set(i, new TrainRecordEntry(
                 oldRecord.getRecordedAt() + addendTime,
                 oldRecord.getTrainRecord()));
         }

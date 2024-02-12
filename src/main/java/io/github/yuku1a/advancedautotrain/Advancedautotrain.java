@@ -140,7 +140,6 @@ public final class Advancedautotrain extends JavaPlugin {
         ConfigurationSerialization.registerClass(TrainRecordEntry.class);
         ConfigurationSerialization.registerClass(TrainRecordList.class);
         trainRecordStore = new TrainRecordStore(this);
-        trainRecordStore.load();
         trainRecordingManager = new TrainRecordingManager();
 
         getLogger().log(Level.INFO, "loaded!");
@@ -175,6 +174,7 @@ public final class Advancedautotrain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TrainPresetExecutor(this, trainPresetStore), this);
 
         // TrainRecord絡みのenable
+        trainRecordStore.load();
         getCommand("trec").setExecutor(new CommandTrainRecord(this));
         getServer().getPluginManager().registerEvents(new TrainRecordExecutor(this), this);
     }

@@ -24,10 +24,27 @@ public class ScheduledSign extends ScheduledAction implements ConfigurationSeria
      * @param trainDescription 列車の説明
      */
     public ScheduledSign(long scheduletime, String trainName, String trainDescription) {
+        this(scheduletime, trainName, trainDescription, null);
+    }
+
+    /**
+     * @param scheduletime アクションの予定時刻
+     * @param trainName 列車の名前
+     * @param trainDescription 列車の説明
+     */
+    public ScheduledSign(long scheduletime, String trainName, String trainDescription, String trainInternalName) {
         super(scheduletime);
         this.trainName = trainName;
         this.trainDescription = trainDescription;
+        this.trainInternalName = trainInternalName;
     }
+
+    /**
+     * 内部で保持する実際の列車の名前
+     * @return 内部で保持する実際の列車の名前、ない場合null
+     */
+    public String getTrainInternalName() { return trainInternalName; }
+    private final String trainInternalName;
 
     /**
      * 表示される列車の名前
@@ -47,7 +64,8 @@ public class ScheduledSign extends ScheduledAction implements ConfigurationSeria
         var time = Long.parseLong((String) map.get("time"));
         var name = (String) map.get("name");
         var desc = (String) map.get("desc");
-        return new ScheduledSign(time, name, desc);
+        var internalname = (String) map.get("internalname");
+        return new ScheduledSign(time, name, desc, internalname);
     }
 
     @Override
@@ -56,6 +74,7 @@ public class ScheduledSign extends ScheduledAction implements ConfigurationSeria
         map.put("name", trainName);
         map.put("desc", trainDescription);
         map.put("time", String.valueOf(getScheduletime()));
+        map.put("internalname", trainInternalName);
         return map;
     }
 }

@@ -12,13 +12,14 @@ public class WidgetsArrivalList {
         var fmt = new TimeDurationFormat("HH:mm:ss");
 
         // UI
-        sender.sendMessage("(time) (trainname) (description)");
+        sender.sendMessage("(time) (displayname) (description) (trainname)");
 
         // 情報の表示
         arrivalTrainList.forEach((v) -> sender.sendMessage(
             fmt.format(v.getScheduletime()) + " | " +
             v.getTrainName() + " | " +
-            v.getTrainDescription()
+            v.getTrainDescription() + " | " +
+            v.getTrainInternalName()
         ));
     }
 }

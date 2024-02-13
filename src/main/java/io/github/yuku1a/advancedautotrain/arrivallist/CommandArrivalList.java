@@ -266,7 +266,7 @@ public class CommandArrivalList implements CommandExecutor {
             return CommandUtil.commandsHelp(
                 sender,
                 "ar " + args[0] + " <listname> " +
-                "<trainname> <traindescription> <time>"
+                "<displayname> <traindescription> <time>"
             );
         }
 

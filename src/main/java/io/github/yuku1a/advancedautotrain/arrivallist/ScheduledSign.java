@@ -10,9 +10,6 @@ import java.util.Map;
  * 看板に表示される発車予定を表します。
  */
 public class ScheduledSign extends ScheduledAction implements ConfigurationSerializable {
-    private final String trainName;
-    private final String trainDescription;
-
     /**
      * @param scheduletime アクションの予定時刻
      * @param trainName 列車の名前
@@ -32,27 +29,25 @@ public class ScheduledSign extends ScheduledAction implements ConfigurationSeria
         this.trainDescription = trainDescription;
     }
 
-    public static ScheduledSign deserialize(Map<String, Object> map) {
-        var time = Long.parseLong((String) map.get("time"));
-        var name = (String) map.get("name");
-        var desc = (String) map.get("desc");
-        return new ScheduledSign(time, name, desc);
-    }
-
     /**
      * 表示される列車の名前
      * @return 表示される列車の名前
      */
-    public String getTrainName() {
-        return trainName;
-    }
+    public String getTrainName() { return trainName; }
+    private final String trainName;
 
     /**
      * 列車の詳細な説明
      * @return 列車の詳細な説明、ない場合null
      */
-    public String getTrainDescription() {
-        return trainDescription;
+    public String getTrainDescription() { return trainDescription; }
+    private final String trainDescription;
+
+    public static ScheduledSign deserialize(Map<String, Object> map) {
+        var time = Long.parseLong((String) map.get("time"));
+        var name = (String) map.get("name");
+        var desc = (String) map.get("desc");
+        return new ScheduledSign(time, name, desc);
     }
 
     @Override

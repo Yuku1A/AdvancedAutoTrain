@@ -1,13 +1,45 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.utils.PagedListEntry;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * コマンド実装に必要な長いメソッドをここに集約
  */
 public class CommandUtil {
+
+    /**
+     * 指定された個数ごとに元のインデックスを保持した二次元リストに切り出します
+     * @param list 元のリスト
+     * @param itemInPage ページごとのアイテムの数
+     * @return 切り出されたリストの入った二次元リスト
+     * @param <T> 実際のデータの型
+     */
+    public static <T> List<List<PagedListEntry<T>>> pager2D(List<T> list, int itemInPage) throws IndexOutOfBoundsException {
+        // 先に全部で何ページになるかを計算
+        int totalPages = (list.size() / itemInPage) + 1;
+
+        // そのページ数をもとにリストを生成
+        var returnlist = new ArrayList<List<PagedListEntry<T>>>(totalPages);
+
+        // ページごとに中のリストを作る
+        for (int i = 0; i < totalPages; i++) {
+            returnlist.add(new ArrayList<>(itemInPage));
+            // ページ内の最大インデックス(元のリスト基準)かリスト自体の最大値か
+            int maxIndex = Math.min((i + 1) * itemInPage, list.size());
+            // 中のリストを作る
+            for (int k = i * itemInPage; k < maxIndex; k++) {
+                returnlist.get(i).add(new PagedListEntry<>(k, list.get(k)));
+            }
+        }
+
+        // たぶんこれでだいじょうぶ
+        return returnlist;
+    }
+
     /**
      * 15個ごとにリストを切り出します。<br>
      * 主にMinecraftのコマンドに使用することを想定しています。

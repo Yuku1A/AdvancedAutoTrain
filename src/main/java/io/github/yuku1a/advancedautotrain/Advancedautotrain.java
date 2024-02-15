@@ -15,6 +15,7 @@ import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
+import io.github.yuku1a.advancedautotrain.trainarrivallist.TrainArrivalSignStore;
 import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPresetExecutor;
@@ -90,6 +91,10 @@ public final class Advancedautotrain extends JavaPlugin {
     public TrainRecordingManager getTrainRecordingManager() { return trainRecordingManager; }
     private TrainRecordStore trainRecordStore;
     public TrainRecordStore getTrainRecordStore() { return trainRecordStore; }
+
+    // TrainArrivalSign関連
+    private TrainArrivalSignStore trainArrivalSignStore;
+    public TrainArrivalSignStore getTrainArrivalSignStore() { return trainArrivalSignStore; }
 
     @Override
     public void onLoad() {

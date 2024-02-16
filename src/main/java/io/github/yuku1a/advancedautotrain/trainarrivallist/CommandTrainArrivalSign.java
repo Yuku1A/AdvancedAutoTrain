@@ -394,7 +394,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             pageindexstr = args[2];
 
         // インデックスをパース
-        int pageindex = CommandUtil.tryParseIndex(sender, list, pageindexstr);
+        int pageindex = CommandUtil.tryParsePagingIndex(sender, list, pageindexstr);
         // インデックスが異常だったらすでにメッセージが送られている
         if (pageindex == -1)
             return true;

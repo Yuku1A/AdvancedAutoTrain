@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommandTrainArrivalSign implements CommandExecutor {
@@ -72,14 +73,27 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             arrivalsign.resume();
         }
 
+        sender.sendMessage("処理を完了しました。");
+
         return true;
     }
 
     private long calculateArriveTime(long spawntimemillis, long recordtimemillis, long timerintervalmillis, long offsetseconds) {
         // 到着時刻の計算、単純に足してからオーバーしてる分をintervalに合わせる
-        var arrivetime = (spawntimemillis + recordtimemillis) % timerintervalmillis;
-        // オフセットを適用
-        return arrivetime + (offsetseconds * 1000);
+        var arrivetimeraw = (spawntimemillis + recordtimemillis) % timerintervalmillis;
+
+        // 1秒単位にしつつオフセットも適用
+        var offsetapplied = ((arrivetimeraw / 1000) + offsetseconds) * 1000;
+
+        // マイナス防止
+        long arrivetime;
+        if (offsetapplied < 0)
+            arrivetime = timerintervalmillis + offsetapplied;
+        else
+            arrivetime = offsetapplied;
+
+        // おわり
+        return arrivetime;
     }
 
     private AutoSetData gatheringAutoSetData(CommandSender sender, String lspnlistkey) {
@@ -111,6 +125,8 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         var stationlist = new ArrayList<ScheduledSignSet>();
         var traindatalist = new ArrayList<AutoSetTrainData>();
 
+        var traintempmap = new HashMap<String, AutoSetTrainData>();
+
         // 賢い方法がわかんないので力技。ラグなど知らぬ
         // 列車ごと
         for (var spawn : lspnlist) {
@@ -118,6 +134,15 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             // CStationにArrivalSignが連動するのでCStationと、
             // 時間を登録するのに時間の情報がいるが、TrainRecordのワンストップで済む。いいね
             var trainname = spawn.getSpawnTrainName();
+
+            // 駅の情報はコンテキストが違ったり列車が違ったりするので被り上等だが
+            // 列車の情報は名前ごとに固有である想定でいってるのでここでコピーにしたつもり
+            var temptraindata = traintempmap.get(trainname);
+            if (temptraindata != null) {
+                var newtraindata = new AutoSetTrainData(spawn, temptraindata.stationDataList(), trainname);
+                traindatalist.add(newtraindata);
+                continue;
+            }
 
             var trec = plugin.getTrainRecordStore().get(trainname);
             if (trec == null) {
@@ -131,11 +156,6 @@ public class CommandTrainArrivalSign implements CommandExecutor {
                 sender.sendMessage("列車 " + trainname + " のTrainArrivalListが存在しません。");
                 continue;
             }
-
-            // 駅の情報はコンテキストが違ったり列車が違ったりするので被り上等だが
-            // 列車の情報は名前ごとに固有である想定でいってるのでここで蹴ってもたぶんいい
-            if (trainnamelist.contains(trainname))
-                continue;
 
             // TrainArrivalListのインデックスを別に用意
             int talindex = 0;
@@ -172,7 +192,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
                     sender.sendMessage("CStation " + entryTrainRecordSignName + " に関連するArrivalListの登録がありません。");
                     arrivalList = new ScheduledSignSet(optimername);
                     arrivalList.enable(plugin);
-                    plugin.getSignListStore().put(entryTrainRecordSignName, new ScheduledSignSet(optimername));
+                    plugin.getSignListStore().put(entryTrainRecordSignName, arrivalList);
                     sender.sendMessage("CStation " + entryTrainRecordSignName + " に関連するArrivalListの登録をしました。");
                 }
 
@@ -194,8 +214,12 @@ public class CommandTrainArrivalSign implements CommandExecutor {
                 talindex++;
             }
 
-            traindatalist.add(new AutoSetTrainData(spawn, stationdatalist, trainname));
+            var traindata = new AutoSetTrainData(spawn, stationdatalist, trainname);
+            traindatalist.add(traindata);
             trainnamelist.add(trainname);
+
+            // 二回以上同じ列車の駅データを新規生成しない
+            traintempmap.put(trainname, traindata);
         }
 
         return new AutoSetData(optimer, traindatalist, stationlist, trainnamelist);

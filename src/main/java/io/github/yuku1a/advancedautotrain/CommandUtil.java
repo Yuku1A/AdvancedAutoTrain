@@ -176,8 +176,8 @@ public class CommandUtil {
             return -1;
         }
 
-        // 変換できた結果をreturn
-        return index;
+        // 変換できた結果をreturn、インデックスとして動かなきゃいけないので-1
+        return index - 1;
     }
 
     /**

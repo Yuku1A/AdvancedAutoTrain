@@ -15,6 +15,8 @@ import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimerStore;
+import io.github.yuku1a.advancedautotrain.trainarrivallist.ArrivalSignEntry;
+import io.github.yuku1a.advancedautotrain.trainarrivallist.CommandTrainArrivalSign;
 import io.github.yuku1a.advancedautotrain.trainarrivallist.TrainArrivalSignStore;
 import io.github.yuku1a.advancedautotrain.trainpreset.CommandTrainPreset;
 import io.github.yuku1a.advancedautotrain.trainpreset.TrainPreset;
@@ -141,11 +143,16 @@ public final class Advancedautotrain extends JavaPlugin {
         trainPresetStore = new TrainPresetStore(this);
         trainPresetStore.load();
 
+        // TrainRecord関連の初期化
         ConfigurationSerialization.registerClass(TrainRecord.class);
         ConfigurationSerialization.registerClass(TrainRecordEntry.class);
         ConfigurationSerialization.registerClass(TrainRecordList.class);
         trainRecordStore = new TrainRecordStore(this);
         trainRecordingManager = new TrainRecordingManager();
+
+        // TrainArrivalList関連の初期化
+        ConfigurationSerialization.registerClass(ArrivalSignEntry.class);
+        trainArrivalSignStore = new TrainArrivalSignStore(this);
 
         getLogger().log(Level.INFO, "loaded!");
     }
@@ -182,6 +189,9 @@ public final class Advancedautotrain extends JavaPlugin {
         trainRecordStore.load();
         getCommand("trec").setExecutor(new CommandTrainRecord(this));
         getServer().getPluginManager().registerEvents(new TrainRecordExecutor(this), this);
+
+        // TrainArrivalList絡みのenable
+        getCommand("tal").setExecutor(new CommandTrainArrivalSign(this));
     }
 
     @Override
@@ -211,5 +221,8 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // TrainRecord絡みの処理
         trainRecordStore.save();
+
+        // TrainArrivalList絡みの処理
+        trainArrivalSignStore.save();
     }
 }

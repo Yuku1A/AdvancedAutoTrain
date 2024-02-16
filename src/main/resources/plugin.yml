@@ -22,6 +22,9 @@ commands:
   trec:
     aliases: [trec]
     usage: /<command> <action> <arguments...>
+  tal:
+    aliases: [tal]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

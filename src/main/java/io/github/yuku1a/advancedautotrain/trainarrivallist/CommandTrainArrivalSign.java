@@ -406,7 +406,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         sender.sendMessage(
             "----- " + listname + " trainarrivallist page " + pageindexstr + " of " + list.size() + " -----"
         );
-        sender.sendMessage("(index) (displayname) (description) (offset)");
+        sender.sendMessage("(index) (cstationname) (displayname) (description) (offset)");
 
         // 分割されたリストの中身を表示
         for (var entry : pagedlist) {
@@ -420,13 +420,13 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     // infoを一つだけ表示する用
     private void infoViewOne(CommandSender sender, ArrivalSignEntry entry, int index) {
         // うまいこと内容を表示する
-        sender.sendMessage("(index) (displayname) (description) (offset)");
+        sender.sendMessage("(index) (cstationname) (displayname) (description) (offset)");
         infoViewSimple(sender, entry, index);
     }
 
     // 内容を実際に表示する
     private void infoViewSimple(CommandSender sender, ArrivalSignEntry entry, int index) {
-        sender.sendMessage(index + " | " + entry.getTrainName() + " | " +
+        sender.sendMessage(index + " | " + entry.getCStationName() + " | " + entry.getTrainName() + " | " +
                                entry.getTrainDescription() + " | " + entry.getSecondsOffset());
     }
 

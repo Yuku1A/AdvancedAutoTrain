@@ -170,8 +170,10 @@ public class CommandTrainArrivalSign implements CommandExecutor {
                 var arrivalList = plugin.getSignListStore().get(entryTrainRecordSignName);
                 if (arrivalList == null) {
                     sender.sendMessage("CStation " + entryTrainRecordSignName + " に関連するArrivalListの登録がありません。");
-                    sender.sendMessage("処理を中止します。");
-                    return null;
+                    arrivalList = new ScheduledSignSet(optimername);
+                    arrivalList.enable(plugin);
+                    plugin.getSignListStore().put(entryTrainRecordSignName, new ScheduledSignSet(optimername));
+                    sender.sendMessage("CStation " + entryTrainRecordSignName + " に関連するArrivalListの登録をしました。");
                 }
 
                 // OPTimerが違うとこれをやる意味が完全になくなる

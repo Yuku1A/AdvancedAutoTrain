@@ -153,6 +153,7 @@ public final class Advancedautotrain extends JavaPlugin {
         // TrainArrivalList関連の初期化
         ConfigurationSerialization.registerClass(ArrivalSignEntry.class);
         trainArrivalSignStore = new TrainArrivalSignStore(this);
+        trainArrivalSignStore.load();
 
         getLogger().log(Level.INFO, "loaded!");
     }

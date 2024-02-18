@@ -37,7 +37,7 @@ public class CommandAATDump implements CommandExecutor {
         yamlcfg.set("pathlist", pathlist);
 
         // どうにかして保存したいが・・・
-        var file = new File(plugin.getDataFolder(), "raildump" + File.pathSeparator + args[1] + ".yml");
+        var file = new File(plugin.getDataFolder(), "raildump" + File.separator + args[1] + ".yml");
         try {
             yamlcfg.save(file);
         } catch (IOException e) {
@@ -118,7 +118,7 @@ public class CommandAATDump implements CommandExecutor {
         }
 
         // どうにかして保存したいが・・・
-        var file = new File(plugin.getDataFolder(), "aatdump" + File.pathSeparator + args[1] + ".yml");
+        var file = new File(plugin.getDataFolder(), "aatdump" + File.separator + args[1] + ".yml");
         try {
             yamlcfg.save(file);
         } catch (IOException e) {

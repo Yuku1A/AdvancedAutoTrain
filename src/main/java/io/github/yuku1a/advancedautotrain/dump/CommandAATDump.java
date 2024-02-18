@@ -72,14 +72,9 @@ public class CommandAATDump implements CommandExecutor {
         // ここから存在確認がいらないがルックアップが大変
         // LSpawn
         var ymllspn = yamlcfg.createSection("lspawn");
-        var trainnamelist = new ArrayList<String>();
         for (var entry : plugin.getSpawnListStore().entryList()) {
             // 対象のOPTimerと同じものを参照してるか確認
             if (entry.getValue().getTimerkey().equals(optimerkey)) {
-                // 対象のすべての列車の名前を収集する
-                for (var spn : entry.getValue().asList()) {
-                    trainnamelist.add(spn.getSpawnTrainName());
-                }
                 ymllspn.set(entry.getKey(), entry.getValue());
             }
         }
@@ -87,29 +82,20 @@ public class CommandAATDump implements CommandExecutor {
         // TrainRecord
         var ymlrecord = yamlcfg.createSection("trainrecord");
         var recordstore = plugin.getTrainRecordStore();
-        // 対象の列車のみ適用
-        for (var trainname : trainnamelist) {
-            var record = recordstore.get(trainname);
-            if (record != null) {
-                ymlrecord.set(trainname, record);
-            }
-        }
+        // めんどくさいのでまるごと吐く
+        recordstore.entryList().forEach(e -> ymlrecord.set(e.getKey(), e.getValue()));
 
         // TrainPreset
         var ymlpreset = yamlcfg.createSection("trainpreset");
         var presetstore = plugin.getTrainPresetStore();
         // あとのroute用
         var routelist = new ArrayList<String>();
-        for (var trainname : trainnamelist) {
-            var preset = presetstore.get(trainname);
-            if (preset != null) {
-                // routeがnullでなければ次に収集する
-                if (preset.getRouteName() != null) {
-                    routelist.add(trainname);
-                }
-                ymlpreset.set(trainname, preset);
-            }
-        }
+        presetstore.entryList().forEach(e -> {
+            var routename = e.getValue().getRouteName();
+            if (routename != null)
+                routelist.add(routename);
+            ymlpreset.set(e.getKey(), e.getValue());
+        });
 
         // Route
         var ymlroute = yamlcfg.createSection("route");

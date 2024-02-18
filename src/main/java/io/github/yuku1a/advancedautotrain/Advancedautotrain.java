@@ -5,6 +5,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.CommandArrivalList;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
+import io.github.yuku1a.advancedautotrain.dump.CommandAATDump;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
 import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
@@ -193,6 +194,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // TrainArrivalList絡みのenable
         getCommand("tal").setExecutor(new CommandTrainArrivalSign(this));
+
+        // AATDump絡みのenable
+        getCommand("aatdump").setExecutor(new CommandAATDump(this));
     }
 
     @Override

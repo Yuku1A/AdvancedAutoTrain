@@ -25,6 +25,9 @@ commands:
   tal:
     aliases: [tal]
     usage: /<command> <action> <arguments...>
+  aatdump:
+    aliases: [aatdump]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

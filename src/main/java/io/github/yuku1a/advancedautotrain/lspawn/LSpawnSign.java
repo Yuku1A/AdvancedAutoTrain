@@ -55,6 +55,9 @@ public class LSpawnSign {
 
     private void spawn() {
         // warmUp()でチャンクがロードされていない場合諦める
+        if (chunkHolder == null)
+            return;
+
         if (!chunkHolder.isLoaded())
             return;
 

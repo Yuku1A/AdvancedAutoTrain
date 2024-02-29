@@ -13,6 +13,6 @@ public class ListenerGroupRemove implements Listener {
     @EventHandler
     public void onGroupRemove(GroupRemoveEvent e) {
         // 通知が来たらCStationListStoreから当該Trainのデータを消す
-        store.remove(e.getGroup().getProperties());
+        store.remove(e.getGroup());
     }
 }

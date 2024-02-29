@@ -24,12 +24,12 @@ public final class CStationListProperty implements ITrainProperty<CStationList> 
 
     @Override
     public CStationList get(TrainProperties properties) {
-        return store.get(properties);
+        return store.get(properties.getHolder());
     }
 
     @Override
     public void set(TrainProperties properties, CStationList list) {
-        store.put(properties, list);
+        store.put(properties.getHolder(), list);
     }
 
     @Override

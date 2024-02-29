@@ -1,6 +1,6 @@
 package io.github.yuku1a.advancedautotrain;
 
-import com.bergerkiller.bukkit.tc.properties.TrainProperties;
+import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 
 import java.util.IdentityHashMap;
 
@@ -8,7 +8,7 @@ import java.util.IdentityHashMap;
  * CStationListをTrainPropertiesと紐づけるためのストアです。
  */
 public class CStationListStore {
-    private final IdentityHashMap<TrainProperties, CStationList> map = new IdentityHashMap<>();
+    private final IdentityHashMap<MinecartGroup, CStationList> map = new IdentityHashMap<>();
     private static final CStationListStore instance = new CStationListStore();
     private CStationListStore() { }
 
@@ -21,28 +21,28 @@ public class CStationListStore {
     }
 
     /**
-     * TrainPropertiesをキーとしてCStationListを格納します。
-     * @param prop キー
+     * MinecartGroupをキーとしてCStationListを格納します。
+     * @param train キー
      * @param list CStationList
      */
-    public void put(TrainProperties prop, CStationList list) {
-        map.put(prop, list);
+    public void put(MinecartGroup train, CStationList list) {
+        map.put(train, list);
     }
 
     /**
-     * TrainPropertiesに紐づけられたCStationListを取得します。
-     * @param prop TrainProperties
+     * MinecartGroupに紐づけられたCStationListを取得します。
+     * @param prop MinecartGroup
      * @return 紐づけられたCStationList、ない場合はnull
      */
-    public CStationList get(TrainProperties prop) {
+    public CStationList get(MinecartGroup prop) {
         return map.get(prop);
     }
 
     /**
-     * TrainPropertiesに紐づけられたCStationListを削除します。
-     * @param prop TrainProperties
+     * MinecartGroupに紐づけられたCStationListを削除します。
+     * @param prop MinecartGroup
      */
-    public void remove(TrainProperties prop) {
+    public void remove(MinecartGroup prop) {
         map.remove(prop);
     }
 

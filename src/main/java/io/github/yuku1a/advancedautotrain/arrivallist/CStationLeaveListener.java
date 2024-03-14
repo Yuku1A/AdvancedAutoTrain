@@ -18,6 +18,10 @@ public class CStationLeaveListener implements Listener {
 
     @EventHandler
     public void onCStationLeave(CStationLeaveEvent event) {
+        // CStationを通過している場合蹴る
+        if (!event.isActed())
+            return;
+
         // イベントの情報を出す
         var name = event.getCStationName();
 

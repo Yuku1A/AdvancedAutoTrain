@@ -38,7 +38,7 @@ public class ChunkHolderFromOffilineSign {
      */
     public void loadChunk() {
         if (!isLoaded())
-            this.chunk = ForcedChunk.load(Bukkit.getWorld(worldUUID).getChunkAt(chunkX, chunkZ), 3);
+            this.chunk = ForcedChunk.load(Bukkit.getWorld(worldUUID), chunkX, chunkZ, 3);
     }
 
     /**

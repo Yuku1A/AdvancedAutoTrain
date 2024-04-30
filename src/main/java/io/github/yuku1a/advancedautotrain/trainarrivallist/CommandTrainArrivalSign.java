@@ -14,6 +14,27 @@ import java.util.List;
 
 public class CommandTrainArrivalSign implements CommandExecutor {
 
+    private boolean autoclean(CommandSender sender, String[] args) {
+        // コマンド指定で1、lspawnlist指定で1
+        if (args.length != 2)
+            return commandsHelp(sender, "autoclean");
+
+        // 必要な情報を集める
+        var autosetdata = gatheringAutoSetData(sender, args[1]);
+        // 異常な場合nullでメッセージがすでに出てるのでreturn
+        if (autosetdata == null)
+            return true;
+
+        // 駅と列車の情報が集まったので次に駅のクリーンアップ
+        cleanAndPause(autosetdata);
+
+        // 作業中に止めたArrivalListを再開
+        resumeArrivalSign(autosetdata);
+
+        sender.sendMessage("処理を完了しました。");
+
+        return true;
+    }
     private boolean autoset(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
         if (args.length != 2)
@@ -26,22 +47,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             return true;
 
         // 駅と列車の情報が集まったので次に駅のクリーンアップ
-        // クリーンアップをする
-        for (var al : autosetdata.stationlist()) {
-            for (var as : al.asList()) {
-                // 必要になってからpauseしたほうが若干コストが下がる
-                // 内部名が設定されていなければ削除してしまう
-                if (as.getTrainInternalName() == null) {
-                    al.pause();
-                    al.remove(as.getScheduletime());
-                }
-                // 全部探してクリーンアップする
-                if (autosetdata.trainNameList().contains(as.getTrainInternalName())) {
-                    al.pause();
-                    al.remove(as.getScheduletime());
-                }
-            }
-        }
+        cleanAndPause(autosetdata);
 
         // 作業開始
         for (var train : autosetdata.trainDataList()) {
@@ -69,13 +75,36 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         }
 
         // 作業中に止めたArrivalListを再開
-        for (var arrivalsign : autosetdata.stationlist()) {
-            arrivalsign.resume();
-        }
+        resumeArrivalSign(autosetdata);
 
         sender.sendMessage("処理を完了しました。");
 
         return true;
+    }
+
+    private void resumeArrivalSign(AutoSetData autosetdata) {
+        for (var arrivalsign : autosetdata.stationlist()) {
+            arrivalsign.resume();
+        }
+    }
+
+    private void cleanAndPause(AutoSetData autosetdata){
+        // クリーンアップをする
+        for (var al : autosetdata.stationlist()) {
+            for (var as : al.asList()) {
+                // 必要になってからpauseしたほうが若干コストが下がる
+                // 内部名が設定されていなければ削除してしまう
+                if (as.getTrainInternalName() == null) {
+                    al.pause();
+                    al.remove(as.getScheduletime());
+                }
+                // 全部探してクリーンアップする
+                if (autosetdata.trainNameList().contains(as.getTrainInternalName())) {
+                    al.pause();
+                    al.remove(as.getScheduletime());
+                }
+            }
+        }
     }
 
     private long calculateArriveTime(long spawntimemillis, long recordtimemillis, long timerintervalmillis, long offsetseconds) {
@@ -588,6 +617,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             case "rmlist" -> removet(sender, args);
             case "copy" -> copy(sender, args);
             case "autoset" -> autoset(sender, args);
+            case "autoclean" -> autoclean(sender, args);
             default -> help(sender);
         };
     }
@@ -605,7 +635,8 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             "copy: リストのコピーを行います",
             "replace: リスト内の指定された項目を入れ替えます",
             "insert: リスト内の指定された位置に項目を追加します",
-            "autoset: LSpawnのリストと他の関連するデータ基づいてArrivalSignを自動設定します"
+            "autoset: LSpawnのリストと他の関連するデータ基づいてArrivalSignを自動設定します",
+            "autoclean: LSpawnのリストにある列車に関連するArrivalSignのデータを削除します"
         );
         if (sender.hasPermission(plugin.AdminPermission)) {
             sender.sendMessage(

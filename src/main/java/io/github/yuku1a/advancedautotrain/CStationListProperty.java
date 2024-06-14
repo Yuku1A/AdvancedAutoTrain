@@ -1,9 +1,9 @@
 package io.github.yuku1a.advancedautotrain;
 
-import cloud.commandframework.annotations.Argument;
-import cloud.commandframework.annotations.CommandDescription;
-import cloud.commandframework.annotations.CommandMethod;
-import cloud.commandframework.annotations.specifier.Greedy;
+import org.incendo.cloud.annotations.Argument;
+import org.incendo.cloud.annotations.CommandDescription;
+import org.incendo.cloud.annotations.Command;
+import org.incendo.cloud.annotation.specifier.Greedy;
 import com.bergerkiller.bukkit.common.config.ConfigurationNode;
 import com.bergerkiller.bukkit.tc.commands.annotations.CommandTargetTrain;
 import com.bergerkiller.bukkit.tc.properties.TrainProperties;
@@ -64,7 +64,7 @@ public final class CStationListProperty implements ITrainProperty<CStationList> 
 
     // なぜかわからないけど機能しないので放置
     @CommandTargetTrain
-    @CommandMethod("train cstationlist <command>")
+    @Command("train cstationlist <command>")
     @CommandDescription("Manage CStationList of Train")
     private void setProperty(
         final CommandSender sender,
@@ -75,7 +75,7 @@ public final class CStationListProperty implements ITrainProperty<CStationList> 
     }
 
     // なぜかわからないけど機能しないので放置
-    @CommandMethod("train cstationlist")
+    @Command("train cstationlist")
     @CommandDescription("View CStationList of Train")
     private void getProperty(
         final CommandSender sender,

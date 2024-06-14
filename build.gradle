@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.10.0'
+version = '0.11.0'
 version = version + "-dist"
 
 repositories {
@@ -24,11 +24,11 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.20.4-v1'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.20.6-v1'
     compileOnly 'com.bergerkiller.bukkit:SignLink:1.20.4-v1'
-    compileOnly 'org.bergerhealer.cloud.commandframework:cloud-paper:1.8.0-SNAPSHOT'
-    compileOnly 'org.bergerhealer.cloud.commandframework:cloud-annotations:1.8.0-SNAPSHOT'
-    compileOnly 'org.bergerhealer.cloud.commandframework:cloud-minecraft-extras:1.8.0-SNAPSHOT'
+    compileOnly 'org.incendo:cloud-paper'
+    compileOnly 'org.incendo:cloud-annotations'
+    compileOnly 'org.incendo:cloud-minecraft-extras'
 }
 
 def targetJavaVersion = 17

@@ -27,8 +27,12 @@ public class LSpawnSign {
      * 現在実行すべき動作があるかチェックします。
      */
     public void checkTime() {
-        if (spawnList == null)
+        if (spawnList == null) {
+            // 看板の設置時に登録されていなくてもこれで復帰できる
+            // たぶん多少重い
+            spawnList = plugin.getSpawnListStore().get(this.spawnListName);
             return;
+        }
 
         var remaining = spawnList.remaining();
 

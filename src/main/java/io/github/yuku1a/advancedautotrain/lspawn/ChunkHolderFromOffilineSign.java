@@ -11,7 +11,12 @@ public class ChunkHolderFromOffilineSign {
     private final UUID worldUUID;
     private final int chunkX;
     private final int chunkZ;
-    private ForcedChunk chunk;
+    private final ForcedChunk chunk;
+
+    /**
+     * 0だったら未ロード、1から2までがロード中、3がロード完了
+     */
+    private int chunkStatus;
 
     /**
      * enableフェーズが完了した状態で実行してください
@@ -21,6 +26,8 @@ public class ChunkHolderFromOffilineSign {
         this.worldUUID = offlineSign.getWorldUUID();
         this.chunkX = MathUtil.toChunk(offlineSign.getBlock().getX());
         this.chunkZ = MathUtil.toChunk(offlineSign.getBlock().getZ());
+        this.chunk = ForcedChunk.none();
+        this.chunkStatus = 0;
     }
 
     /**
@@ -28,7 +35,16 @@ public class ChunkHolderFromOffilineSign {
      * @return チャンクがロードされているかどうか
      */
     public boolean isLoaded() {
-        return chunk != null;
+        // chunkがnullだったらfalse
+        if (chunk == null)
+            return false;
+
+        // chunkがnoneだったらfalse
+        if (chunk.isNone())
+            return false;
+
+        // ロード完了じゃなければfalse
+        return chunkStatus == 3;
     }
 
     /**
@@ -37,19 +53,21 @@ public class ChunkHolderFromOffilineSign {
      * 現地のブロックなどを参照することは推奨されません。
      */
     public void loadChunk() {
-        if (!isLoaded())
-            this.chunk = ForcedChunk.load(Bukkit.getWorld(worldUUID), chunkX, chunkZ, 3);
+        if (!isLoaded()) {
+            if (chunk != null) {
+                chunkStatus++;
+                this.chunk.move(ForcedChunk.load(Bukkit.getWorld(worldUUID), chunkX, chunkZ, chunkStatus));
+            }
+        }
     }
 
     /**
      * チャンクをアンロードします
      */
     public void unloadChunk() {
-        if (isLoaded()) {
-            this.chunk.close();
-            this.chunk = null;
+        if (chunk != null) {
+            this.chunk.move(ForcedChunk.none());
+            chunkStatus = 0;
         }
-
     }
-
 }

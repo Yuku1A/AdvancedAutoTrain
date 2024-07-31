@@ -3,8 +3,8 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.11.0'
-version = version + "-dist"
+version = '0.12.0'
+version = version + "-dev"
 
 repositories {
     mavenCentral()

@@ -309,9 +309,15 @@ public class CommandLSpawn implements CommandExecutor {
         // 時刻指定が正確かチェックする
         var time = ParseUtil.parseTime(timetext);
 
+        // インスタンス作成
+        var sspawn = new ScheduledSpawn(time, savedtrainname, null);
+
         // 新規登録の代わりに置き換え
         set.remove(time);
-        set.add(new ScheduledSpawn(time, savedtrainname, null));
+        set.add(sspawn);
+
+        // 登録した内容を表示する
+        viewParts(sender, List.of(sspawn));
 
         // おわり
         sender.sendMessage("登録完了しました");

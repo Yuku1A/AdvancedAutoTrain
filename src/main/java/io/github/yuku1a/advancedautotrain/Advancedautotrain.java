@@ -5,6 +5,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.CommandArrivalList;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
+import io.github.yuku1a.advancedautotrain.cstation.CStationCacheSet;
 import io.github.yuku1a.advancedautotrain.dump.CommandAATDump;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
@@ -64,6 +65,8 @@ public final class Advancedautotrain extends JavaPlugin {
     public CStationListTemplateStore getCStationListTemplateStore(){
         return templateStore;
     }
+    private CStationCacheSet cStationCacheSet;
+    public CStationCacheSet getcStationCacheSet() { return cStationCacheSet; }
 
     // OPTimer関連
     private OperationTimerStore operationTimerStore;
@@ -118,6 +121,8 @@ public final class Advancedautotrain extends JavaPlugin {
         // SignActionを登録する
         signActionCStation = new SignActionCStation(this);
         SignAction.register(signActionCStation);
+        cStationCacheSet = new CStationCacheSet(this);
+        cStationCacheSet.load();
 
         // OPTimerの初期化
         ConfigurationSerialization.registerClass(OperationTimer.class);

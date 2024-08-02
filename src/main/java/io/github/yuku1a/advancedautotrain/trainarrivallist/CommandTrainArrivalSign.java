@@ -17,7 +17,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     private boolean autoclean(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
         if (args.length != 2)
-            return commandsHelp(sender, "autoclean");
+            return commandsHelp(sender, "autoclean <lspawnlist>");
 
         // 必要な情報を集める
         var autosetdata = gatheringAutoSetData(sender, args[1]);

@@ -8,6 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class CommandLSpawn implements CommandExecutor {
     private final Advancedautotrain plugin;
     private final ScheduledSpawnSetStore store;
@@ -121,14 +123,8 @@ public class CommandLSpawn implements CommandExecutor {
             fmt.format(set.getTimer().currentTime())
         );
 
-        // UI
-        sender.sendMessage("(time) (savedtrainname)");
-
-        // 情報の表示
-        list.forEach((v) -> sender.sendMessage(
-            fmt.format(v.getScheduletime()) + " | " +
-            v.getSavedTrainName()
-        ));
+        // 表示
+        viewParts(sender, list);
 
         return true;
     }
@@ -320,6 +316,23 @@ public class CommandLSpawn implements CommandExecutor {
         // おわり
         sender.sendMessage("登録完了しました");
         return true;
+    }
+
+    private void viewParts(CommandSender sender, List<ScheduledSpawn> list) {
+        // 時間表示のセットアップ
+        var fmt = new TimeDurationFormat("HH:mm:ss");
+
+        // UI
+        sender.sendMessage("(time) (savedtrainname)");
+
+        // 情報の表示
+        list.forEach((v) -> viewOne(sender, v, fmt));
+    }
+
+    private void viewOne(CommandSender sender, ScheduledSpawn entry, TimeDurationFormat fmt) {
+        sender.sendMessage(
+            fmt.format(entry.getScheduletime()) + " | " +
+                entry.getSavedTrainName());
     }
 
     private boolean help(CommandSender sender) {

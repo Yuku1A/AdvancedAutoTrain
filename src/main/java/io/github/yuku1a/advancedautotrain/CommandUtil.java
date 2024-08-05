@@ -42,7 +42,8 @@ public class CommandUtil {
 
     /**
      * 15個ごとにリストを切り出します。<br>
-     * 主にMinecraftのコマンドに使用することを想定しています。
+     * 主にMinecraftのコマンドに使用することを想定しています。<br>
+     * 失敗した場合はその胸のメッセージを直接プレイヤーに送信します。
      * @param sender CommandSender
      * @param list 切り出し元のリスト
      * @param indexstr ページ番号(1から始まる)(入力されたものを直接使用することを想定しています)
@@ -64,7 +65,8 @@ public class CommandUtil {
 
     /**
      * 15個ごとにリストを切り出します。<br>
-     * 主にMinecraftのコマンドに使用することを想定しています。
+     * 主にMinecraftのコマンドに使用することを想定しています。<br>
+     * 失敗した場合はその胸のメッセージを直接プレイヤーに送信します。
      * @param sender CommandSender
      * @param list 切り出し元のリスト
      * @param index ページ番号(0から始まる)
@@ -127,7 +129,8 @@ public class CommandUtil {
     }
 
     /**
-     * 正常であればindexそのまま、不正だったら-1が返ってくる
+     * 正常であればindexそのまま、不正だったら-1が返ってくる <br>
+     * 不正だった場合はメッセージがプレイヤーに直接送信されます。
      * @param sender CommandSender
      * @param list リスト
      * @param strindex stringで表現されるインデックス
@@ -154,7 +157,8 @@ public class CommandUtil {
     }
 
     /**
-     * 正常であればindexそのまま、不正だったら-1が返ってくる
+     * 正常であればindexそのまま、不正だったら-1が返ってくる <br>
+     * 不正だった場合はメッセージがプレイヤーに直接送信されます。
      * @param sender CommandSender
      * @param list リスト
      * @param strindex stringで表現されるインデックス

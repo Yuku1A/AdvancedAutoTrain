@@ -130,10 +130,10 @@ public class CommandCStationCache implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    private final String label = "cstationcache";
+    public static final String LABEL = "cstationcache";
 
     private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage("usage: ", label + " " + usage);
+        sender.sendMessage("usage: ", LABEL + " " + usage);
         return true;
     }
 }

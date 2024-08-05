@@ -18,7 +18,7 @@ public class CommandUtil {
      * @return 切り出されたリストの入った二次元リスト
      * @param <T> 実際のデータの型
      */
-    public static <T> List<List<PagedListEntry<T>>> pager2D(List<T> list, int itemInPage) throws IndexOutOfBoundsException {
+    public static <T> List<List<PagedListEntry<T>>> pager2D(List<T> list, int itemInPage) {
         // 先に全部で何ページになるかを計算
         int totalPages = (list.size() / itemInPage) + 1;
 

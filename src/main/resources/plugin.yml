@@ -28,6 +28,9 @@ commands:
   aatdump:
     aliases: [aatdump]
     usage: /<command> <action> <arguments...>
+  cstationcache:
+    aliases: [cstationcache]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

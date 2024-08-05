@@ -66,7 +66,7 @@ public final class Advancedautotrain extends JavaPlugin {
         return templateStore;
     }
     private CStationCacheSet cStationCacheSet;
-    public CStationCacheSet getcStationCacheSet() { return cStationCacheSet; }
+    public CStationCacheSet getCStationCacheSet() { return cStationCacheSet; }
 
     // OPTimer関連
     private OperationTimerStore operationTimerStore;

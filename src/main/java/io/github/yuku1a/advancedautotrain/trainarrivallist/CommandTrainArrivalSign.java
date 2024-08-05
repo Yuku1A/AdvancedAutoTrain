@@ -627,6 +627,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         sender.sendMessage(
             "列車に紐づくArrivalSignのリストを管理します",
             "利用可能なコマンド: ",
+            "create: リストを作成します",
             "add: 項目を追加します",
             "remove: 項目を削除します",
             "view: 指定されたリストの項目を表示します",

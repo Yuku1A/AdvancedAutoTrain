@@ -128,8 +128,37 @@ public class SignActionCStation extends SignAction {
 
     @Override
     public boolean build(SignChangeActionEvent e) {
-        return SignBuildOptions.create()
-            .setName("cstation").handle(e.getPlayer());
+        var player = e.getPlayer();
+
+        // とりあえずこれはやる必要がある
+        var opt = SignBuildOptions.create()
+            .setPermission(plugin.UsePermission)
+            .setName("cstation")
+            .setDescription("configurable station");
+        var success = opt.handle(player);
+
+        // 設置が失敗した場合
+        if (!success)
+            return false;
+
+        // 設定が成功した場合、その内容をユーザーのチャットログに流す
+        var cstationName = e.getLine(2);
+        player.sendMessage("CStation Name : " + cstationName);
+
+        // CStationCacheへこのCStationの内容を登録
+        plugin.getCStationCacheSet().add(cstationName);
+
+        // opt.handle()の実質的な実行結果を返す
+        return true;
+    }
+
+    @Override
+    public void destroy(SignActionEvent info) {
+        // このCStationの情報を削除
+        var cstationName = info.getLine(2);
+        plugin.getCStationCacheSet().remove(cstationName);
+
+        super.destroy(info);
     }
 
     public SignActionCStation(Advancedautotrain plugin) {

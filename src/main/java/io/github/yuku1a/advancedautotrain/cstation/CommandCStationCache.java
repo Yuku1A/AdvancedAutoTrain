@@ -2,11 +2,15 @@ package io.github.yuku1a.advancedautotrain.cstation;
 
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-public class CommandCStationCache implements CommandExecutor {
+import java.util.List;
+
+public class CommandCStationCache implements CommandExecutor, TabCompleter {
 
     private boolean add(CommandSender sender, String[] args) {
         // コマンド指定で1つ、追加指定で1つ
@@ -89,6 +93,31 @@ public class CommandCStationCache implements CommandExecutor {
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
+        // コマンドをサジェストする
+        if (args.length <= 1) {
+            return List.of("add", "remove", "list", "build");
+        }
+
+        // コマンドに対する引数のサジェスト
+        switch (args[0]) {
+            case "remove" -> {
+                // 2個以上の引数は取らない
+                if (args.length > 2)
+                    return null;
+
+                // removeするなら既存の内容からだろうからそれをサジェスト
+                var list = plugin.getCStationCacheSet().get();
+
+                // 途中まで入力されていればそれに沿うようにサジェスト
+                return TabCompleteUtil.searchInList(args[1], list);
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
 
     private boolean help(CommandSender sender) {
         sender.sendMessage(

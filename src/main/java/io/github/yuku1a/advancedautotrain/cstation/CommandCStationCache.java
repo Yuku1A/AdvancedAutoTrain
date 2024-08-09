@@ -37,7 +37,7 @@ public class CommandCStationCache implements CommandExecutor {
 
         // 何を削除したのかを表示
         sender.sendMessage("CStation " + cstationName + " の情報を削除しました。");
-        return false;
+        return true;
     }
 
     private boolean list(CommandSender sender, String[] args) {

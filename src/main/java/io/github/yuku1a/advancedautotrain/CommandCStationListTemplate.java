@@ -123,7 +123,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
      * コマンド引数として入力される情報をパースして変換
      * @param args コマンド引数のうちCStationInfoに関連する部分<br>
      *             (acceleration) (speed) (delay) (name) [announce...] の順番
-     * @return 完成したCStationInfo、失敗していればnull(その旨のメッセージは表示済み)
+     * @return 完成したCStationInfo
      */
     private CStationInfo parseCSInfo(String[] args) {
         // 取り出し、型変換

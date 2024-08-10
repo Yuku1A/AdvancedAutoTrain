@@ -339,6 +339,10 @@ public class CommandCStationListTemplate implements CommandExecutor {
         infoViewSimple(sender, info, index, false);
     }
 
+    private void msgTemplateNotFound(CommandSender sender) {
+        sender.sendMessage("指定された名前のテンプレートは登録されていません。");
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // パーミッションチェック

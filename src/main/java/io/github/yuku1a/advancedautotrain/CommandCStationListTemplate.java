@@ -31,10 +31,10 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // テンプレートの取得
         var list = store.get(template);
-        // nullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
+        // テンプレートが登録されていなければ情報の登録もしない
         if (list == null) {
-            list = new ArrayList<>();
-            store.put(template, list);
+            msgTemplateNotFound(sender);
+            return;
         }
 
         // 引数からCStationInfoの内容だけを切り出す

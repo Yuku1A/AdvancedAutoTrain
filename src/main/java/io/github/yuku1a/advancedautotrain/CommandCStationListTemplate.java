@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class CommandCStationListTemplate implements CommandExecutor {
 
+    private final String csInfoArgText = "<acceleration> <speed> <delay> <name> [announce...]";
+
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
         // 引数のヘルプ用のテキスト

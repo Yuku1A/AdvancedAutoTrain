@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -116,6 +117,43 @@ public class CommandCStationListTemplate implements CommandExecutor {
         }
 
         // 終わり
+        return true;
+    }
+
+    private boolean insert(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレート指定で1つ、インデックスで1つ、パラメータが4つ
+        if (args.length < 7)
+            return commandsHelp(sender, "insert <template> <index> " + csInfoArgText);
+
+        // テンプレート指定
+        var template = args[1];
+
+        // テンプレートの取得
+        var list = store.get(template);
+        if (list == null) {
+            msgTemplateNotFound(sender);
+            return true;
+        }
+
+        // インデックス取得
+        var index = CommandUtil.tryParseIndex(sender, list, args[2]);
+        // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
+        if (index == -1)
+            return true;
+
+        // 引数のなかからCStationInfoの情報を抜き出す
+        var csInfoParam = Arrays.copyOfRange(args, 3, args.length);
+
+        // CStationInfoを生成
+        var info = parseCSInfo(csInfoParam);
+
+        // CStationInfoを挿入
+        list.add(index, info);
+
+        // 完了メッセージ
+        sender.sendMessage("要素の挿入を完了しました。");
+        infoViewOne(sender, info, index);
+
         return true;
     }
 
@@ -370,7 +408,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
-            case "add","replace","insert" -> add(sender, args);
+            case "add","replace" -> add(sender, args);
+            case "insert" -> insert(sender, args);
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);
             case "copy" -> copy(sender, args);

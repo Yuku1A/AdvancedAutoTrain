@@ -16,28 +16,30 @@ public class CommandCStationListTemplate implements CommandExecutor {
     private final String csInfoArgText = "<acceleration> <speed> <delay> <name> [announce...]";
 
     // addコマンド
-    private boolean add(CommandSender sender, String[] args) {
+    private void add(CommandSender sender, String[] args) {
         // 引数のヘルプ用のテキスト
         var argtext = "<template> <acceleration> <speed> <delay> <name> [announce]";
 
         if (args[0].equals("add")) {
             // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ、オプションありで7つ
             if ((6 > args.length) || (args.length > 7)) {
-                return CommandUtil.commandsHelp(
+                CommandUtil.commandsHelp(
                     sender,
                     "cslt add " + argtext
                 );
+                return;
             }
         } else if(args[0].equals("replace") || args[0].equals("insert")) {
             // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つとインデックスで計7つ、オプションありで8つ
             if ((7 > args.length) || (args.length > 8)) {
-                return CommandUtil.commandsHelp(
+                CommandUtil.commandsHelp(
                     sender,
                     "cslt " + args[0] + " " + argtext + " <index>"
                 );
+                return;
             }
         } else {
-            return false;
+            return;
         }
 
         // テンプレート指定
@@ -76,7 +78,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // add以外の操作だと元リストがないと意味がなくはある
         if (!args[0].equals("add") && list == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
+            return;
         }
         // addかつnullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
         else if (list == null) {
@@ -91,7 +93,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
             // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
             if (index == -1)
-                return true;
+                return;
         }
 
         // addコマンドだとそのままinfoをlistへ追加、そのまま完了
@@ -117,13 +119,14 @@ public class CommandCStationListTemplate implements CommandExecutor {
         }
 
         // 終わり
-        return true;
     }
 
-    private boolean insert(CommandSender sender, String[] args) {
+    private void insert(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ、インデックスで1つ、パラメータが4つ
-        if (args.length < 7)
-            return commandsHelp(sender, "insert <template> <index> " + csInfoArgText);
+        if (args.length < 7) {
+            commandsHelp(sender, "insert <template> <index> " + csInfoArgText);
+            return;
+        }
 
         // テンプレート指定
         var template = args[1];
@@ -132,14 +135,14 @@ public class CommandCStationListTemplate implements CommandExecutor {
         var list = store.get(template);
         if (list == null) {
             msgTemplateNotFound(sender);
-            return true;
+            return;
         }
 
         // インデックス取得
         var index = CommandUtil.tryParseIndex(sender, list, args[2]);
         // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
         if (index == -1)
-            return true;
+            return;
 
         // 引数のなかからCStationInfoの情報を抜き出す
         var csInfoParam = Arrays.copyOfRange(args, 3, args.length);
@@ -154,7 +157,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         sender.sendMessage("要素の挿入を完了しました。");
         infoViewOne(sender, info, index);
 
-        return true;
     }
 
     /**
@@ -199,10 +201,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
     }
 
     // removeコマンド
-    private boolean remove(CommandSender sender, String[] args) {
+    private void remove(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、インデックスで1つ
-        if (args.length != 3)
-            return CommandUtil.commandsHelp(sender, "cslt remove <template> <index>");
+        if (args.length != 3) {
+            CommandUtil.commandsHelp(sender, "cslt remove <template> <index>");
+            return;
+        }
 
         // 指定されたテンプレートを取得
         var list = store.get(args[1]);
@@ -212,7 +216,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // nullが投げ込まれたら相応のメッセージを出すだけ
         if (list == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
+            return;
         }
 
         // 検査
@@ -220,21 +224,22 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // ひっかかってたら弾く
         if (index == -1)
-            return true;
+            return;
 
         // 実際の削除処理
         list.remove(index);
         sender.sendMessage("テンプレート " + args[1] + " の " + index + "番目の項目が削除されました。");
 
         // おわり
-        return true;
     }
 
     // viewコマンド
-    private boolean view(CommandSender sender, String[] args) {
+    private void view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
-        if ((2 > args.length) || (args.length > 3))
-            return CommandUtil.commandsHelp(sender, "cslt view <template> <page>");
+        if ((2 > args.length) || (args.length > 3)) {
+            CommandUtil.commandsHelp(sender, "cslt view <template> <page>");
+            return;
+        }
 
         // 名前を出しておく
         var templatename = args[1];
@@ -247,13 +252,13 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // nullが投げ込まれたら相応のメッセージを出すだけ
         if (rawlist == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
+            return;
         }
 
         // 数が少なければそのまま表示
         if (rawlist.size() < 16){
             infoView(sender, templatename, rawlist, -1, 0);
-            return true;
+            return;
         }
 
         String indexstr;
@@ -269,7 +274,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             index = Integer.parseUnsignedInt(indexstr) - 1;
         } catch (Exception e) {
             sender.sendMessage("ページ番号は1以上の数値で指定してください。");
-            return true;
+            return;
         }
 
         // ページングを丸投げ
@@ -277,20 +282,21 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // listがnullだったら警告文とかも出てるのでおわり
         if (list == null)
-            return true;
+            return;
 
         // 分割されたやつを表示
         infoView(sender, templatename, list, index, CommandUtil.calcMaxPageIndex(rawlist));
 
         // おわり
-        return true;
     }
 
     // infoコマンド
-    private boolean info(CommandSender sender, String[] args) {
+    private void info(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、インデックス指定で計3つ
-        if (args.length != 3)
-            return CommandUtil.commandsHelp(sender, "cslt info <template> <index>");
+        if (args.length != 3) {
+            CommandUtil.commandsHelp(sender, "cslt info <template> <index>");
+            return;
+        }
 
         // 名前を出しておく
         var templatename = args[1];
@@ -303,7 +309,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // nullが投げ込まれたら相応のメッセージを出すだけ
         if (list == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
+            return;
         }
 
         // インデックスをパース
@@ -311,13 +317,12 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // -1だと機能しない値かつちゃんとメッセージが出てるので蹴る
         if (index == -1)
-            return true;
+            return;
 
         // 表示
         infoViewOne(sender, list.get(index), index);
 
         // おわり
-        return true;
     }
 
     // info(コマンドではない)を表示する用
@@ -403,7 +408,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         }
 
         // コマンドごとに分岐やる、この構文めちゃ便利
-        return switch (args[0]) {
+        switch (args[0]) {
             case "list" -> list(sender, args);
             case "save" -> save(sender);
             case "load" -> load(sender);
@@ -415,15 +420,18 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "copy" -> copy(sender, args);
             case "info" -> info(sender, args);
             default -> help(sender);
-        };
+        }
+        return true;
     }
 
     // ボイラープレートじみたコード類
     // listコマンド
-    private boolean list(CommandSender sender, String[] args) {
+    private void list(CommandSender sender, String[] args) {
         // コマンドで1つ、ページで1つまで
-        if (args.length > 2)
-            return CommandUtil.commandsHelp(sender, "cslt list <page>");
+        if (args.length > 2) {
+            CommandUtil.commandsHelp(sender, "cslt list <page>");
+            return;
+        }
 
         // storeからキーのコレクションを取得する
         var rawlist = store.keysList();
@@ -432,7 +440,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         if (rawlist.size() < 16){
             sender.sendMessage("----- template list -----");
             rawlist.forEach(sender::sendMessage);
-            return true;
+            return;
         }
 
         String index;
@@ -447,7 +455,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // listがnullだったら警告文とかも出てるのでおわり
         if (list == null)
-            return true;
+            return;
 
         // 分割されたやつを表示
         sender.sendMessage(
@@ -458,14 +466,15 @@ public class CommandCStationListTemplate implements CommandExecutor {
         list.forEach(sender::sendMessage);
 
         // おわり
-        return true;
     }
 
     // removetコマンド
-    private boolean removet(CommandSender sender, String[] args) {
+    private void removet(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ
-        if (args.length != 2)
-            return CommandUtil.commandsHelp(sender, "cslt removet <template>");
+        if (args.length != 2) {
+            CommandUtil.commandsHelp(sender, "cslt removet <template>");
+            return;
+        }
 
         // 指定されたテンプレートを削除
         store.remove(args[1]);
@@ -473,14 +482,15 @@ public class CommandCStationListTemplate implements CommandExecutor {
             "指定されたテンプレート " + args[1] +
                 " は、削除されました。"
         );
-        return true;
     }
 
     // copyコマンド
-    private boolean copy(CommandSender sender, String[] args) {
+    private void copy(CommandSender sender, String[] args) {
         // コマンド指定で1つ、コピー元と先指定で2つ
-        if (args.length != 3)
-            return CommandUtil.commandsHelp(sender, "cslt copy <from> <to>");
+        if (args.length != 3) {
+            CommandUtil.commandsHelp(sender, "cslt copy <from> <to>");
+            return;
+        }
 
         // 普通にコピー
         var from = store.get(args[1]);
@@ -490,7 +500,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // nullが投げ込まれたら相応のメッセージを出すだけ
         if (from == null) {
             sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return true;
+            return;
         }
 
         // storeへset
@@ -498,25 +508,22 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
         // おわり
         sender.sendMessage("コピーが完了しました。");
-        return true;
     }
 
     // saveコマンド
-    private boolean save(CommandSender sender) {
+    private void save(CommandSender sender) {
         if (store.save())
             sender.sendMessage("Save Successful!");
         else
             sender.sendMessage("Save Failed");
-        return true;
     }
 
     // loadコマンド
-    private boolean load(CommandSender sender) {
+    private void load(CommandSender sender) {
         if (store.load())
             sender.sendMessage("Data Loaded");
         else
             sender.sendMessage("Data Load Failed");
-        return true;
     }
 
     // helpコマンド
@@ -542,10 +549,9 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return false;
     }
 
-    private boolean commandsHelp(CommandSender sender, String usage) {
+    private void commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage; ",
                            LABEL + " " + usage);
-        return true;
     }
 
     public static final String LABEL = "cslt";

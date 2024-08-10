@@ -20,108 +20,36 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // addコマンド
     private void add(CommandSender sender, String[] args) {
-        // 引数のヘルプ用のテキスト
-        var argtext = "<template> <acceleration> <speed> <delay> <name> [announce]";
-
-        if (args[0].equals("add")) {
-            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ、オプションありで7つ
-            if ((6 > args.length) || (args.length > 7)) {
-                CommandUtil.commandsHelp(
-                    sender,
-                    "cslt add " + argtext
-                );
-                return;
-            }
-        } else if(args[0].equals("replace") || args[0].equals("insert")) {
-            // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つとインデックスで計7つ、オプションありで8つ
-            if ((7 > args.length) || (args.length > 8)) {
-                CommandUtil.commandsHelp(
-                    sender,
-                    "cslt " + args[0] + " " + argtext + " <index>"
-                );
-                return;
-            }
-        } else {
+        // コマンド指定で1つ、テンプレート指定で1つ、パラメータが4つで計6つ
+        if (args.length < 6) {
+            commandsHelp(sender,"add <template>" + csInfoArgText);
             return;
         }
 
         // テンプレート指定
         var template = args[1];
 
-        // 取り出し、型変換
-        var section = args[2];
-        var speed = args[3];
-        var delay = args[4];
-        var name = args[5];
-
-        // stationのsignを生成する
-        var line2 = "station " + section;
-        var line3 = delay;
-        var line4 = "route continue " + speed;
-        var lines = new String[]{line2, line3, line4};
-
-        // announceとindexを取り出す
-        String announce;
-        // addの7個ある場合のみ6にannounceがある
-        if ((args.length == 7) && (args[0].equals("add")))
-            announce = args[6];
-            // それ以外は8個ある場合のみ6にannounceがある(7個だとそこにindexがある)
-        else if(args.length == 8)
-            announce = args[6];
-        else
-            announce = null;
-
-        // CStationInfoを生成する
-        var info = new CStationInfo(name, lines, announce);
-
-        // テンプレートがちゃんとあるのを確認する
-        // テンプレート指定
-        var list = store.get(args[1]);
-        // チェック用
-        // add以外の操作だと元リストがないと意味がなくはある
-        if (!args[0].equals("add") && list == null) {
-            sender.sendMessage("指定された名前のテンプレートは登録されていません。");
-            return;
-        }
-        // addかつnullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
-        else if (list == null) {
+        // テンプレートの取得
+        var list = store.get(template);
+        // nullだったら新しく作って登録する(取り消すことはない・・・たぶん・・・
+        if (list == null) {
             list = new ArrayList<>();
             store.put(template, list);
         }
 
-        // add以外だとindexが存在するので読み取る
-        int index = -1;
+        // 引数からCStationInfoの内容だけを切り出す
+        var csInfoArgs = Arrays.copyOfRange(args, 2, args.length);
 
-        if (!args[0].equals("add")) {
-            index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
-            // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
-            if (index == -1)
-                return;
-        }
+        // CStationInfoを生成する
+        var info = parseCSInfo(csInfoArgs);
 
-        // addコマンドだとそのままinfoをlistへ追加、そのまま完了
-        switch (args[0]) {
-            case "add" -> {
-                list.add(info);
-                sender.sendMessage("要素の追加を完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, info, list.size() - 1);
-            }
-            case "replace" -> {
-                list.set(index, info);
-                sender.sendMessage("項目の置き換えが完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, info, index);
-            }
-            case "insert" -> {
-                list.add(index, info);
-                sender.sendMessage("項目の挿入が完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, info, index);
-            }
-        }
+        // 単に追加するのみ
+        list.add(info);
 
-        // 終わり
+        // 終了メッセージ
+        sender.sendMessage("要素の追加を完了しました。");
+        // 追加したものの内容を表示する
+        infoViewOne(sender, info, list.size() - 1);
     }
 
     private void insert(CommandSender sender, String[] args) {

@@ -159,6 +159,44 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     }
 
+    private void replace(CommandSender sender, String[] args) {
+        // コマンドで1つ、テンプレート指定で1つ、インデックスで1つ、パラメータが4つ
+        if (args.length < 7) {
+            commandsHelp(sender, "replace <template> <index> " + csInfoArgText);
+            return;
+        }
+
+        // テンプレート指定
+        var template = args[1];
+
+        // テンプレートの取得
+        var list = store.get(template);
+        if (list == null) {
+            msgTemplateNotFound(sender);
+            return;
+        }
+
+        // インデックス取得
+        var index = CommandUtil.tryParseIndex(sender, list, args[2]);
+        // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
+        if (index == -1)
+            return;
+
+        // 引数のなかからCStationInfoの情報を抜き出す
+        var csInfoParam = Arrays.copyOfRange(args, 3, args.length);
+
+        // CStationInfoを生成
+        var info = parseCSInfo(csInfoParam);
+
+        // CStationInfoを挿入
+        list.set(index, info);
+
+        // 完了メッセージ
+        sender.sendMessage("要素の置換を完了しました。");
+        infoViewOne(sender, info, index);
+
+    }
+
     /**
      * コマンド引数として入力される情報をパースして変換
      * @param args コマンド引数のうちCStationInfoに関連する部分<br>
@@ -413,7 +451,8 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
-            case "add","replace" -> add(sender, args);
+            case "add" -> add(sender, args);
+            case "replace" -> replace(sender, args);
             case "insert" -> insert(sender, args);
             case "remove" -> remove(sender, args);
             case "removet" -> removet(sender, args);

@@ -125,6 +125,47 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return true;
     }
 
+    /**
+     * コマンド引数として入力される情報をパースして変換
+     * @param args コマンド引数のうちCStationInfoに関連する部分<br>
+     *             (acceleration) (speed) (delay) (name) [announce...] の順番
+     * @return 完成したCStationInfo、失敗していればnull(その旨のメッセージは表示済み)
+     */
+    private CStationInfo parseCSInfo(String[] args) {
+        // 取り出し、型変換
+        var section = args[0];
+        var speed = args[1];
+        var delay = args[2];
+        var name = args[3];
+
+        // stationのsignを生成する
+        var line2 = "station " + section;
+        var line4 = "route continue " + speed;
+        var lines = new String[]{line2, delay, line4};
+
+        // announceを取り出す
+        StringBuilder announce;
+        if (args.length > 4) {
+            announce = new StringBuilder();
+            for (int i = 4 ; i < args.length ; i++) {
+                // 2回目以降は空白を追加する
+                if (!announce.isEmpty())
+                    announce.append(" ");
+                announce.append(args[i]);
+            }
+        }
+        else
+            announce = null;
+
+        // CStationInfoを生成する
+        CStationInfo info;
+        if (announce != null)
+            info = new CStationInfo(name, lines, announce.toString());
+        else
+            info = new CStationInfo(name, lines, null);
+        return info;
+    }
+
     // removeコマンド
     private boolean remove(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、インデックスで1つ

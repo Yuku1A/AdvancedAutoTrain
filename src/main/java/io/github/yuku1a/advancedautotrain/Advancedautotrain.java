@@ -32,6 +32,7 @@ import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordExecutor;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordList;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordStore;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordingManager;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -172,39 +173,39 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // Cstation絡みのenable
         cStationListProperty.enable(this);
-        getCommand(CommandCStationListTemplate.LABEL).setExecutor(new CommandCStationListTemplate(this));
+        commandRegister(CommandCStationListTemplate.LABEL, new CommandCStationListTemplate(this));
         getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);
-        getCommand(CommandCStationCache.LABEL).setExecutor(new CommandCStationCache(this));
+        commandRegister(CommandCStationCache.LABEL, new CommandCStationCache(this));
 
         // OPTimer絡みのenable
         operationTimerStore.restore();
-        getCommand("operationtimer").setExecutor(new CommandOperationTimer(this));
+        commandRegister("operationtimer", new CommandOperationTimer(this));
 
         // ArrivalList絡みのenable
         signListStore.enable();
-        getCommand("arrivallist").setExecutor(new CommandArrivalList(this));
+        commandRegister("arrivallist", new CommandArrivalList(this));
         getServer().getPluginManager().registerEvents(new CStationLeaveListener(this), this);
 
         // LSpawn絡みのenable
         spawnListStore.enable();
-        getCommand("lspawn").setExecutor(new CommandLSpawn(this));
+        commandRegister("lspawn", new CommandLSpawn(this));
         getServer().getPluginManager().registerEvents(new NamedTrainSpawnEventExecutor(this), this);
         lSpawnSignManager.enable();
 
         // TrainPreset絡みのenable
-        getCommand("tpreset").setExecutor(new CommandTrainPreset(this));
+        commandRegister("tpreset", new CommandTrainPreset(this));
         getServer().getPluginManager().registerEvents(new TrainPresetExecutor(this, trainPresetStore), this);
 
         // TrainRecord絡みのenable
         trainRecordStore.load();
-        getCommand("trec").setExecutor(new CommandTrainRecord(this));
+        commandRegister("trec", new CommandTrainRecord(this));
         getServer().getPluginManager().registerEvents(new TrainRecordExecutor(this), this);
 
         // TrainArrivalList絡みのenable
-        getCommand("tal").setExecutor(new CommandTrainArrivalSign(this));
+        commandRegister("tal", new CommandTrainArrivalSign(this));
 
         // AATDump絡みのenable
-        getCommand("aatdump").setExecutor(new CommandAATDump(this));
+        commandRegister("aatdump", new CommandAATDump(this));
     }
 
     @Override
@@ -238,5 +239,13 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // TrainArrivalList絡みの処理
         trainArrivalSignStore.save();
+    }
+
+    private void commandRegister(String label, CommandExecutor commandInstance) {
+        var command = getCommand(label);
+
+        if (command != null) {
+            command.setExecutor(commandInstance);
+        }
     }
 }

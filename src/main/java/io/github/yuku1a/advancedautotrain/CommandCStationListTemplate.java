@@ -169,6 +169,30 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return info;
     }
 
+    private void create(CommandSender sender, String[] args) {
+        // コマンドで1つ、名前指定で1つ
+        if (args.length != 2) {
+            commandsHelp(sender, "create <templatename>");
+            return;
+        }
+
+        // 新規作成するテンプレートの名前
+        var name = args[1];
+
+        // あるかどうかを確認する、すでにあったら作らない
+        var list = store.get(name);
+        if (list != null) {
+            sender.sendMessage("その名前のテンプレートは既に作成されています。");
+            return;
+        }
+
+        // 同じ名前のものはないので新規作成する
+        store.put(name, new ArrayList<>());
+
+        // 終了メッセージ
+        sender.sendMessage("テンプレート " + name + " を新規作成しました。");
+    }
+
     // removeコマンド
     private void remove(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、インデックスで1つ
@@ -389,6 +413,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
             case "removet" -> removet(sender, args);
             case "copy" -> copy(sender, args);
             case "info" -> info(sender, args);
+            case "create" -> create(sender, args);
             default -> help(sender);
         }
         return true;
@@ -501,6 +526,7 @@ public class CommandCStationListTemplate implements CommandExecutor {
         sender.sendMessage(
             "CStationに対する動作のテンプレートを管理します",
             "利用可能なコマンド: ",
+            "create: テンプレートを新規作成します",
             "add: 項目を追加します",
             "remove: 項目を削除します",
             "view: 指定されたテンプレートの項目を表示します",

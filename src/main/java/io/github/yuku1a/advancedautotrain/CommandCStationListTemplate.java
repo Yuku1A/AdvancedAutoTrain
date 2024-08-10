@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class CommandCStationListTemplate implements CommandExecutor {
 
+    /**
+     * CStationInfoの追加関連のコマンドのヘルプ用テキスト
+     */
     private final String csInfoArgText = "<acceleration> <speed> <delay> <name> [announce...]";
 
     // addコマンド

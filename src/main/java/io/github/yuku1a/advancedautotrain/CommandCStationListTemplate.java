@@ -505,5 +505,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
         return false;
     }
 
+    private boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage("usage; ",
+                           LABEL + " " + usage);
+        return true;
+    }
+
     public static final String LABEL = "cslt";
 }

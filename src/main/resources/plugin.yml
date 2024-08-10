@@ -4,8 +4,8 @@ main: io.github.yuku1a.advancedautotrain.Advancedautotrain
 api-version: 1.19
 depend: [ Train_Carts, SignLink]
 commands:
-  cstationlisttemplate:
-    aliases: [cstationlisttemplate, cslt]
+  cslt:
+    aliases: [cslt]
     usage: /<command> <action> <arguments...>
   operationtimer:
     aliases: [ operationtimer, optimer ]

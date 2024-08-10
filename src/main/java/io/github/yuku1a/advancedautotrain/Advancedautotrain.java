@@ -172,7 +172,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // Cstation絡みのenable
         cStationListProperty.enable(this);
-        getCommand("cstationlisttemplate").setExecutor(new CommandCStationListTemplate(this));
+        getCommand(CommandCStationListTemplate.LABEL).setExecutor(new CommandCStationListTemplate(this));
         getServer().getPluginManager().registerEvents(new ListenerGroupRemove(), this);
         getCommand(CommandCStationCache.LABEL).setExecutor(new CommandCStationCache(this));
 

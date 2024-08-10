@@ -504,4 +504,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         }
         return false;
     }
+
+    public static final String LABEL = "cslt";
 }

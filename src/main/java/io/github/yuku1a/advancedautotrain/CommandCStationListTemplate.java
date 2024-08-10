@@ -11,14 +11,6 @@ import java.util.List;
  * cstationlisttemplate、csltコマンドを実装するクラス
  */
 public class CommandCStationListTemplate implements CommandExecutor {
-    private final CStationListTemplateStore store;
-    private final Advancedautotrain plugin;
-
-    // プラグインが生成する用
-    public CommandCStationListTemplate(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getCStationListTemplateStore();
-    }
 
     // addコマンド
     private boolean add(CommandSender sender, String[] args) {
@@ -512,4 +504,13 @@ public class CommandCStationListTemplate implements CommandExecutor {
     }
 
     public static final String LABEL = "cslt";
+
+    private final CStationListTemplateStore store;
+    private final Advancedautotrain plugin;
+
+    // プラグインが生成する用
+    public CommandCStationListTemplate(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getCStationListTemplateStore();
+    }
 }

@@ -1,5 +1,6 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.utils.commands.CommonMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -467,6 +468,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // saveコマンド
     private void save(CommandSender sender) {
+        if (!sender.hasPermission(plugin.AdminPermission)){
+            CommonMessage.dontHavePermission(sender);
+            return;
+        }
+
         if (store.save())
             sender.sendMessage("Save Successful!");
         else
@@ -475,6 +481,11 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     // loadコマンド
     private void load(CommandSender sender) {
+        if (!sender.hasPermission(plugin.AdminPermission)){
+            CommonMessage.dontHavePermission(sender);
+            return;
+        }
+
         if (store.load())
             sender.sendMessage("Data Loaded");
         else
@@ -491,16 +502,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         // 引数0の場合はコマンドが指定されていない
         if (args.length == 0)
             return help(sender);
-
-        // 管理用コマンドだけ追加の権限チェック
-        switch (args[0]) {
-            case "load","save" -> {
-                if (!sender.hasPermission(plugin.AdminPermission)){
-                    sender.sendMessage("必要な権限がありません");
-                    return true;
-                }
-            }
-        }
 
         // コマンドごとに分岐やる、この構文めちゃ便利
         switch (args[0]) {

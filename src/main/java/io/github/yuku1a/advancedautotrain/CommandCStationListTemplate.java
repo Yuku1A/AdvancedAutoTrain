@@ -379,46 +379,6 @@ public class CommandCStationListTemplate implements CommandExecutor {
         sender.sendMessage("指定された名前のテンプレートは登録されていません。");
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-        // 引数0の場合はコマンドが指定されていない
-        if (args.length == 0)
-            return help(sender);
-
-        // 管理用コマンドだけ追加の権限チェック
-        switch (args[0]) {
-            case "load","save" -> {
-                if (!sender.hasPermission(plugin.AdminPermission)){
-                    sender.sendMessage("必要な権限がありません");
-                    return true;
-                }
-            }
-        }
-
-        // コマンドごとに分岐やる、この構文めちゃ便利
-        switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "save" -> save(sender);
-            case "load" -> load(sender);
-            case "view" -> view(sender, args);
-            case "add" -> add(sender, args);
-            case "replace" -> replace(sender, args);
-            case "insert" -> insert(sender, args);
-            case "remove" -> remove(sender, args);
-            case "removet" -> removet(sender, args);
-            case "copy" -> copy(sender, args);
-            case "info" -> info(sender, args);
-            case "create" -> create(sender, args);
-            default -> help(sender);
-        }
-        return true;
-    }
-
     // ボイラープレートじみたコード類
     // listコマンド
     private void list(CommandSender sender, String[] args) {
@@ -519,6 +479,46 @@ public class CommandCStationListTemplate implements CommandExecutor {
             sender.sendMessage("Data Loaded");
         else
             sender.sendMessage("Data Load Failed");
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+        // 引数0の場合はコマンドが指定されていない
+        if (args.length == 0)
+            return help(sender);
+
+        // 管理用コマンドだけ追加の権限チェック
+        switch (args[0]) {
+            case "load","save" -> {
+                if (!sender.hasPermission(plugin.AdminPermission)){
+                    sender.sendMessage("必要な権限がありません");
+                    return true;
+                }
+            }
+        }
+
+        // コマンドごとに分岐やる、この構文めちゃ便利
+        switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "save" -> save(sender);
+            case "load" -> load(sender);
+            case "view" -> view(sender, args);
+            case "add" -> add(sender, args);
+            case "replace" -> replace(sender, args);
+            case "insert" -> insert(sender, args);
+            case "remove" -> remove(sender, args);
+            case "removet" -> removet(sender, args);
+            case "copy" -> copy(sender, args);
+            case "info" -> info(sender, args);
+            case "create" -> create(sender, args);
+            default -> help(sender);
+        }
+        return true;
     }
 
     // helpコマンド

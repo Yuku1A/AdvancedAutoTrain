@@ -95,6 +95,10 @@ public class CommandCStationCache implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
+        // 権限チェック
+        if (sender.hasPermission(plugin.UsePermission))
+            return null;
+
         // コマンドをサジェストする
         if (args.length <= 1) {
             return List.of("add", "remove", "list", "build");

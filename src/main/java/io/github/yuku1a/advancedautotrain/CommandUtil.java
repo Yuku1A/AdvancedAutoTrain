@@ -134,7 +134,7 @@ public class CommandUtil {
      * @param sender CommandSender
      * @param list リスト
      * @param strindex stringで表現されるインデックス
-     * @return パースされたindex(1起点)、パースできなかった場合-1
+     * @return パースされたindex、パースできなかった場合-1
      */
     public static int tryParseIndex(CommandSender sender, List<?> list, String strindex) {
         // インデックスがintに変換できることを確認
@@ -158,7 +158,9 @@ public class CommandUtil {
 
     /**
      * 正常であればindexそのまま、不正だったら-1が返ってくる <br>
-     * 不正だった場合はメッセージがプレイヤーに直接送信されます。
+     * 不正だった場合はメッセージがプレイヤーに直接送信されます。<br>
+     * 入力されるページ指定のインデックスを直接使用できる形式に変換するため、<br>
+     * 1と入力されている場合返ってくるのは0になります。
      * @param sender CommandSender
      * @param list リスト
      * @param strindex stringで表現されるインデックス

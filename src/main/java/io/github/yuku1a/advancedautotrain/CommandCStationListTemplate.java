@@ -1,9 +1,11 @@
 package io.github.yuku1a.advancedautotrain;
 
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import io.github.yuku1a.advancedautotrain.utils.commands.CommonMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +14,7 @@ import java.util.List;
 /**
  * cstationlisttemplate、csltコマンドを実装するクラス
  */
-public class CommandCStationListTemplate implements CommandExecutor {
+public class CommandCStationListTemplate implements CommandExecutor, TabCompleter {
 
     /**
      * CStationInfoの追加関連のコマンドのヘルプ用テキスト
@@ -53,6 +55,41 @@ public class CommandCStationListTemplate implements CommandExecutor {
         infoViewOne(sender, info, list.size() - 1);
     }
 
+    private List<String> addTab(CommandSender sender, String[] args) {
+        // インスペクション対策
+        if (args.length < 2)
+            return null;
+
+        // add <template> <acceleration> <speed> <delay> <name> [announce...]
+        // <template>
+        var templateName = args[1];
+        if (args.length == 2) {
+            var templateList = store.keysList();
+            return TabCompleteUtil.searchInList(templateName, templateList);
+        }
+
+        // 追加の場合、最後の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
+        var template = store.get(templateName);
+        if (template == null)
+            return null;
+
+        var lastInfo = template.get(template.size() - 1);
+
+        // <acceleration> <speed> <delay> だけだったら共通化できる
+        if (args.length <= 5) {
+            return configTabComplete(Arrays.copyOfRange(args, 2, args.length), lastInfo);
+        }
+
+        // <name>
+        if (args.length == 6) {
+            var csList = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[5], csList);
+        }
+
+        // [announce...] はここではやる必要がない
+        return null;
+    }
+
     private void insert(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ、インデックスで1つ、パラメータが4つ
         if (args.length < 7) {
@@ -91,6 +128,57 @@ public class CommandCStationListTemplate implements CommandExecutor {
 
     }
 
+    private List<String> insertTab(CommandSender sender, String[] args) {
+        // インスペクション対策
+        if (args.length < 2)
+            return null;
+
+        // insert <template> <index> <acceleration> <speed> <delay> <name> [announce...]
+        // <template>
+        var templateName = args[1];
+        if (args.length == 2) {
+            var templateList = store.keysList();
+            return TabCompleteUtil.searchInList(templateName, templateList);
+        }
+
+        // indexはサジェストしない
+        if (args.length == 3)
+            return null;
+
+        // 挿入の場合、一つ前の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
+        var template = store.get(templateName);
+        if (template == null)
+            return null;
+
+        var indexStr = args[2];
+        var tmpindex = CommandUtil.tryParseIndex(sender, template, indexStr);
+        if (tmpindex == -1)
+            return null;
+
+        // 指定された位置の一つ前の要素または0番目の要素(-1は無理)
+        int index;
+        if (tmpindex == 0)
+            index = 0;
+        else
+            index = tmpindex - 1;
+
+        var lastInfo = template.get(index);
+
+        // <acceleration> <speed> <delay> だけだったら共通化できる
+        if (args.length <= 6) {
+            return configTabComplete(Arrays.copyOfRange(args, 3, args.length), lastInfo);
+        }
+
+        // <name>
+        if (args.length == 7) {
+            var csList = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[6], csList);
+        }
+
+        // [announce...] はここではやる必要がない
+        return null;
+    }
+
     private void replace(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ、インデックスで1つ、パラメータが4つ
         if (args.length < 7) {
@@ -127,6 +215,71 @@ public class CommandCStationListTemplate implements CommandExecutor {
         sender.sendMessage("要素の置換を完了しました。");
         infoViewOne(sender, info, index);
 
+    }
+
+    /**
+     * CStationの設定に関する部分だけ<br>
+     * 指定されたCStationから自動補完をする
+     * @param args 引数 [acceleration, speed, delay]の部分のみ
+     * @param csInfo CStationInfo
+     * @return そのままonTabCompleteに使えるリスト
+     */
+    private List<String> configTabComplete(String[] args, CStationInfo csInfo) {
+        // CStationInfoのチェック
+        var signText = csInfo.getSignText();
+        if (signText == null || signText.length != 3)
+            return null;
+
+        // <acceleration>
+        if (args.length == 1) {
+            // 情報は2行目の一部
+            var line2Text = signText[0];
+            if (line2Text == null)
+                return null;
+
+            var line2Array = line2Text.split(" ");
+
+            // 最初から2つめのテキストが加速度設定
+            if (line2Array.length < 2)
+                return null;
+
+            var accelText = line2Array[1];
+            if (accelText == null)
+                return null;
+
+            return List.of(accelText);
+        }
+
+        // <speed>
+        if (args.length == 2) {
+            // 情報は4行目の一部
+            var line4Text = signText[2];
+            if (line4Text == null)
+                return null;
+
+            var line4Array = line4Text.split(" ");
+
+            // 最初から3つめのテキストが速度設定
+            if (line4Array.length < 3)
+                return null;
+
+            var speedText = line4Array[2];
+            if (speedText == null)
+                return null;
+
+            return List.of(speedText);
+        }
+
+        // <delay>
+        if (args.length == 3) {
+            var delayText = signText[1];
+            if (delayText == null)
+                return null;
+
+            return List.of(delayText);
+        }
+
+        return null;
     }
 
     /**
@@ -520,6 +673,27 @@ public class CommandCStationListTemplate implements CommandExecutor {
             default -> help(sender);
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        // 権限チェック
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        // コマンドをサジェストする
+        if (args.length <= 1) {
+            // 管理コマンドはサジェストしなくたっていい
+            return List.of("create", "add", "remove", "view", "list",
+                           "removet", "copy", "replace", "insert");
+        }
+
+        // コマンドごとのサジェストはそれぞれのメソッドへ
+        return switch (args[0]) {
+            case "add" -> addTab(sender, args);
+            case "insert" -> insertTab(sender, args);
+            default -> null;
+        };
     }
 
     // helpコマンド

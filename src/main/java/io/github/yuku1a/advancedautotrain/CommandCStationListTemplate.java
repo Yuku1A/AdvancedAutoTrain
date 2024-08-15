@@ -205,6 +205,51 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // 引数のなかからCStationInfoの情報を抜き出す
         var csInfoParam = Arrays.copyOfRange(args, 3, args.length);
 
+        // csInfoParamの2番目が時間の情報なのでこれを編集しやすくする
+        var delayArg = csInfoParam[2];
+
+        // 元のCStationInfoを持ってくる
+        var prevCSInfo = list.get(index);
+        var signText = prevCSInfo.getSignText();
+
+        // 正常な場合のみ元の情報をベースに動くようにする
+        if (signText != null && signText.length == 3) {
+            // 元のdelayをここで持ってくる
+            var prevDelay = signText[1];
+
+            // プラスかマイナスを認識した場合、その通りに増減させる
+            if (delayArg.startsWith("+") || delayArg.startsWith("-")) {
+                // 元データが数値である保証がないのでチェック
+                int prevDelayInt;
+                try {
+                    prevDelayInt = Integer.parseUnsignedInt(prevDelay);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage("元データが壊れているため、相対指定はできません");
+                    return;
+                }
+
+                // 当然新しいものも数値である保証はない
+                int delayArgInt;
+                try {
+                    delayArgInt = Integer.parseInt(delayArg);
+                } catch (NumberFormatException e){
+                    sender.sendMessage("delayが数値ではありません");
+                    return;
+                }
+
+                // マイナスに行くとまあ壊れるはずなので検証もする
+                int newDelayInt = prevDelayInt + delayArgInt;
+                if (newDelayInt < 0) {
+                    sender.sendMessage("delayが短すぎます。");
+                    return;
+                }
+
+                // 新しいdelay値を文字列に変換してcsInfoParamを入れ替え
+                String newDelay = String.valueOf(newDelayInt);
+                csInfoParam[2] = newDelay;
+            }
+        }
+
         // CStationInfoを生成
         var info = parseCSInfo(csInfoParam);
 

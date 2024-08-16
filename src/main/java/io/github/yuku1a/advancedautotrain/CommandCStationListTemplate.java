@@ -714,6 +714,14 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         );
     }
 
+    private List<String> removetTab(String[] args) {
+        // 2つめのテンプレート指定のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        return searchInStore(args[1]);
+    }
+
     // copyコマンド
     private void copy(CommandSender sender, String[] args) {
         // コマンド指定で1つ、コピー元と先指定で2つ
@@ -827,6 +835,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             case "remove" -> removeTab(args);
             case "view" -> viewTab(args);
             case "info" -> infoTab(args);
+            case "removet" -> removetTab(args);
             default -> null;
         };
     }

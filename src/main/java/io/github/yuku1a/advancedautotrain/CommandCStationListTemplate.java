@@ -722,6 +722,16 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         sender.sendMessage("コピーが完了しました。");
     }
 
+    /**
+     * 途中までの入力に合うテンプレートを探すメソッド
+     * @param query 途中まで入れられた文字列
+     * @return 入力に合うテンプレート名のリスト
+     */
+    private List<String> searchInStore(String query) {
+        var list = store.keysList();
+        return TabCompleteUtil.searchInList(query, list);
+    }
+
     // saveコマンド
     private void save(CommandSender sender) {
         if (!sender.hasPermission(plugin.AdminPermission)){

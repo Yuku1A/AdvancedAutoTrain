@@ -642,6 +642,14 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         infoViewSimple(sender, info, index, false);
     }
 
+    private List<String> infoTab(String[] args) {
+        // 2つめのテンプレート指定のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        return searchInStore(args[1]);
+    }
+
     private void msgTemplateNotFound(CommandSender sender) {
         sender.sendMessage("指定された名前のテンプレートは登録されていません。");
     }
@@ -818,6 +826,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             case "replace" -> replaceTab(args);
             case "remove" -> removeTab(args);
             case "view" -> viewTab(args);
+            case "info" -> infoTab(args);
             default -> null;
         };
     }

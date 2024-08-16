@@ -126,7 +126,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
 
     }
 
-    private List<String> insertTab(CommandSender sender, String[] args) {
+    private List<String> insertTab(String[] args) {
         // インスペクション対策
         if (args.length < 2)
             return null;
@@ -147,8 +147,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             return null;
 
         var indexStr = args[2];
-        var tmpindex = CommandUtil.tryParseIndex(sender, template, indexStr);
-        if (tmpindex == -1)
+        var tmpindex = CommandUtil.tryParseIndexSilent(template, indexStr);
+        if (tmpindex < 0)
             return null;
 
         // 指定された位置の一つ前の要素または0番目の要素(-1は無理)
@@ -257,7 +257,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         infoViewOne(sender, info, index);
     }
 
-    private List<String> replaceTab(CommandSender sender, String[] args) {
+    private List<String> replaceTab(String[] args) {
         // インスペクション対策
         if (args.length < 2)
             return null;
@@ -278,8 +278,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             return null;
 
         var indexStr = args[2];
-        var index = CommandUtil.tryParseIndex(sender, template, indexStr);
-        if (index == -1)
+        var index = CommandUtil.tryParseIndexSilent(template, indexStr);
+        if (index < 0)
             return null;
 
         var lastInfo = template.get(index);
@@ -798,8 +798,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // コマンドごとのサジェストはそれぞれのメソッドへ
         return switch (args[0]) {
             case "add" -> addTab(args);
-            case "insert" -> insertTab(sender, args);
-            case "replace" -> replaceTab(sender, args);
+            case "insert" -> insertTab(args);
+            case "replace" -> replaceTab(args);
             default -> null;
         };
     }

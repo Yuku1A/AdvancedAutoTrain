@@ -477,6 +477,14 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // おわり
     }
 
+    private List<String> removeTab(String[] args) {
+        // 2つめのテンプレート指定のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        return searchInStore(args[1]);
+    }
+
     // viewコマンド
     private void view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
@@ -800,6 +808,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             case "add" -> addTab(args);
             case "insert" -> insertTab(args);
             case "replace" -> replaceTab(args);
+            case "remove" -> removeTab(args);
             default -> null;
         };
     }

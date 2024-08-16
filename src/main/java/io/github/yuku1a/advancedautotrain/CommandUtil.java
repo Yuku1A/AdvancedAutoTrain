@@ -130,6 +130,29 @@ public class CommandUtil {
 
     /**
      * 正常であればindexそのまま、不正だったら-1が返ってくる <br>
+     * 不正だった場合は-1以下の数値が内容によって返されます。
+     * @param list リスト
+     * @param strindex stringで表現されるインデックス
+     * @return パースされたindex、数値でなかった場合-2、範囲外だったら-1
+     */
+    public static int tryParseIndexSilent(List<?> list, String strindex) {
+        // インデックスがintに変換できることを確認、できなければ-2
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(strindex);
+        } catch (NumberFormatException ignored) {
+            return -2;
+        }
+
+        // インデックスが範囲外であれば-1
+        if (index < 0 || index >= list.size())
+            return -1;
+
+        return index;
+    }
+
+    /**
+     * 正常であればindexそのまま、不正だったら-1が返ってくる <br>
      * 不正だった場合はメッセージがプレイヤーに直接送信されます。
      * @param sender CommandSender
      * @param list リスト
@@ -137,17 +160,16 @@ public class CommandUtil {
      * @return パースされたindex、パースできなかった場合-1
      */
     public static int tryParseIndex(CommandSender sender, List<?> list, String strindex) {
-        // インデックスがintに変換できることを確認
-        int index;
-        try {
-            index = Integer.parseUnsignedInt(strindex);
-        } catch (NumberFormatException ignored) {
+        // 共通メソッドに投げてその結果でメッセージを出したりに変更
+        int index = tryParseIndexSilent(list, strindex);
+
+        if (index == -2) {
             sender.sendMessage("インデックスは数値である必要があります。");
             return -1;
         }
 
         // インデックスが範囲外であれば処理をしない
-        if (index < 0 || index >= list.size()) {
+        if (index == -1) {
             sender.sendMessage("インデックスが範囲外です。");
             return -1;
         }

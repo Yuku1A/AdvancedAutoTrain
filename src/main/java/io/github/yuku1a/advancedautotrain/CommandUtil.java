@@ -167,12 +167,20 @@ public class CommandUtil {
      * @return パースされたindex(0起点)、パースできなかった場合-1
      */
     public static int tryParsePagingIndex(CommandSender sender, List<?> list, String strindex) {
-        // 同じコードが使える
-        var index = tryParseIndex(sender, list, strindex);
-
-        // 下のコードだと-1が-2として返されるのでここで先に返す
-        if (index == -1)
+        // インデックスがintに変換できることを確認
+        int index;
+        try {
+            index = Integer.parseUnsignedInt(strindex);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage("インデックスは数値である必要があります。");
             return -1;
+        }
+
+        // インデックスが範囲外であれば処理をしない
+        if (index < 1 || index > list.size()) {
+            sender.sendMessage("インデックスが範囲外です。");
+            return -1;
+        }
 
         // 変換できた結果をreturn、インデックスとして動かなきゃいけないので-1
         return index - 1;

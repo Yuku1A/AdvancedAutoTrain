@@ -55,7 +55,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         infoViewOne(sender, info, list.size() - 1);
     }
 
-    private List<String> addTab(CommandSender sender, String[] args) {
+    private List<String> addTab(String[] args) {
         // インスペクション対策
         if (args.length < 2)
             return null;
@@ -797,7 +797,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
 
         // コマンドごとのサジェストはそれぞれのメソッドへ
         return switch (args[0]) {
-            case "add" -> addTab(sender, args);
+            case "add" -> addTab(args);
             case "insert" -> insertTab(sender, args);
             case "replace" -> replaceTab(sender, args);
             default -> null;

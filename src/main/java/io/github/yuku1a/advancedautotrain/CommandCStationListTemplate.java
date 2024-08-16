@@ -259,7 +259,64 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // 完了メッセージ
         sender.sendMessage("要素の置換を完了しました。");
         infoViewOne(sender, info, index);
+    }
 
+    private List<String> replaceTab(CommandSender sender, String[] args) {
+        // インスペクション対策
+        if (args.length < 2)
+            return null;
+
+        // replace <template> <index> <acceleration> <speed> <delay> <name> [announce...]
+        // <template>
+        var templateName = args[1];
+        if (args.length == 2) {
+            var templateList = store.keysList();
+            return TabCompleteUtil.searchInList(templateName, templateList);
+        }
+
+        // indexはサジェストしない
+        if (args.length == 3)
+            return null;
+
+        // 置換の場合、同じ番号の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
+        var template = store.get(templateName);
+        if (template == null)
+            return null;
+
+        var indexStr = args[2];
+        var index = CommandUtil.tryParseIndex(sender, template, indexStr);
+        if (index == -1)
+            return null;
+
+        var lastInfo = template.get(index);
+
+        // <acceleration> <speed> <delay> だけだったら共通化できる
+        if (args.length <= 6) {
+            return configTabComplete(Arrays.copyOfRange(args, 3, args.length), lastInfo);
+        }
+
+        // <name>
+        if (args.length == 7) {
+            if (args[6].isEmpty()) {
+                return List.of(lastInfo.getName());
+            }
+            var csList = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[6], csList);
+        }
+
+        // [announce...]
+        var announce = lastInfo.getAnnounce();
+        if (announce == null)
+            return null;
+
+        // 別々の引数をスペースで繋いでスペースを表現するので、それに沿った対応
+        var announceArray = announce.split(" ");
+
+        // 元データを過ぎてる場合は表示しない
+        if (announceArray.length < (args.length - 7))
+            return null;
+
+        return List.of(announceArray[args.length - 8]);
     }
 
     /**
@@ -737,6 +794,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         return switch (args[0]) {
             case "add" -> addTab(sender, args);
             case "insert" -> insertTab(sender, args);
+            case "replace" -> replaceTab(sender, args);
             default -> null;
         };
     }

@@ -448,6 +448,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // 終了メッセージ
         sender.sendMessage("テンプレート " + name + " を新規作成しました。");
     }
+    // createコマンドは自動補完のやりようがないので作らない
 
     // removeコマンド
     private void remove(CommandSender sender, String[] args) {

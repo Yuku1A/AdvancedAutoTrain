@@ -63,10 +63,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // add <template> <acceleration> <speed> <delay> <name> [announce...]
         // <template>
         var templateName = args[1];
-        if (args.length == 2) {
-            var templateList = store.keysList();
-            return TabCompleteUtil.searchInList(templateName, templateList);
-        }
+        if (args.length == 2)
+            return searchInStore(templateName);
 
         // 追加の場合、最後の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
         var template = store.get(templateName);
@@ -136,10 +134,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // insert <template> <index> <acceleration> <speed> <delay> <name> [announce...]
         // <template>
         var templateName = args[1];
-        if (args.length == 2) {
-            var templateList = store.keysList();
-            return TabCompleteUtil.searchInList(templateName, templateList);
-        }
+        if (args.length == 2)
+            return searchInStore(templateName);
 
         // indexはサジェストしない
         if (args.length == 3)
@@ -269,10 +265,8 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // replace <template> <index> <acceleration> <speed> <delay> <name> [announce...]
         // <template>
         var templateName = args[1];
-        if (args.length == 2) {
-            var templateList = store.keysList();
-            return TabCompleteUtil.searchInList(templateName, templateList);
-        }
+        if (args.length == 2)
+            return searchInStore(templateName);
 
         // indexはサジェストしない
         if (args.length == 3)

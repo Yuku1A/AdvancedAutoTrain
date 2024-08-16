@@ -748,6 +748,14 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         sender.sendMessage("コピーが完了しました。");
     }
 
+    private List<String> copyTab(String[] args) {
+        // 2つめのテンプレート指定のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        return searchInStore(args[1]);
+    }
+
     /**
      * 途中までの入力に合うテンプレートを探すメソッド
      * @param query 途中まで入れられた文字列
@@ -836,6 +844,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
             case "view" -> viewTab(args);
             case "info" -> infoTab(args);
             case "removet" -> removetTab(args);
+            case "copy" -> copyTab(args);
             default -> null;
         };
     }

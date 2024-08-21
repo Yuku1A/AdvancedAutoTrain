@@ -167,6 +167,26 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
         sender.sendMessage("タイマーの登録に成功しました。");
     }
 
+    private void view(CommandSender sender, String[] args) {
+        // コマンド指定で1、タイマー指定で1
+        if (args.length != 2) {
+            commandsHelp(sender, "view <name>");
+            return;
+        }
+
+        // 存在確認
+        var timerName = args[1];
+        var timer = store.get(timerName);
+        if (timer == null) {
+            sender.sendMessage("指定された名前のタイマーは存在しません。");
+            return;
+        }
+
+        // 表示
+        sender.sendMessage("-- OPTimer View --");
+        viewOne(sender, timerName, timer);
+    }
+
     private boolean help(CommandSender sender) {
         sender.sendMessage(
             "OperationTimerを管理します",
@@ -174,7 +194,8 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
             "create: タイマーを作成します",
             "remove: タイマーを削除します",
             "list: タイマーの一覧を表示します",
-            "modify: タイマーの時間をずらします");
+            "modify: タイマーの時間をずらします",
+            "view: タイマーの状況を表示します");
         return false;
     }
 
@@ -196,6 +217,7 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
             case "list" -> list(sender, args);
             case "remove" -> remove(sender, args);
             case "create" -> create(sender, args);
+            case "view" -> view(sender, args);
             default -> help(sender);
         };
 

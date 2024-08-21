@@ -17,7 +17,7 @@ public class CommandOperationTimer implements CommandExecutor {
     private boolean modify(CommandSender sender, String[] args) {
         // コマンドで1、名前で1、時間操作で1
         if (args.length != 3)
-            return commandsHelp(sender, "optimer modify <name> <time>");
+            return commandsHelp(sender, "modify <name> <time>");
 
         // 指定されたタイマーがあるかどうかチェック
         if (!store.containsKey(args[1])) {
@@ -119,7 +119,7 @@ public class CommandOperationTimer implements CommandExecutor {
     private boolean remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
         if (args.length != 2)
-            return commandsHelp(sender, "optimer remove <name>");
+            return commandsHelp(sender, "remove <name>");
 
         // 削除
         store.remove(args[1]);
@@ -132,7 +132,7 @@ public class CommandOperationTimer implements CommandExecutor {
     private boolean create(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1、周期指定で1
         if (args.length != 3)
-            return commandsHelp(sender, "optimer create <name> <cycle>");
+            return commandsHelp(sender, "create <name> <cycle>");
 
         // 新しいのに置き換えられたりしたらさすがに壊れる
         if (store.containsKey(args[1])){
@@ -200,7 +200,7 @@ public class CommandOperationTimer implements CommandExecutor {
 
     // コマンドごとのヘルプが多少楽になる
     private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage("usage: ", usage);
+        sender.sendMessage("usage: ", LABEL + " " + usage);
         return true;
     }
 

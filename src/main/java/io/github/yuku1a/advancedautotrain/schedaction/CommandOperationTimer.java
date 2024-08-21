@@ -4,6 +4,7 @@ import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -187,6 +188,15 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
         viewOne(sender, timerName, timer);
     }
 
+    private List<String> viewTab(String[] args) {
+        // OPTimerの名前以外サジェストしない
+        if (args.length != 2)
+            return null;
+
+        var timerName = args[1];
+        return TabCompleteUtil.searchInList(timerName, store.keysList());
+    }
+
     private boolean help(CommandSender sender) {
         sender.sendMessage(
             "OperationTimerを管理します",
@@ -237,6 +247,7 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
 
         // それぞれのコマンドのTab補完はそれぞれにメソッドを作る
         return switch (args[0]) {
+            case "view" -> viewTab(args);
             default -> null;
         };
     }

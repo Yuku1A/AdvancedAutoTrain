@@ -316,4 +316,6 @@ public class CommandArrivalList implements CommandExecutor {
         );
         return true;
     }
+
+    public static final String LABEL = "ar";
 }

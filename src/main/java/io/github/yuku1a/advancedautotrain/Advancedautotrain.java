@@ -183,7 +183,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // ArrivalList絡みのenable
         signListStore.enable();
-        commandRegister("arrivallist", new CommandArrivalList(this));
+        commandRegister(CommandArrivalList.LABEL, new CommandArrivalList(this));
         getServer().getPluginManager().registerEvents(new CStationLeaveListener(this), this);
 
         // LSpawn絡みのenable

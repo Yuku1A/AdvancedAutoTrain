@@ -7,11 +7,12 @@ import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.List;
 import java.util.Map;
 
-public class CommandOperationTimer implements CommandExecutor {
+public class CommandOperationTimer implements CommandExecutor, TabCompleter {
 
 
     private void modify(CommandSender sender, String[] args) {
@@ -200,6 +201,23 @@ public class CommandOperationTimer implements CommandExecutor {
         };
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!commandSender.hasPermission(plugin.UsePermission))
+            return null;
+
+        // 最初の引数はコマンド指定
+        if (args.length == 1) {
+            return List.of("create", "remove", "list", "modify");
+        }
+
+        // それぞれのコマンドのTab補完はそれぞれにメソッドを作る
+        return switch (args[0]) {
+            default -> null;
+        };
     }
 
     public static final String LABEL = "optimer";

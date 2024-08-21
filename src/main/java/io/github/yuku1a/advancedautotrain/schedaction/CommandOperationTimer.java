@@ -223,9 +223,8 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
     public static final String LABEL = "optimer";
 
     // コマンドごとのヘルプが多少楽になる
-    private boolean commandsHelp(CommandSender sender, String usage) {
+    private void commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", LABEL + " " + usage);
-        return true;
     }
 
     private final OperationTimerStore store;

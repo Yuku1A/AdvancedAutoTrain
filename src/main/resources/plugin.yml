@@ -7,8 +7,8 @@ commands:
   cslt:
     aliases: [cslt]
     usage: /<command> <action> <arguments...>
-  operationtimer:
-    aliases: [ operationtimer, optimer ]
+  optimer:
+    aliases: [optimer]
     usage: /<command> <action> <arguments...>
   arrivallist:
     aliases: [ ar, arrivallist ]

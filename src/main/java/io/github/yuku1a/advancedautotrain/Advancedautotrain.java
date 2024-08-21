@@ -179,7 +179,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // OPTimer絡みのenable
         operationTimerStore.restore();
-        commandRegister("operationtimer", new CommandOperationTimer(this));
+        commandRegister(CommandOperationTimer.LABEL, new CommandOperationTimer(this));
 
         // ArrivalList絡みのenable
         signListStore.enable();

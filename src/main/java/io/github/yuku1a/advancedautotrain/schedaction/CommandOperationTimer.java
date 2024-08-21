@@ -196,6 +196,8 @@ public class CommandOperationTimer implements CommandExecutor {
         };
     }
 
+    public static final String LABEL = "optimer";
+
     // コマンドごとのヘルプが多少楽になる
     private boolean commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", usage);

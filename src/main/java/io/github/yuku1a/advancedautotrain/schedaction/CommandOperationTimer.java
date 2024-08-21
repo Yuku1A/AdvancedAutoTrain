@@ -14,15 +14,17 @@ import java.util.Map;
 public class CommandOperationTimer implements CommandExecutor {
 
 
-    private boolean modify(CommandSender sender, String[] args) {
+    private void modify(CommandSender sender, String[] args) {
         // コマンドで1、名前で1、時間操作で1
-        if (args.length != 3)
-            return commandsHelp(sender, "modify <name> <time>");
+        if (args.length != 3) {
+            commandsHelp(sender, "modify <name> <time>");
+            return;
+        }
 
         // 指定されたタイマーがあるかどうかチェック
         if (!store.containsKey(args[1])) {
             sender.sendMessage("指定された名前のタイマーは登録されていません。");
-            return true;
+            return;
         }
 
         // 引数の取り出し
@@ -31,7 +33,7 @@ public class CommandOperationTimer implements CommandExecutor {
         // 時間のチェック
         if (!timeText.contains(":")) {
             sender.sendMessage("時間指定には1:00:00の形式または1:00の形式を使用してください");
-            return true;
+            return;
         }
 
         // 記号のパース
@@ -47,7 +49,7 @@ public class CommandOperationTimer implements CommandExecutor {
         // 時間のチェック
         if (diffTime == 0) {
             sender.sendMessage("時間指定が不正です");
-            return true;
+            return;
         }
 
         // 記号を反映する
@@ -58,22 +60,23 @@ public class CommandOperationTimer implements CommandExecutor {
 
         // おわり
         sender.sendMessage("指定されたタイマーの時間をずらしました");
-        return true;
     }
 
-    private boolean list(CommandSender sender, String[] args) {
+    private void list(CommandSender sender, String[] args) {
         // リスト全部持ってくる
         var list = store.entryList();
 
         // 空だった場合
         if (list.isEmpty()) {
             sender.sendMessage("タイマーは一つも登録されていません。");
-            return true;
+            return;
         }
 
         // ページングしないで済む場合
-        if (list.size() < 16)
-            return listView(sender, list, "1", 0);
+        if (list.size() < 16) {
+            listView(sender, list, "1", 0);
+            return;
+        }
 
         // ページ数の部分の引数がない場合1として扱う
         var page = args.length == 1 ? "1" : args[1];
@@ -83,15 +86,15 @@ public class CommandOperationTimer implements CommandExecutor {
 
         // nullだったらページングに失敗して警告が出てるので終了
         if (slist == null)
-            return true;
+            return;
 
         // 分割されたページを表示
-        return listView(sender, slist, page, CommandUtil.calcMaxPageIndex(list));
+        listView(sender, slist, page, CommandUtil.calcMaxPageIndex(list));
     }
 
     // 内容の表示用
-    private boolean listView(CommandSender sender, List<Map.Entry<String, OperationTimer>> list,
-                             String pageIndex, int maxPage) {
+    private void listView(CommandSender sender, List<Map.Entry<String, OperationTimer>> list,
+                          String pageIndex, int maxPage) {
         // UI
         sender.sendMessage("----- Timer List Page " + pageIndex + " of " + (maxPage + 1) + " -----");
         sender.sendMessage("(name) (elapsed time) (interval)");
@@ -113,37 +116,39 @@ public class CommandOperationTimer implements CommandExecutor {
         });
 
         // おわり
-        return true;
     }
 
-    private boolean remove(CommandSender sender, String[] args) {
+    private void remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
-        if (args.length != 2)
-            return commandsHelp(sender, "remove <name>");
+        if (args.length != 2) {
+            commandsHelp(sender, "remove <name>");
+            return;
+        }
 
         // 削除
         store.remove(args[1]);
 
         // おわり
         sender.sendMessage("削除が完了しました。");
-        return true;
     }
 
-    private boolean create(CommandSender sender, String[] args) {
+    private void create(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1、周期指定で1
-        if (args.length != 3)
-            return commandsHelp(sender, "create <name> <cycle>");
+        if (args.length != 3) {
+            commandsHelp(sender, "create <name> <cycle>");
+            return;
+        }
 
         // 新しいのに置き換えられたりしたらさすがに壊れる
         if (store.containsKey(args[1])){
             sender.sendMessage("同じ名前でタイマーを登録することはできません。");
-            return true;
+            return;
         }
 
         // 周期指定をパースする前にチェック
         if (!args[2].contains(":")) {
             sender.sendMessage("時間指定には1:00:00の形式または1:00の形式を使用してください");
-            return true;
+            return;
         }
 
         // 周期指定をパースする
@@ -152,7 +157,7 @@ public class CommandOperationTimer implements CommandExecutor {
         // 不正がないかチェック
         if (interval == 0) {
             sender.sendMessage("時間指定が不正です");
-            return true;
+            return;
         }
 
         // 指定された周期でタイマーを生成、登録
@@ -160,7 +165,6 @@ public class CommandOperationTimer implements CommandExecutor {
 
         // おわり
         sender.sendMessage("タイマーの登録に成功しました。");
-        return true;
     }
 
     private boolean help(CommandSender sender) {

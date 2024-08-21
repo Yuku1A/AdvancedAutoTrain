@@ -100,23 +100,22 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
         sender.sendMessage("----- Timer List Page " + pageIndex + " of " + (maxPage + 1) + " -----");
         sender.sendMessage("(name) (elapsed time) (interval)");
 
-        // 時間表示のセットアップ
-        var fmt = new TimeDurationFormat("HH:mm:ss");
-
         // 情報を表示
         list.forEach((e) -> {
-            // タイマーだけ先に出す
-            var timer = e.getValue();
-
             // 情報を表示する
-            sender.sendMessage(
-                e.getKey() + " | " +
+            viewOne(sender, e.getKey(), e.getValue());
+        });
+    }
+
+    // 一つずつ表示する用
+    private void viewOne(CommandSender sender, String name, OperationTimer timer) {
+        var fmt = new TimeDurationFormat("HH:mm:ss");
+
+        sender.sendMessage(
+            name + " | " +
                 fmt.format(timer.currentTime()) + " | " +
                 fmt.format(timer.getInterval())
-            );
-        });
-
-        // おわり
+        );
     }
 
     private void remove(CommandSender sender, String[] args) {

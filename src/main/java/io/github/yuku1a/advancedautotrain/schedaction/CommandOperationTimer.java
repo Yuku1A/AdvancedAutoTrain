@@ -12,35 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandOperationTimer implements CommandExecutor {
-    private final OperationTimerStore store;
-    private final Advancedautotrain plugin;
 
-    public CommandOperationTimer(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getOperationTimerStore();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-
-        // 0の場合コマンドが指定されていない
-        if (args.length == 0)
-            return help(sender);
-
-        // 各コマンドへ振り分け
-        return switch (args[0]) {
-            case "modify" -> modify(sender, args);
-            case "list" -> list(sender, args);
-            case "remove" -> remove(sender, args);
-            case "create" -> create(sender, args);
-            default -> help(sender);
-        };
-    }
 
     private boolean modify(CommandSender sender, String[] args) {
         // コマンドで1、名前で1、時間操作で1
@@ -202,9 +174,39 @@ public class CommandOperationTimer implements CommandExecutor {
         return false;
     }
 
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 0の場合コマンドが指定されていない
+        if (args.length == 0)
+            return help(sender);
+
+        // 各コマンドへ振り分け
+        return switch (args[0]) {
+            case "modify" -> modify(sender, args);
+            case "list" -> list(sender, args);
+            case "remove" -> remove(sender, args);
+            case "create" -> create(sender, args);
+            default -> help(sender);
+        };
+    }
+
     // コマンドごとのヘルプが多少楽になる
     private boolean commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", usage);
         return true;
+    }
+
+    private final OperationTimerStore store;
+    private final Advancedautotrain plugin;
+
+    public CommandOperationTimer(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getOperationTimerStore();
     }
 }

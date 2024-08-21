@@ -10,38 +10,6 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 
 public class CommandArrivalList implements CommandExecutor {
-    private final Advancedautotrain plugin;
-    private final ScheduledSignSetStore store;
-
-    public CommandArrivalList(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getSignListStore();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-
-        // 引数が0のときはコマンドが指定されていない
-        if (args.length == 0)
-            return false;
-
-        return switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "view" -> view(sender, args);
-            case "copy" -> copy(sender, args);
-            case "rmlist", "removelist" -> removelist(sender, args);
-            case "create" -> create(sender, args);
-            case "replace", "add" -> add(sender, args);
-            case "remove" -> remove(sender, args);
-            case "record" -> record(sender, args);
-            default -> help(sender);
-        };
-    }
 
     private boolean record(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、オフセットで1の合計2または3
@@ -317,5 +285,38 @@ public class CommandArrivalList implements CommandExecutor {
         return true;
     }
 
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 引数が0のときはコマンドが指定されていない
+        if (args.length == 0)
+            return false;
+
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "view" -> view(sender, args);
+            case "copy" -> copy(sender, args);
+            case "rmlist", "removelist" -> removelist(sender, args);
+            case "create" -> create(sender, args);
+            case "replace", "add" -> add(sender, args);
+            case "remove" -> remove(sender, args);
+            case "record" -> record(sender, args);
+            default -> help(sender);
+        };
+    }
+
     public static final String LABEL = "ar";
+
+    private final Advancedautotrain plugin;
+    private final ScheduledSignSetStore store;
+
+    public CommandArrivalList(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getSignListStore();
+    }
 }

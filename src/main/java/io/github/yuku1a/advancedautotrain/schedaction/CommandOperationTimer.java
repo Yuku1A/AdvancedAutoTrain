@@ -187,13 +187,15 @@ public class CommandOperationTimer implements CommandExecutor {
             return help(sender);
 
         // 各コマンドへ振り分け
-        return switch (args[0]) {
+        switch (args[0]) {
             case "modify" -> modify(sender, args);
             case "list" -> list(sender, args);
             case "remove" -> remove(sender, args);
             case "create" -> create(sender, args);
             default -> help(sender);
         };
+
+        return true;
     }
 
     public static final String LABEL = "optimer";

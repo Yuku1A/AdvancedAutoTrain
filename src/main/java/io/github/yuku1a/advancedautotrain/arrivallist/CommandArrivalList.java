@@ -4,12 +4,16 @@ import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import java.util.Collections;
+import org.bukkit.command.TabCompleter;
 
-public class CommandArrivalList implements CommandExecutor {
+import java.util.Collections;
+import java.util.List;
+
+public class CommandArrivalList implements CommandExecutor, TabCompleter {
 
     private boolean record(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、オフセットで1の合計2または3
@@ -174,6 +178,15 @@ public class CommandArrivalList implements CommandExecutor {
         return true;
     }
 
+    private List<String> rmlistTab(String[] args) {
+        // リストの名前のみサジェスト
+        if (args.length != 2)
+            return null;
+
+        var lists = store.keysList();
+        return TabCompleteUtil.searchInList(args[1], lists);
+    }
+
     private boolean create(CommandSender sender, String[] args) {
         // コマンド指定で1つ、リスト指定で1つ、タイマー指定で1つ
         if (args.length != 3)
@@ -283,6 +296,24 @@ public class CommandArrivalList implements CommandExecutor {
             "record: 時刻の記録の切り替え"
         );
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        // 権限チェック
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        // コマンドのサジェスト
+        if (args.length == 1) {
+            return List.of("add", "remove", "copy", "view", "rmlist", "create", "list", "record");
+        }
+
+        // 各コマンドの引数のサジェスト
+        return switch (args[0]) {
+            case "rmlist" -> rmlistTab(args);
+            default -> null;
+        };
     }
 
     @Override

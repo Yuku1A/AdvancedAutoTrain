@@ -246,6 +246,26 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> immediateTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // リスト名のサジェスト
+        if (args.length == 2) {
+            var lists = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], lists);
+        }
+
+        // savedTrainNameのサジェスト
+        if (args.length == 3) {
+            var trainNames = plugin.getTrainCarts().getSavedTrains().getNames();
+            return TabCompleteUtil.searchInList(args[2], trainNames);
+        }
+
+        return null;
+    }
+
     // ↓ここから個別の項目に対しての操作
     private boolean unregister(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、時間指定で1
@@ -365,6 +385,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             case "rmlist" -> removelistTab(args);
             case "pause" -> pauseTab(args);
             case "resume" -> resumeTab(args);
+            case "imm" -> immediateTab(args);
             default -> null;
         };
     }

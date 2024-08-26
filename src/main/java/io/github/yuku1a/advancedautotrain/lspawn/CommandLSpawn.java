@@ -4,6 +4,7 @@ import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -94,6 +95,15 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         viewParts(sender, list);
 
         return true;
+    }
+
+    private List<String> viewTab(String[] args) {
+        // リスト名のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        var lists = store.keysList();
+        return TabCompleteUtil.searchInList(args[1], lists);
     }
 
     private boolean removelist(CommandSender sender, String[] args) {
@@ -314,6 +324,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         return switch (args[0]) {
+            case "view" -> viewTab(args);
             default -> null;
         };
     }

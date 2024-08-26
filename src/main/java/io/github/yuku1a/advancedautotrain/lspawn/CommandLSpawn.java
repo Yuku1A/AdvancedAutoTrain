@@ -154,6 +154,15 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> createTab(String[] args) {
+        // OPTimerの名前をサジェストする
+        if (args.length != 3)
+            return null;
+
+        var timers = plugin.getOperationTimerStore().keysList();
+        return TabCompleteUtil.searchInList(args[2], timers);
+    }
+
     private boolean pause(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
@@ -333,6 +342,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         return switch (args[0]) {
+            case "create" -> createTab(args);
             case "view" -> viewTab(args);
             case "rmlist" -> removelistTab(args);
             default -> null;

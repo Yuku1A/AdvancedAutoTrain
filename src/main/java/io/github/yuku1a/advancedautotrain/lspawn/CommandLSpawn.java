@@ -369,6 +369,26 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> registerTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // リストのサジェスト
+        if (args.length == 2) {
+            var lists = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], lists);
+        }
+
+        // savedTrainNameのサジェスト
+        if (args.length == 3) {
+            var trainNames = plugin.getTrainCarts().getSavedTrains().getNames();
+            return TabCompleteUtil.searchInList(args[2], trainNames);
+        }
+
+        return null;
+    }
+
     private void viewParts(CommandSender sender, List<ScheduledSpawn> list) {
         // 時間表示のセットアップ
         var fmt = new TimeDurationFormat("HH:mm:ss");
@@ -422,6 +442,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             case "resume" -> resumeTab(args);
             case "imm" -> immediateTab(args);
             case "unregister" -> unregisterTab(args);
+            case "register" -> registerTab(args);
             default -> null;
         };
     }

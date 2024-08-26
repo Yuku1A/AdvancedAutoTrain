@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommandLSpawn implements CommandExecutor, TabCompleter {
@@ -291,6 +292,40 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> unregisterTab(String[] args) {
+        // これはコマンド本体
+        if (args.length <= 1)
+            return null;
+
+        // リストのサジェスト
+        if (args.length == 2) {
+            var lists = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], lists);
+        }
+
+        // 対象の時刻をサジェスト
+        if (args.length == 3) {
+            var spawnsSet = store.get(args[1]);
+            if (spawnsSet == null)
+                return null;
+            var spawnList = spawnsSet.asList();
+
+            var timesListLong = new ArrayList<Long>();
+            for (var entry : spawnList) {
+                timesListLong.add(entry.getScheduletime());
+            }
+
+            var timesListStr = new ArrayList<String>();
+            var fmt = new TimeDurationFormat("HH:mm:ss");
+            for (var entry : timesListLong) {
+                timesListStr.add(fmt.format(entry));
+            }
+            return timesListStr;
+        }
+
+        return null;
+    }
+
     // addとreplaceを兼ねる
     private boolean register(CommandSender sender, String[] args) {
         // コマンドで1つ、リストで1つ、
@@ -386,6 +421,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             case "pause" -> pauseTab(args);
             case "resume" -> resumeTab(args);
             case "imm" -> immediateTab(args);
+            case "unregister" -> unregisterTab(args);
             default -> null;
         };
     }

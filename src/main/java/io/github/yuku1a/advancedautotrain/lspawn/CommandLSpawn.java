@@ -181,6 +181,15 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> pauseTab(String[] args) {
+        // リスト名のみサジェストする
+        if (args.length != 2)
+            return null;
+
+        var lists = store.keysList();
+        return TabCompleteUtil.searchInList(args[1], lists);
+    }
+
     private boolean resume(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
@@ -345,6 +354,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             case "create" -> createTab(args);
             case "view" -> viewTab(args);
             case "rmlist" -> removelistTab(args);
+            case "pause" -> pauseTab(args);
             default -> null;
         };
     }

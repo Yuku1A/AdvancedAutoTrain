@@ -31,6 +31,9 @@ commands:
   cstationcache:
     aliases: [cstationcache]
     usage: /<command> <action> <arguments...>
+  redit:
+    aliases: [redit]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

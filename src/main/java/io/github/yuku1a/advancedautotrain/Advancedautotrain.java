@@ -14,6 +14,7 @@ import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSet;
 import io.github.yuku1a.advancedautotrain.lspawn.SignActionLSpawn;
+import io.github.yuku1a.advancedautotrain.routeedit.CommandRouteEdit;
 import io.github.yuku1a.advancedautotrain.schedaction.CommandOperationTimer;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSetStore;
 import io.github.yuku1a.advancedautotrain.schedaction.OperationTimer;
@@ -206,6 +207,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // AATDump絡みのenable
         commandRegister("aatdump", new CommandAATDump(this));
+
+        // RouteEdit絡みのenable
+        commandRegister(CommandRouteEdit.LABEL, new CommandRouteEdit(this));
     }
 
     @Override

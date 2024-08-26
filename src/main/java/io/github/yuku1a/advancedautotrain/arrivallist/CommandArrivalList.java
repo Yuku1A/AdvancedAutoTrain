@@ -93,7 +93,7 @@ public class CommandArrivalList implements CommandExecutor, TabCompleter {
     private boolean view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、リスト指定で1つ、ページ指定で1つ
         if (2 > args.length || args.length > 3)
-            return CommandUtil.commandsHelp(sender, "ar list <listname> <page>");
+            return CommandUtil.commandsHelp(sender, "ar view <listname> <page>");
 
         // キーの取得
         var key = args[1];

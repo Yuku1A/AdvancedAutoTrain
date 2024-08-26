@@ -11,40 +11,6 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 public class CommandLSpawn implements CommandExecutor {
-    private final Advancedautotrain plugin;
-    private final ScheduledSpawnSetStore store;
-
-    public CommandLSpawn(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getSpawnListStore();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-
-        // 引数が0のときはコマンドが指定されていない
-        if (args.length == 0)
-            return false;
-
-        return switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "view" -> view(sender, args);
-            case "copy" -> copy(sender, args);
-            case "rmlist", "removelist" -> removelist(sender, args);
-            case "create" -> create(sender, args);
-            case "replace", "add" -> add(sender, args);
-            case "remove" -> remove(sender, args);
-            case "pause" -> pause(sender, args);
-            case "resume" -> resume(sender, args);
-            case "imm" -> immediate(sender, args);
-            default -> help(sender);
-        };
-    }
 
     private boolean list(CommandSender sender, String[] args) {
         // コマンドで1、ページで1
@@ -358,8 +324,45 @@ public class CommandLSpawn implements CommandExecutor {
         return true;
     }
 
+
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 引数が0のときはコマンドが指定されていない
+        if (args.length == 0)
+            return false;
+
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "view" -> view(sender, args);
+            case "copy" -> copy(sender, args);
+            case "rmlist", "removelist" -> removelist(sender, args);
+            case "create" -> create(sender, args);
+            case "replace", "add" -> add(sender, args);
+            case "remove" -> remove(sender, args);
+            case "pause" -> pause(sender, args);
+            case "resume" -> resume(sender, args);
+            case "imm" -> immediate(sender, args);
+            default -> help(sender);
+        };
+    }
+
     private boolean commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", usage);
         return true;
+    }
+
+    private final Advancedautotrain plugin;
+    private final ScheduledSpawnSetStore store;
+
+    public CommandLSpawn(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getSpawnListStore();
     }
 }

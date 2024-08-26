@@ -13,8 +13,8 @@ commands:
   ar:
     aliases: [ar]
     usage: /<command> <action> <arguments...>
-  lspawn:
-    aliases: [ lspawn, lspn ]
+  lspn:
+    aliases: [lspn]
     usage: /<command> <action> <arguments...>
   tpreset:
     aliases: [tpreset]

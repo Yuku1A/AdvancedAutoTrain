@@ -358,6 +358,7 @@ public class CommandLSpawn implements CommandExecutor {
         return true;
     }
 
+    public static final String LABEL = "lspn";
     private final Advancedautotrain plugin;
     private final ScheduledSpawnSetStore store;
 

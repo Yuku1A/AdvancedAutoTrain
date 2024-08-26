@@ -188,7 +188,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // LSpawn絡みのenable
         spawnListStore.enable();
-        commandRegister("lspawn", new CommandLSpawn(this));
+        commandRegister(CommandLSpawn.LABEL, new CommandLSpawn(this));
         getServer().getPluginManager().registerEvents(new NamedTrainSpawnEventExecutor(this), this);
         lSpawnSignManager.enable();
 

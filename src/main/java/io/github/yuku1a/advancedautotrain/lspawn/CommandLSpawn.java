@@ -223,10 +223,10 @@ public class CommandLSpawn implements CommandExecutor {
     }
 
     // ↓ここから個別の項目に対しての操作
-    private boolean remove(CommandSender sender, String[] args) {
+    private boolean unregister(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、時間指定で1
         if (args.length != 3)
-            return commandsHelp(sender, "lspn remove <list> <time>");
+            return commandsHelp(sender, "lspn unregister <list> <time>");
 
         // リストを出す
         var list = store.get(args[1]);
@@ -248,7 +248,7 @@ public class CommandLSpawn implements CommandExecutor {
     }
 
     // addとreplaceを兼ねる
-    private boolean add(CommandSender sender, String[] args) {
+    private boolean register(CommandSender sender, String[] args) {
         // コマンドで1つ、リストで1つ、
         // savedtrainname、時刻で2
         // 合計4個
@@ -310,8 +310,8 @@ public class CommandLSpawn implements CommandExecutor {
     private boolean help(CommandSender sender) {
         sender.sendMessage(
             "usage: ",
-            "add: 項目をリストに追加、入れ替え",
-            "remove: 項目をリストから削除",
+            "register: 項目をリストに登録、再登録",
+            "unregister: 項目をリストから削除",
             "copy: リストをコピー",
             "view: リストの内容を表示",
             "rmlist: リストを削除",
@@ -344,8 +344,8 @@ public class CommandLSpawn implements CommandExecutor {
             case "copy" -> copy(sender, args);
             case "rmlist", "removelist" -> removelist(sender, args);
             case "create" -> create(sender, args);
-            case "replace", "add" -> add(sender, args);
-            case "remove" -> remove(sender, args);
+            case "register" -> register(sender, args);
+            case "unregister" -> unregister(sender, args);
             case "pause" -> pause(sender, args);
             case "resume" -> resume(sender, args);
             case "imm" -> immediate(sender, args);

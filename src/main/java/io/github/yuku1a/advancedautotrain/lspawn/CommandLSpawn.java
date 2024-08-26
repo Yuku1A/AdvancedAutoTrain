@@ -7,10 +7,11 @@ import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.List;
 
-public class CommandLSpawn implements CommandExecutor {
+public class CommandLSpawn implements CommandExecutor, TabCompleter {
 
     private boolean list(CommandSender sender, String[] args) {
         // コマンドで1、ページで1
@@ -324,7 +325,22 @@ public class CommandLSpawn implements CommandExecutor {
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        // 権限チェック
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
 
+        // コマンドをサジェスト
+        if (args.length == 1) {
+            return List.of("register", "unregister", "view", "rmlist", "create",
+                           "list", "pause", "resume", "imm");
+        }
+
+        return switch (args[0]) {
+            default -> null;
+        };
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -96,29 +96,6 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private boolean copy(CommandSender sender, String[] args) {
-        // コマンド1、元で1、先で1
-        if (args.length != 3)
-            return commandsHelp(sender, "lspn copy <from> <to>");
-
-        // 元があるか確認
-        var from = store.get(args[1]);
-
-        if (from == null) {
-            sender.sendMessage("指定されたリストは存在しません");
-            return true;
-        }
-
-        // 実行
-        var to = new ScheduledSpawnSet(from.asList(), from.getTimerkey());
-        to.enable(plugin);
-        store.put(args[2], to);
-
-        // おわり
-        sender.sendMessage("コピーが完了しました。");
-        return true;
-    }
-
     private boolean removelist(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
@@ -313,7 +290,6 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             "usage: ",
             "register: 項目をリストに登録、再登録",
             "unregister: 項目をリストから削除",
-            "copy: リストをコピー",
             "view: リストの内容を表示",
             "rmlist: リストを削除",
             "create: リストを作成",
@@ -357,7 +333,6 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         return switch (args[0]) {
             case "list" -> list(sender, args);
             case "view" -> view(sender, args);
-            case "copy" -> copy(sender, args);
             case "rmlist", "removelist" -> removelist(sender, args);
             case "create" -> create(sender, args);
             case "register" -> register(sender, args);

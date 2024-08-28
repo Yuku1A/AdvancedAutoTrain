@@ -79,6 +79,26 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         );
     }
 
+    private void view(CommandSender sender, String[] args) {
+        // コマンド指定で1、名前で1
+        if (args.length != 2) {
+            commandsHelp(sender, "view <name>");
+            return;
+        }
+
+        // 取得
+        var presetName = args[1];
+        var preset = store.get(presetName);
+        if (preset == null) {
+            sender.sendMessage("指定されたTrainPresetは存在しません。");
+            return;
+        }
+
+        // 表示
+        sender.sendMessage("--- TrainPreset " + presetName + " ---");
+        itemView(sender, presetName, preset);
+    }
+
     private void remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
         if (args.length != 2) {
@@ -138,7 +158,8 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             "利用可能なコマンド: ",
             "add: プリセットを登録します",
             "remove: プリセットを削除します",
-            "list: プリセットの一覧を表示します");
+            "list: プリセットの一覧を表示します",
+            "view: 指定されたプリセットの内容を表示します");
         return false;
     }
 
@@ -148,7 +169,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             return null;
 
         if (args.length == 1) {
-            return List.of("add", "list", "remove");
+            return List.of("add", "list", "remove", "view");
         }
 
         return switch (args[0]) {
@@ -173,6 +194,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             case "list" -> list(sender, args);
             case "remove" -> remove(sender, args);
             case "add" -> add(sender, args);
+            case "view" -> view(sender, args);
             default -> help(sender);
         };
 

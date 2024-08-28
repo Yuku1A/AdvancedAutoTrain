@@ -6,10 +6,11 @@ import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.List;
 
-public class CommandTrainRecord implements CommandExecutor {
+public class CommandTrainRecord implements CommandExecutor, TabCompleter {
 
     private boolean start(CommandSender sender, String[] args) {
         // コマンド指定で1、列車指定で1
@@ -212,6 +213,21 @@ public class CommandTrainRecord implements CommandExecutor {
             "modify: 記録を編集"
         );
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        // コマンドのサジェスト
+        if (args.length <= 1) {
+            return List.of("copy", "view", "rmrec", "list", "start", "stop", "modify");
+        }
+
+        return switch (args[0]) {
+            default -> null;
+        };
     }
 
     @Override

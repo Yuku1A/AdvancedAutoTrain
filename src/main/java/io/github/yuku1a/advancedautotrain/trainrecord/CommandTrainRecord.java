@@ -10,37 +10,6 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 public class CommandTrainRecord implements CommandExecutor {
-    private final Advancedautotrain plugin;
-    private final TrainRecordStore store;
-
-    public CommandTrainRecord(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getTrainRecordStore();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-
-        // 引数が0のときはコマンドが指定されていない
-        if (args.length == 0)
-            return false;
-
-        return switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "view" -> view(sender, args);
-            case "copy" -> copy(sender, args);
-            case "rmrec" -> removelist(sender, args);
-            case "start" -> start(sender, args);
-            case "stop" -> stop(sender, args);
-            case "modify" -> modify(sender, args);
-            default -> help(sender);
-        };
-    }
 
     private boolean start(CommandSender sender, String[] args) {
         // コマンド指定で1、列車指定で1
@@ -187,21 +156,6 @@ public class CommandTrainRecord implements CommandExecutor {
         return true;
     }
 
-    private boolean help(CommandSender sender) {
-        sender.sendMessage(
-            "trec(TrainRecord)コマンドの使い方",
-            "usage: ",
-            "copy: リストをコピー",
-            "view: レコードの内容を表示",
-            "rmrec: レコードを削除",
-            "list: レコードの一覧",
-            "start: 記録を開始",
-            "stop: 記録を停止",
-            "modify: 記録を編集"
-        );
-        return true;
-    }
-
     private boolean removelist(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
@@ -243,5 +197,52 @@ public class CommandTrainRecord implements CommandExecutor {
         list.forEach(sender::sendMessage);
 
         return true;
+    }
+
+    private boolean help(CommandSender sender) {
+        sender.sendMessage(
+            "trec(TrainRecord)コマンドの使い方",
+            "usage: ",
+            "copy: リストをコピー",
+            "view: レコードの内容を表示",
+            "rmrec: レコードを削除",
+            "list: レコードの一覧",
+            "start: 記録を開始",
+            "stop: 記録を停止",
+            "modify: 記録を編集"
+        );
+        return true;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 引数が0のときはコマンドが指定されていない
+        if (args.length == 0)
+            return false;
+
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "view" -> view(sender, args);
+            case "copy" -> copy(sender, args);
+            case "rmrec" -> removelist(sender, args);
+            case "start" -> start(sender, args);
+            case "stop" -> stop(sender, args);
+            case "modify" -> modify(sender, args);
+            default -> help(sender);
+        };
+    }
+
+    private final Advancedautotrain plugin;
+    private final TrainRecordStore store;
+
+    public CommandTrainRecord(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getTrainRecordStore();
     }
 }

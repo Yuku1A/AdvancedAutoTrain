@@ -2,6 +2,7 @@ package io.github.yuku1a.advancedautotrain.trainpreset;
 
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -99,6 +100,16 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         itemView(sender, presetName, preset);
     }
 
+    private List<String> viewTab(String[] args) {
+        // 名前以外はサジェストしない
+        if (args.length == 2) {
+            var presets = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], presets);
+        }
+
+        return null;
+    }
+
     private void remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
         if (args.length != 2) {
@@ -111,6 +122,16 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
         // おわり
         sender.sendMessage("削除が完了しました。");
+    }
+
+    private List<String> removeTab(String[] args) {
+        // 名前以外はサジェストしない
+        if (args.length == 2) {
+            var presets = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], presets);
+        }
+
+        return null;
     }
 
     private void add(CommandSender sender, String[] args) {
@@ -152,6 +173,33 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         itemView(sender, trainname, preset);
     }
 
+    private List<String> addTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // savedTrainNameからサジェスト
+        if (args.length == 2) {
+            var savedTrains = plugin.getTrainCarts().getSavedTrains().getNames();
+            return TabCompleteUtil.searchInList(args[1], savedTrains);
+        }
+
+        // CStationListTemplate
+        if (args.length == 3) {
+            var cslts = plugin.getCStationListTemplateStore().keysList();
+            return TabCompleteUtil.searchInList(args[2], cslts);
+        }
+
+        // Route
+        if (args.length == 4) {
+            var routes = plugin.getTrainCarts().getRouteManager().getRouteNames();
+            return TabCompleteUtil.searchInList(args[3], routes);
+        }
+
+        // tagは今のところサジェストしないものとする
+        return null;
+    }
+
     private boolean help(CommandSender sender) {
         sender.sendMessage(
             "TrainPresetを管理します",
@@ -173,6 +221,9 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         }
 
         return switch (args[0]) {
+            case "add" -> addTab(args);
+            case "remove" -> removeTab(args);
+            case "view" -> viewTab(args);
             default -> null;
         };
     }

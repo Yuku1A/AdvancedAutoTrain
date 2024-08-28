@@ -5,12 +5,13 @@ import io.github.yuku1a.advancedautotrain.CommandUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CommandTrainPreset implements CommandExecutor {
+public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
     private boolean list(CommandSender sender, String[] args) {
         // リスト全部持ってくる
@@ -136,6 +137,20 @@ public class CommandTrainPreset implements CommandExecutor {
             "remove: プリセットを削除します",
             "list: プリセットの一覧を表示します");
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if(!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        if (args.length == 1) {
+            return List.of("add", "list", "remove");
+        }
+
+        return switch (args[0]) {
+            default -> null;
+        };
     }
 
     @Override

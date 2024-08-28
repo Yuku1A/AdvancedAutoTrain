@@ -13,19 +13,21 @@ import java.util.Map;
 
 public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
-    private boolean list(CommandSender sender, String[] args) {
+    private void list(CommandSender sender, String[] args) {
         // リスト全部持ってくる
         var list = store.entryList();
 
         // 空だった場合
         if (list.isEmpty()) {
             sender.sendMessage("プリセットは一つも登録されていません。");
-            return true;
+            return;
         }
 
         // ページングしないで済む場合
-        if (list.size() < 16)
-            return listView(sender, list, "1", 0);
+        if (list.size() < 16) {
+            listView(sender, list, "1", 0);
+            return;
+        }
 
         // ページ数の部分の引数がない場合1として扱う
         var page = args.length == 1 ? "1" : args[1];
@@ -35,15 +37,15 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
         // nullだったらページングに失敗して警告が出てるので終了
         if (slist == null)
-            return true;
+            return;
 
         // 分割されたページを表示
-        return listView(sender, slist, page, CommandUtil.calcMaxPageIndex(list));
+        listView(sender, slist, page, CommandUtil.calcMaxPageIndex(list));
     }
 
     // 内容の表示用
-    private boolean listView(CommandSender sender, List<Map.Entry<String, TrainPreset>> list,
-                             String pageIndex, int maxPage) {
+    private void listView(CommandSender sender, List<Map.Entry<String, TrainPreset>> list,
+                          String pageIndex, int maxPage) {
         // UI
         sender.sendMessage("----- TrainPreset List Page " + pageIndex + " of " + (maxPage + 1) + " -----");
         sender.sendMessage("(trainname) (cstationlist) (route) (tag)");
@@ -52,7 +54,6 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         list.forEach((e) -> itemView(sender, e.getKey(), e.getValue()));
 
         // おわり
-        return true;
     }
 
     private static void itemView(CommandSender sender, String key, TrainPreset preset) {
@@ -78,23 +79,26 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         );
     }
 
-    private boolean remove(CommandSender sender, String[] args) {
+    private void remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
-        if (args.length != 2)
-            return commandsHelp(sender, "tpreset remove <name>");
+        if (args.length != 2) {
+            commandsHelp(sender, "tpreset remove <name>");
+            return;
+        }
 
         // 削除
         store.remove(args[1]);
 
         // おわり
         sender.sendMessage("削除が完了しました。");
-        return true;
     }
 
-    private boolean add(CommandSender sender, String[] args) {
+    private void add(CommandSender sender, String[] args) {
         // コマンド指定で1、タグを無制限に受け付けるので無限
-        if (args.length == 1)
-            return commandsHelp(sender, "tpreset add <trainname> [cstationlist] [route] [tags...]");
+        if (args.length == 1) {
+            commandsHelp(sender, "tpreset add <trainname> [cstationlist] [route] [tags...]");
+            return;
+        }
 
         // パース
         // TrainName
@@ -126,7 +130,6 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
         sender.sendMessage("プリセットの登録に成功しました。");
         sender.sendMessage("(trainname) (cstationlist) (route) (tag)");
         itemView(sender, args[1], preset);
-        return true;
     }
 
     private boolean help(CommandSender sender) {
@@ -166,18 +169,19 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             return help(sender);
 
         // 各コマンドへ振り分け
-        return switch (args[0]) {
+        switch (args[0]) {
             case "list" -> list(sender, args);
             case "remove" -> remove(sender, args);
             case "add" -> add(sender, args);
             default -> help(sender);
         };
+
+        return true;
     }
 
     // コマンドごとのヘルプが多少楽になる
-    private boolean commandsHelp(CommandSender sender, String usage) {
+    private void commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", usage);
-        return true;
     }
 
     public static final String LABEL = "tpreset";

@@ -157,7 +157,7 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private boolean removelist(CommandSender sender, String[] args) {
+    private boolean rmrec(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
             return CommandUtil.commandsHelp(sender, "trec rmrec <list>");
@@ -246,7 +246,7 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
             case "list" -> list(sender, args);
             case "view" -> view(sender, args);
             case "copy" -> copy(sender, args);
-            case "rmrec" -> removelist(sender, args);
+            case "rmrec" -> rmrec(sender, args);
             case "start" -> start(sender, args);
             case "stop" -> stop(sender, args);
             case "modify" -> modify(sender, args);

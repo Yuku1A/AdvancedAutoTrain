@@ -144,12 +144,12 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
         // 生成して登録
         var preset = new TrainPreset(trainname, cstationlist, route, tags);
-        store.put(args[1], preset);
+        store.put(trainname, preset);
 
         // おわり
         sender.sendMessage("プリセットの登録に成功しました。");
         sender.sendMessage("(trainname) (cstationlist) (route) (tag)");
-        itemView(sender, args[1], preset);
+        itemView(sender, trainname, preset);
     }
 
     private boolean help(CommandSender sender) {

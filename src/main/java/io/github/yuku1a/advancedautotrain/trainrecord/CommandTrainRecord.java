@@ -3,6 +3,7 @@ package io.github.yuku1a.advancedautotrain.trainrecord;
 import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,17 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> startTab(String[] args) {
+        // 列車指定、通常記録がない列車を最初に記録するときに使われるので
+        // TrainPresetのある全列車が対象
+        if (args.length == 2) {
+            var trains = plugin.getTrainPresetStore().keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
+    }
+
     private boolean stop(CommandSender sender, String[] args) {
         // コマンド指定で1、列車指定で1
         if (args.length != 2)
@@ -30,6 +42,17 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         plugin.getTrainRecordingManager().recordingUnRegister(args[1]);
         sender.sendMessage(args[1] + " のイベントの記録を終了しました。");
         return true;
+    }
+
+    private List<String> stopTab(String[] args) {
+        // 記録中の列車のみをサジェストしたかった・・・
+        // 記録がある列車すべてをサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     private boolean modify(CommandSender sender, String[] args) {
@@ -66,6 +89,16 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         sender.sendMessage(key + "の" + indexstr + "番目からの記録を" + secondsstr + "秒ずらしました。");
 
         return true;
+    }
+
+    private List<String> modifyTab(String[] args) {
+        // 記録済みの列車をサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     private boolean view(CommandSender sender, String[] args) {
@@ -109,6 +142,16 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         trainRecordView(sender, list, Integer.parseInt(index) - 1);
 
         return true;
+    }
+
+    private List<String> viewTab(String[] args) {
+        // 記録済みの列車をサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     private void trainRecordView(CommandSender sender, List<TrainRecordEntry> list, int pageindex) {
@@ -157,6 +200,16 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private List<String> copyTab(String[] args) {
+        // 記録済みの列車をサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
+    }
+
     private boolean rmrec(CommandSender sender, String[] args) {
         // コマンドで1、リストで1
         if (args.length != 2)
@@ -168,6 +221,16 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         // おわり
         sender.sendMessage("削除完了しました");
         return true;
+    }
+
+    private List<String> rmrecTab(String[] args) {
+        // 記録済みの列車をサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     private boolean list(CommandSender sender, String[] args) {
@@ -226,6 +289,12 @@ public class CommandTrainRecord implements CommandExecutor, TabCompleter {
         }
 
         return switch (args[0]) {
+            case "copy" -> copyTab(args);
+            case "view" -> viewTab(args);
+            case "rmrec" -> rmrecTab(args);
+            case "start" -> startTab(args);
+            case "stop" -> stopTab(args);
+            case "modify" -> modifyTab(args);
             default -> null;
         };
     }

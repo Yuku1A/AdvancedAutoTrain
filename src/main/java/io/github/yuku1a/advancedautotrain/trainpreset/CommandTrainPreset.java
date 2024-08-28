@@ -82,7 +82,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
     private void remove(CommandSender sender, String[] args) {
         // コマンド指定で1、名前で1
         if (args.length != 2) {
-            commandsHelp(sender, "tpreset remove <name>");
+            commandsHelp(sender, "remove <name>");
             return;
         }
 
@@ -96,7 +96,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
     private void add(CommandSender sender, String[] args) {
         // コマンド指定で1、タグを無制限に受け付けるので無限
         if (args.length == 1) {
-            commandsHelp(sender, "tpreset add <trainname> [cstationlist] [route] [tags...]");
+            commandsHelp(sender, "add <trainname> [cstationlist] [route] [tags...]");
             return;
         }
 
@@ -181,7 +181,8 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
 
     // コマンドごとのヘルプが多少楽になる
     private void commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage("usage: ", usage);
+        sender.sendMessage("usage: ",
+                           LABEL + " " + usage);
     }
 
     public static final String LABEL = "tpreset";

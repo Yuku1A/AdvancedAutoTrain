@@ -11,34 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandTrainPreset implements CommandExecutor {
-    private final TrainPresetStore store;
-    private final Advancedautotrain plugin;
-
-    public CommandTrainPreset(Advancedautotrain plugin) {
-        this.plugin = plugin;
-        store = plugin.getTrainPresetStore();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // パーミッションチェック
-        if (!sender.hasPermission(plugin.UsePermission)) {
-            sender.sendMessage("必要な権限がありません");
-            return true;
-        }
-
-        // 0の場合コマンドが指定されていない
-        if (args.length == 0)
-            return help(sender);
-
-        // 各コマンドへ振り分け
-        return switch (args[0]) {
-            case "list" -> list(sender, args);
-            case "remove" -> remove(sender, args);
-            case "add" -> add(sender, args);
-            default -> help(sender);
-        };
-    }
 
     private boolean list(CommandSender sender, String[] args) {
         // リスト全部持ってくる
@@ -166,9 +138,38 @@ public class CommandTrainPreset implements CommandExecutor {
         return false;
     }
 
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission)) {
+            sender.sendMessage("必要な権限がありません");
+            return true;
+        }
+
+        // 0の場合コマンドが指定されていない
+        if (args.length == 0)
+            return help(sender);
+
+        // 各コマンドへ振り分け
+        return switch (args[0]) {
+            case "list" -> list(sender, args);
+            case "remove" -> remove(sender, args);
+            case "add" -> add(sender, args);
+            default -> help(sender);
+        };
+    }
+
     // コマンドごとのヘルプが多少楽になる
     private boolean commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", usage);
         return true;
+    }
+
+    private final TrainPresetStore store;
+    private final Advancedautotrain plugin;
+
+    public CommandTrainPreset(Advancedautotrain plugin) {
+        this.plugin = plugin;
+        store = plugin.getTrainPresetStore();
     }
 }

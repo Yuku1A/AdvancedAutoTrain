@@ -165,6 +165,7 @@ public class CommandTrainPreset implements CommandExecutor {
         return true;
     }
 
+    public static final String LABEL = "tpreset";
     private final TrainPresetStore store;
     private final Advancedautotrain plugin;
 

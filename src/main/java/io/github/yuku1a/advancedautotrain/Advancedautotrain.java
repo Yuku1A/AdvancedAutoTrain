@@ -194,7 +194,7 @@ public final class Advancedautotrain extends JavaPlugin {
         lSpawnSignManager.enable();
 
         // TrainPreset絡みのenable
-        commandRegister("tpreset", new CommandTrainPreset(this));
+        commandRegister(CommandTrainPreset.LABEL, new CommandTrainPreset(this));
         getServer().getPluginManager().registerEvents(new TrainPresetExecutor(this, trainPresetStore), this);
 
         // TrainRecord絡みのenable

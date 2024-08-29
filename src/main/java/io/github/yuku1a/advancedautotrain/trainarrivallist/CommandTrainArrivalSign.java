@@ -256,129 +256,204 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         return new AutoSetData(optimer, traindatalist, stationlist, trainnamelist);
     }
 
-    // addコマンド
     private void add(CommandSender sender, String[] args) {
-        // 引数のヘルプ用のテキスト
-        var argtext = "<list> <displayname> <cstationname> [offset] [description]";
-
-        var command = args[0];
-
-        if (command.equals("add")) {
-            // コマンド指定で1つ、リスト指定で1つ、パラメータが2つ、オプション2つで6つ
-            if ((4 > args.length) || (args.length > 6)) {
-                commandsHelp(
-                    sender,
-                    "add " + argtext
-                );
-                return;
-            }
-        } else if(command.equals("replace") || command.equals("insert")) {
-            // コマンド指定で1つ、リスト指定で1つ、パラメータが2つ、オプション2つ、インデックス1つで7つ
-            if ((5 > args.length) || (args.length > 7)) {
-                commandsHelp(
-                    sender,
-                    args[0] + " " + argtext + " <index>"
-                );
-                return;
-            }
-        } else {
+        // コマンド指定で1つ、リスト指定で1つ、インデックス1つ、パラメータが2つ、オプション2つで7つ
+        if (args.length < 4) {
+            commandsHelp(sender, "add <list> <displayname> <cstationname> [offset] [description]");
             return;
         }
 
-        // リスト指定
-        var key = args[1];
-        // リストを取ってくる
-        var list = listOrNull(sender, key);
-        // nullだったらメッセージが出てるのでそのまま返す
-        if (list == null)
+        // リスト取得
+        var trainName = args[1];
+        var list = store.get(trainName);
+        if (list == null) {
+            msgListNotFound(sender);
             return;
+        }
 
-        // 取り出し、型変換
-        var displayname = args[2];
-        var cstationname = args[3];
+        // 必須引数
+        var displayName = args[2];
+        var cstationName = args[3];
 
-        // displayname以外がオプションであるかインデックスなので慎重に調べる
+        // オプション引数
         long offset;
-        long defaultoffset = -2;
+        long defaultOffset = -2;
         String description;
 
-        // オプションがない場合
-        if ((command.equals("add") && args.length == 4) || (!(command.equals("add"))) && args.length == 5) {
-            offset = defaultoffset;
+        if (args.length == 4) {
+            // オプションがない場合
+            offset = defaultOffset;
             description = null;
-        } else {
-            // 最後の判定に必要
-            // addコマンド以外だとindexがあるのでargs.lengthでは判定できない
-            // オプションなしが4
-            int argnum;
-            if (command.equals("add"))
-                argnum = args.length;
-            else
-                argnum = args.length - 1;
-
-            // インデックスを進めていってあれこれ
-            int argindex = 4;
-
-            // OffSetを取り出す
-            long argoffset;
+        } else if (args.length == 5){
+            // めんどくさい
+            // オフセットかdescriptionかの片方のみのパターン
+            long argOffset;
+            String argDescription;
             try {
-                argoffset = Long.parseLong(args[argindex]);
-                argindex++;
+                argOffset = Long.parseLong(args[4]);
+                argDescription = null;
             } catch (NumberFormatException e) {
-                argoffset = defaultoffset;
+                argOffset = defaultOffset;
+                argDescription = args[4];
             }
-            offset = argoffset;
-
-            // descriptionを取り出す
-            // 全部乗せだったらindexは5
-            if (argindex < argnum){
-                description = args[argindex];
-                argindex++;
-            } else
-                description = null;
-
-            // 正しければこれはelse側を通る
-            if (argindex < argnum) {
-                sender.sendMessage("引数が不正です");
+            offset = argOffset;
+            description = argDescription;
+        } else {
+            // 両方あるパターン、多少楽
+            try {
+                offset = Long.parseLong(args[4]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("オフセットの形式が間違っています。");
                 return;
             }
+            description = args[5];
         }
 
-        var entry = new ArrivalSignEntry(cstationname, displayname, offset, description);
+        // 生成して追加
+        var entry = new ArrivalSignEntry(cstationName, displayName, offset, description);
+        list.add(entry);
+        sender.sendMessage("要素の追加を完了しました。");
+        // 追加したものの内容を表示する
+        infoViewOne(sender, entry, list.size() - 1);
 
-        // add以外だとindexが存在するので読み取る
-        int index;
-        if (!command.equals("add")) {
-            index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
-            // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
-            if (index == -1)
+    }
+
+    private void insert(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、リスト指定で1つ、インデックス1つ、パラメータが2つ、オプション2つで7つ
+        if (args.length < 5) {
+            commandsHelp(sender, "insert <list> <index> <displayname> <cstationname> [offset] [description]");
+            return;
+        }
+
+        // リスト取得
+        var trainName = args[1];
+        var list = store.get(trainName);
+        if (list == null) {
+            msgListNotFound(sender);
+            return;
+        }
+
+        // インデックス
+        var indexStr = args[2];
+        var index = CommandUtil.tryParseIndex(sender, list, indexStr);
+        // ダメだった場合、メッセージは表示済み
+        if (index == -1)
+            return;
+
+        // 必須引数
+        var displayName = args[3];
+        var cstationName = args[4];
+
+        // オプション引数
+        long offset;
+        long defaultOffset = -2;
+        String description;
+
+        if (args.length == 5) {
+            // オプションがない場合
+            offset = defaultOffset;
+            description = null;
+        } else if (args.length == 6){
+            // めんどくさい
+            // オフセットかdescriptionかの片方のみのパターン
+            long argOffset;
+            String argDescription;
+            try {
+                argOffset = Long.parseLong(args[5]);
+                argDescription = null;
+            } catch (NumberFormatException e) {
+                argOffset = defaultOffset;
+                argDescription = args[5];
+            }
+            offset = argOffset;
+            description = argDescription;
+        } else {
+            // 両方あるパターン、多少楽
+            try {
+                offset = Long.parseLong(args[5]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("オフセットの形式が間違っています。");
                 return;
-        } else
-            index = -1;
-
-        // addコマンドだとそのままinfoをlistへ追加、そのまま完了
-        switch (command) {
-            case "add" -> {
-                list.add(entry);
-                sender.sendMessage("要素の追加を完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, entry, list.size() - 1);
             }
-            case "replace" -> {
-                list.set(index, entry);
-                sender.sendMessage("項目の置き換えが完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, entry, index);
-            }
-            case "insert" -> {
-                list.add(index, entry);
-                sender.sendMessage("項目の挿入が完了しました。");
-                // 追加したものの内容を表示する
-                infoViewOne(sender, entry, index);
-            }
+            description = args[6];
         }
 
-        // 終わり
+        // 生成して追加
+        var entry = new ArrivalSignEntry(cstationName, displayName, offset, description);
+        list.add(index, entry);
+        sender.sendMessage("項目の挿入が完了しました。");
+        // 追加したものの内容を表示する
+        infoViewOne(sender, entry, index);
+
+    }
+
+    private void replace(CommandSender sender, String[] args) {
+        // コマンド指定で1つ、リスト指定で1つ、インデックス1つ、パラメータが2つ、オプション2つで7つ
+        if (args.length < 5) {
+            commandsHelp(sender, "replace <list> <index> <displayname> <cstationname> [offset] [description]");
+            return;
+        }
+
+        // リスト取得
+        var trainName = args[1];
+        var list = store.get(trainName);
+        if (list == null) {
+            msgListNotFound(sender);
+            return;
+        }
+
+        // インデックス
+        var indexStr = args[2];
+        var index = CommandUtil.tryParseIndex(sender, list, indexStr);
+        // ダメだった場合、メッセージは表示済み
+        if (index == -1)
+            return;
+
+        // 必須引数
+        var displayName = args[3];
+        var cstationName = args[4];
+
+        // オプション引数
+        long offset;
+        long defaultOffset = -2;
+        String description;
+
+        if (args.length == 5) {
+            // オプションがない場合
+            offset = defaultOffset;
+            description = null;
+        } else if (args.length == 6){
+            // めんどくさい
+            // オフセットかdescriptionかの片方のみのパターン
+            long argOffset;
+            String argDescription;
+            try {
+                argOffset = Long.parseLong(args[5]);
+                argDescription = null;
+            } catch (NumberFormatException e) {
+                argOffset = defaultOffset;
+                argDescription = args[5];
+            }
+            offset = argOffset;
+            description = argDescription;
+        } else {
+            // 両方あるパターン、多少楽
+            try {
+                offset = Long.parseLong(args[5]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("オフセットの形式が間違っています。");
+                return;
+            }
+            description = args[6];
+        }
+
+        // 生成して追加
+        var entry = new ArrivalSignEntry(cstationName, displayName, offset, description);
+        list.set(index, entry);
+        sender.sendMessage("項目の置き換えが完了しました。");
+        // 追加したものの内容を表示する
+        infoViewOne(sender, entry, index);
+
     }
 
     // createコマンド
@@ -622,7 +697,9 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             case "save" -> save(sender);
             case "load" -> load(sender);
             case "view" -> view(sender, args);
-            case "add","replace","insert" -> add(sender, args);
+            case "add" -> add(sender, args);
+            case "replace" -> replace(sender, args);
+            case "insert" -> insert(sender,args);
             case "create" -> create(sender, args);
             case "remove" -> remove(sender, args);
             case "rmlist" -> rmlist(sender, args);

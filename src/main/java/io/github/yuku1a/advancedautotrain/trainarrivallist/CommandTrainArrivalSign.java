@@ -649,10 +649,11 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     }
 
     private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage("usage: ", "tal " + usage);
+        sender.sendMessage("usage: ", LABEL + " " + usage);
         return true;
     }
 
+    public final static String LABEL = "tal";
     private final TrainArrivalSignStore store;
     private final Advancedautotrain plugin;
 

@@ -203,7 +203,7 @@ public final class Advancedautotrain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TrainRecordExecutor(this), this);
 
         // TrainArrivalList絡みのenable
-        commandRegister("tal", new CommandTrainArrivalSign(this));
+        commandRegister(CommandTrainArrivalSign.LABEL, new CommandTrainArrivalSign(this));
 
         // AATDump絡みのenable
         commandRegister("aatdump", new CommandAATDump(this));

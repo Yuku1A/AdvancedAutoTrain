@@ -7,12 +7,13 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CommandTrainArrivalSign implements CommandExecutor {
+public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
     private void autoclean(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
@@ -710,6 +711,23 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         }
 
         return true;
+    }
+
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        // パーミッションチェック
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        // コマンドのサジェスト
+        if (args.length == 1) {
+            return List.of("create", "add", "remove", "view", "list", "rmlist", "copy",
+                           "replace", "insert", "autoset", "autoclean");
+        }
+
+        // 各コマンドの詳細なサジェスト
+        return switch (args[0]) {
+            default -> null;
+        };
     }
 
     // helpコマンド

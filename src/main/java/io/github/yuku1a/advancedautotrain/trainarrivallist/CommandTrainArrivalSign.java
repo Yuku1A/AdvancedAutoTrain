@@ -584,11 +584,15 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         // チェック用
         // nullが投げ込まれたら相応のメッセージを出すだけ
         if (list == null) {
-            sender.sendMessage("指定された名前のリストは登録されていません。");
+            msgListNotFound(sender);
             return null;
         }
 
         return list;
+    }
+
+    private void msgListNotFound(CommandSender sender) {
+        sender.sendMessage("指定された名前のリストは登録されていません。");
     }
 
     @Override

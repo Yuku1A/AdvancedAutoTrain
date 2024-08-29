@@ -523,7 +523,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     }
 
     // removetコマンド
-    private void removet(CommandSender sender, String[] args) {
+    private void rmlist(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ
         if (args.length != 2) {
             commandsHelp(sender, "rmlist <list>");
@@ -621,7 +621,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             case "add","replace","insert" -> add(sender, args);
             case "create" -> create(sender, args);
             case "remove" -> remove(sender, args);
-            case "rmlist" -> removet(sender, args);
+            case "rmlist" -> rmlist(sender, args);
             case "copy" -> copy(sender, args);
             case "autoset" -> autoset(sender, args);
             case "autoclean" -> autoclean(sender, args);

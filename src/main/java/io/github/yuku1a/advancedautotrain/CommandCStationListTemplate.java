@@ -68,7 +68,7 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
 
         // 追加の場合、最後の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
         var template = store.get(templateName);
-        if (template == null)
+        if (template == null || template.isEmpty())
             return null;
 
         var lastInfo = template.get(template.size() - 1);

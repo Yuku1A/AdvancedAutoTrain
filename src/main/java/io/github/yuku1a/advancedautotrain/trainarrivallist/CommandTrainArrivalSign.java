@@ -648,6 +648,11 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         return false;
     }
 
+    private boolean commandsHelp(CommandSender sender, String usage) {
+        sender.sendMessage("usage: ", "tal " + usage);
+        return true;
+    }
+
     private final TrainArrivalSignStore store;
     private final Advancedautotrain plugin;
 
@@ -655,10 +660,5 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     public CommandTrainArrivalSign(Advancedautotrain plugin) {
         this.plugin = plugin;
         store = plugin.getTrainArrivalSignStore();
-    }
-
-    private boolean commandsHelp(CommandSender sender, String usage) {
-        sender.sendMessage("usage: ", "tal " + usage);
-        return true;
     }
 }

@@ -14,16 +14,18 @@ import java.util.List;
 
 public class CommandTrainArrivalSign implements CommandExecutor {
 
-    private boolean autoclean(CommandSender sender, String[] args) {
+    private void autoclean(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
-        if (args.length != 2)
-            return commandsHelp(sender, "autoclean <lspawnlist>");
+        if (args.length != 2) {
+            commandsHelp(sender, "autoclean <lspawnlist>");
+            return;
+        }
 
         // 必要な情報を集める
         var autosetdata = gatheringAutoSetData(sender, args[1]);
         // 異常な場合nullでメッセージがすでに出てるのでreturn
         if (autosetdata == null)
-            return true;
+            return;
 
         // 駅と列車の情報が集まったので次に駅のクリーンアップ
         cleanAndPause(autosetdata);
@@ -33,18 +35,19 @@ public class CommandTrainArrivalSign implements CommandExecutor {
 
         sender.sendMessage("処理を完了しました。");
 
-        return true;
     }
-    private boolean autoset(CommandSender sender, String[] args) {
+    private void autoset(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
-        if (args.length != 2)
-            return commandsHelp(sender, "autoset <lspawnlist>");
+        if (args.length != 2) {
+            commandsHelp(sender, "autoset <lspawnlist>");
+            return;
+        }
 
         // 必要な情報を集めてくる
         var autosetdata = gatheringAutoSetData(sender, args[1]);
         // 異常な場合nullでメッセージがすでに出てるのでreturn
         if (autosetdata == null)
-            return true;
+            return;
 
         // 駅と列車の情報が集まったので次に駅のクリーンアップ
         cleanAndPause(autosetdata);
@@ -79,7 +82,6 @@ public class CommandTrainArrivalSign implements CommandExecutor {
 
         sender.sendMessage("処理を完了しました。");
 
-        return true;
     }
 
     private void resumeArrivalSign(AutoSetData autosetdata) {
@@ -255,7 +257,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
     }
 
     // addコマンド
-    private boolean add(CommandSender sender, String[] args) {
+    private void add(CommandSender sender, String[] args) {
         // 引数のヘルプ用のテキスト
         var argtext = "<list> <displayname> <cstationname> [offset] [description]";
 
@@ -264,21 +266,23 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         if (command.equals("add")) {
             // コマンド指定で1つ、リスト指定で1つ、パラメータが2つ、オプション2つで6つ
             if ((4 > args.length) || (args.length > 6)) {
-                return commandsHelp(
+                commandsHelp(
                     sender,
                     "add " + argtext
                 );
+                return;
             }
         } else if(command.equals("replace") || command.equals("insert")) {
             // コマンド指定で1つ、リスト指定で1つ、パラメータが2つ、オプション2つ、インデックス1つで7つ
             if ((5 > args.length) || (args.length > 7)) {
-                return commandsHelp(
+                commandsHelp(
                     sender,
                     args[0] + " " + argtext + " <index>"
                 );
+                return;
             }
         } else {
-            return false;
+            return;
         }
 
         // リスト指定
@@ -287,7 +291,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         var list = listOrNull(sender, key);
         // nullだったらメッセージが出てるのでそのまま返す
         if (list == null)
-            return true;
+            return;
 
         // 取り出し、型変換
         var displayname = args[2];
@@ -336,7 +340,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             // 正しければこれはelse側を通る
             if (argindex < argnum) {
                 sender.sendMessage("引数が不正です");
-                return true;
+                return;
             }
         }
 
@@ -348,7 +352,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             index = CommandUtil.tryParseIndex(sender, list, args[args.length - 1]);
             // 変換だめだったら-1でかつメッセージがすでに送信されているのでそのままreturn
             if (index == -1)
-                return true;
+                return;
         } else
             index = -1;
 
@@ -375,56 +379,59 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         }
 
         // 終わり
-        return true;
     }
 
     // createコマンド
-    private boolean create(CommandSender sender, String[] args) {
+    private void create(CommandSender sender, String[] args) {
         // コマンドで1つ、リスト名で1つ
-        if (args.length != 2)
-            return commandsHelp(sender, "create <trainname>");
+        if (args.length != 2) {
+            commandsHelp(sender, "create <trainname>");
+            return;
+        }
 
         // とりあえず作る
         store.put(args[1], new ArrayList<>());
 
         sender.sendMessage("リスト " + args[1] + " を作成しました。");
 
-        return true;
     }
 
     // removeコマンド
-    private boolean remove(CommandSender sender, String[] args) {
+    private void remove(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレートで1つ、インデックスで1つ
-        if (args.length != 3)
-            return commandsHelp(sender, "remove <listname> <index>");
+        if (args.length != 3) {
+            commandsHelp(sender, "remove <listname> <index>");
+            return;
+        }
 
         // リストを取ってくる
         var list = listOrNull(sender, args[1]);
 
         // nullだったらメッセージが出てるのでそのまま返す
         if (list == null)
-            return true;
+            return;
 
         // 検査
         var index = CommandUtil.tryParseIndex(sender, list, args[2]);
 
         // ひっかかってたら弾く
         if (index == -1)
-            return true;
+            return;
 
         // 実際の削除処理
         list.remove(index);
         sender.sendMessage("リスト " + args[1] + " の " + index + "番目の項目が削除されました。");
 
         // おわり
-        return true;
     }
 
     // viewコマンド
-    private boolean view(CommandSender sender, String[] args) {
+    private void view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
-        if ((2 > args.length) || (args.length > 3))
-            return commandsHelp(sender, "view <template> <page>");
+        if ((2 > args.length) || (args.length > 3)) {
+            commandsHelp(sender, "view <template> <page>");
+            return;
+        }
 
         // 名前を出しておく
         var listname = args[1];
@@ -434,7 +441,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
 
         // nullだったらメッセージが出てるのでそのまま返す
         if (rawlist == null)
-            return true;
+            return;
 
         // ページングを丸投げ
         var list = CommandUtil.pager2D(rawlist, 9);
@@ -450,7 +457,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         int pageindex = CommandUtil.tryParsePagingIndex(sender, list, pageindexstr);
         // インデックスが異常だったらすでにメッセージが送られている
         if (pageindex == -1)
-            return true;
+            return;
 
         // 分割されたリストの指定されたやつ
         var pagedlist = list.get(pageindex);
@@ -467,7 +474,6 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         }
 
         // おわり
-        return true;
     }
 
     // infoを一つだけ表示する用
@@ -485,10 +491,12 @@ public class CommandTrainArrivalSign implements CommandExecutor {
 
     // ボイラープレートじみたコード類
     // listコマンド
-    private boolean list(CommandSender sender, String[] args) {
+    private void list(CommandSender sender, String[] args) {
         // コマンドで1つ、ページで1つまで
-        if (args.length > 2)
-            return commandsHelp(sender, "list [page]");
+        if (args.length > 2) {
+            commandsHelp(sender, "list [page]");
+            return;
+        }
 
         // storeからキーのコレクションを取得する
         var rawlist = store.keysList();
@@ -501,7 +509,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
 
         // listがnullだったら警告文とかも出てるのでおわり
         if (list == null)
-            return true;
+            return;
 
         // 分割されたやつを表示
         sender.sendMessage(
@@ -512,14 +520,15 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         list.forEach(sender::sendMessage);
 
         // おわり
-        return true;
     }
 
     // removetコマンド
-    private boolean removet(CommandSender sender, String[] args) {
+    private void removet(CommandSender sender, String[] args) {
         // コマンドで1つ、テンプレート指定で1つ
-        if (args.length != 2)
-            return commandsHelp(sender, "rmlist <list>");
+        if (args.length != 2) {
+            commandsHelp(sender, "rmlist <list>");
+            return;
+        }
 
         // 指定されたテンプレートを削除
         store.remove(args[1]);
@@ -527,46 +536,44 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             "指定されたリスト " + args[1] +
                 " は、削除されました。"
         );
-        return true;
     }
 
     // copyコマンド
-    private boolean copy(CommandSender sender, String[] args) {
+    private void copy(CommandSender sender, String[] args) {
         // コマンド指定で1つ、コピー元と先指定で2つ
-        if (args.length != 3)
-            return commandsHelp(sender, "copy <from> <to>");
+        if (args.length != 3) {
+            commandsHelp(sender, "copy <from> <to>");
+            return;
+        }
 
         // リストを取ってくる
         var from = listOrNull(sender, args[1]);
 
         // nullだったらメッセージが出てるのでそのまま返す
         if (from == null)
-            return true;
+            return;
 
         // storeへコピーしたリストをset
         store.put(args[2], new ArrayList<>(from));
 
         // おわり
         sender.sendMessage("コピーが完了しました。");
-        return true;
     }
 
     // saveコマンド
-    private boolean save(CommandSender sender) {
+    private void save(CommandSender sender) {
         if (store.save())
             sender.sendMessage("Save Successful!");
         else
             sender.sendMessage("Save Failed");
-        return true;
     }
 
     // loadコマンド
-    private boolean load(CommandSender sender) {
+    private void load(CommandSender sender) {
         if (store.load())
             sender.sendMessage("Data Loaded");
         else
             sender.sendMessage("Data Load Failed");
-        return true;
     }
 
     private List<ArrivalSignEntry> listOrNull(CommandSender sender, String key) {
@@ -606,7 +613,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         }
 
         // コマンドごとに分岐やる、この構文めちゃ便利
-        return switch (args[0]) {
+        switch (args[0]) {
             case "list" -> list(sender, args);
             case "save" -> save(sender);
             case "load" -> load(sender);
@@ -619,7 +626,9 @@ public class CommandTrainArrivalSign implements CommandExecutor {
             case "autoset" -> autoset(sender, args);
             case "autoclean" -> autoclean(sender, args);
             default -> help(sender);
-        };
+        }
+
+        return true;
     }
 
     // helpコマンド
@@ -648,9 +657,8 @@ public class CommandTrainArrivalSign implements CommandExecutor {
         return false;
     }
 
-    private boolean commandsHelp(CommandSender sender, String usage) {
+    private void commandsHelp(CommandSender sender, String usage) {
         sender.sendMessage("usage: ", LABEL + " " + usage);
-        return true;
     }
 
     public final static String LABEL = "tal";

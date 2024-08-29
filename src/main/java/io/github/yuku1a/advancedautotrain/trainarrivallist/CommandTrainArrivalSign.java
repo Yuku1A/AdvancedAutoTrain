@@ -228,7 +228,7 @@ public class CommandTrainArrivalSign implements CommandExecutor {
                 }
 
                 // OPTimerが違うとこれをやる意味が完全になくなる
-                if (!arrivalList.getTimerkey().equals(optimername)){
+                if (!arrivalList.getTimerkey().equals(optimername)) {
                     sender.sendMessage("LSpawnList " + lspnlistkey + " とArrivalList " + entryTrainRecordSignName + " では参照しているOPTimerが異なります。");
                     sender.sendMessage("処理を中止します。");
                     return null;

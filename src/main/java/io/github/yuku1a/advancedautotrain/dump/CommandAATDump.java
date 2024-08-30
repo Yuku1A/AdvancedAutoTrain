@@ -2,6 +2,7 @@ package io.github.yuku1a.advancedautotrain.dump;
 
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
+import io.github.yuku1a.advancedautotrain.utils.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -85,20 +86,40 @@ public class CommandAATDump implements CommandExecutor, TabCompleter {
         // TrainRecord
         var ymlrecord = yamlcfg.createSection("trainrecord");
         var recordstore = plugin.getTrainRecordStore();
-        // めんどくさいのでまるごと吐く
-        recordstore.entryList().forEach(e -> ymlrecord.set(e.getKey(), e.getValue()));
+
+        // 列車名を先に出して対象かどうかを確認
+        List<String> targetNames;
+        var recordNames = recordstore.keysList();
+        var targetPrefixes = plugin.getTrainRelationStore().get(optimerkey);
+        if (targetPrefixes == null) {
+            // 列車の接頭辞を指定する設定がないなら全部出す
+            targetNames = recordNames;
+        }
+        else {
+            // 設定がある場合特定の接頭辞がついた列車のみ対象にする
+            targetNames = new ArrayList<>();
+            for (var targetPrefix : targetPrefixes) {
+                targetNames.addAll(Util.searchInList(targetPrefix, recordNames));
+            }
+        }
+
+        for (var tagetTrain : targetNames) {
+            var entry = recordstore.get(tagetTrain);
+            ymlrecord.set(tagetTrain, entry);
+        }
 
         // TrainPreset
         var ymlpreset = yamlcfg.createSection("trainpreset");
         var presetstore = plugin.getTrainPresetStore();
         // あとのroute用
         var routelist = new ArrayList<String>();
-        presetstore.entryList().forEach(e -> {
-            var routename = e.getValue().getRouteName();
+        for (var targetTrain : targetNames) {
+            var value = presetstore.get(targetTrain);
+            var routename = value.getRouteName();
             if (routename != null)
                 routelist.add(routename);
-            ymlpreset.set(e.getKey(), e.getValue());
-        });
+            ymlpreset.set(targetTrain, value);
+        }
 
         // Route
         var ymlroute = yamlcfg.createSection("route");

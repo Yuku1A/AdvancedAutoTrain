@@ -8,6 +8,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.cstation.CStationCacheSet;
 import io.github.yuku1a.advancedautotrain.cstation.CommandCStationCache;
 import io.github.yuku1a.advancedautotrain.dump.CommandAATDump;
+import io.github.yuku1a.advancedautotrain.dump.CommandTrainRelation;
 import io.github.yuku1a.advancedautotrain.dump.TrainRelationStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
@@ -216,6 +217,7 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // AATDump絡みのenable
         commandRegister("aatdump", new CommandAATDump(this));
+        commandRegister(CommandTrainRelation.LABEL, new CommandTrainRelation(this));
 
         // RouteEdit絡みのenable
         commandRegister(CommandRouteEdit.LABEL, new CommandRouteEdit(this));

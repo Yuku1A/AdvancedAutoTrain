@@ -1,9 +1,11 @@
 package io.github.yuku1a.advancedautotrain.trainarrivallist;
 
+import com.bergerkiller.bukkit.sl.API.Variables;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CommandUtil;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSign;
 import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSet;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,6 +39,17 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         sender.sendMessage("処理を完了しました。");
 
     }
+
+    private List<String> autocleanTab(String[] args) {
+        // LSpawnSignをサジェスト
+        if (args.length == 2) {
+            var lspawnSigns = plugin.getSpawnListStore().keysList();
+            return TabCompleteUtil.searchInList(args[1], lspawnSigns);
+        }
+
+        return null;
+    }
+
     private void autoset(CommandSender sender, String[] args) {
         // コマンド指定で1、lspawnlist指定で1
         if (args.length != 2) {
@@ -83,6 +96,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         sender.sendMessage("処理を完了しました。");
 
+    }
+
+    private List<String> autosetTab(String[] args) {
+        // LSpawnSignをサジェスト
+        if (args.length == 2) {
+            var lspawnSigns = plugin.getSpawnListStore().keysList();
+            return TabCompleteUtil.searchInList(args[1], lspawnSigns);
+        }
+
+        return null;
     }
 
     private void resumeArrivalSign(AutoSetData autosetdata) {
@@ -319,6 +342,82 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
     }
 
+    private List<String> addTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // add <list> <displayname> <cstationname> [offset] [description]
+
+        // 列車名のサジェスト
+        var trainName = args[1];
+        if (args.length == 2) {
+            var trainNames = store.keysList();
+            return TabCompleteUtil.searchInList(trainName, trainNames);
+        }
+
+        // displayNameに使うためのSignLinkの変数をサジェスト
+        if (args.length == 3) {
+            return searchIfVariable(args[2]);
+        }
+
+        // CStationの名前をサジェスト
+        if (args.length == 4) {
+            var cstations = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[3], cstations);
+        }
+
+        // offsetは前の項目次第
+        if (args.length == 5) {
+            var list = store.get(trainName);
+            if (list == null || list.isEmpty())
+                return null;
+
+            // リストがあって項目もあるなら最後尾の項目からサジェストする
+            var entry = list.get(list.size() - 1);
+            return List.of(String.valueOf(entry.getSecondsOffset()));
+        }
+
+        // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
+        if (args.length == 6) {
+            return searchIfVariable(args[5]);
+        }
+
+        return null;
+    }
+
+    private List<String> searchIfVariable(String query) {
+        if (!query.startsWith("%"))
+            return null;
+
+        // 先頭の%を取り除く
+        var newQuery = query.substring(1);
+
+        // 完全に入力し終わってる場合は返さない
+        if (newQuery.endsWith("%"))
+            return null;
+
+        // SignLink内を検索
+        var varNameList = searchInSignLink(newQuery);
+
+        // そのままではサジェストにならないので変数表記に変換する
+        var resultList = new ArrayList<String>();
+        varNameList.forEach(e -> {
+            var after = "%" + e + "%";
+            resultList.add(after);
+        });
+        return resultList;
+    }
+
+    private List<String> searchInSignLink(String query) {
+        // SignLinkの変数の名前を集めてくる
+        var varList = Variables.getAllAsList();
+        var varNameList = new ArrayList<String>();
+        varList.forEach(e -> varNameList.add(e.getName()));
+
+        return TabCompleteUtil.searchInList(query, varNameList);
+    }
+
     private void insert(CommandSender sender, String[] args) {
         // コマンド指定で1つ、リスト指定で1つ、インデックス1つ、パラメータが2つ、オプション2つで7つ
         if (args.length < 5) {
@@ -386,6 +485,50 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         // 追加したものの内容を表示する
         infoViewOne(sender, entry, index);
 
+    }
+
+    private List<String> insertTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // insert <list> <index> <displayname> <cstationname> [offset] [description]
+
+        // 列車名のサジェスト
+        var trainName = args[1];
+        if (args.length == 2) {
+            var trainNames = store.keysList();
+            return TabCompleteUtil.searchInList(trainName, trainNames);
+        }
+
+        // displayNameに使うためのSignLinkの変数をサジェスト
+        if (args.length == 4) {
+            return searchIfVariable(args[3]);
+        }
+
+        // CStationの名前をサジェスト
+        if (args.length == 5) {
+            var cstations = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[4], cstations);
+        }
+
+        // offsetは前の項目次第
+        if (args.length == 6) {
+            var list = store.get(trainName);
+            if (list == null || list.isEmpty())
+                return null;
+
+            // リストがあって項目もあるなら最後尾の項目からサジェストする
+            var entry = list.get(list.size() - 1);
+            return List.of(String.valueOf(entry.getSecondsOffset()));
+        }
+
+        // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
+        if (args.length == 7) {
+            return searchIfVariable(args[6]);
+        }
+
+        return null;
     }
 
     private void replace(CommandSender sender, String[] args) {
@@ -457,6 +600,50 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
     }
 
+    private List<String> replaceTab(String[] args) {
+        // インスペクション対策
+        if (args.length <= 1)
+            return null;
+
+        // insert <list> <index> <displayname> <cstationname> [offset] [description]
+
+        // 列車名のサジェスト
+        var trainName = args[1];
+        if (args.length == 2) {
+            var trainNames = store.keysList();
+            return TabCompleteUtil.searchInList(trainName, trainNames);
+        }
+
+        // displayNameに使うためのSignLinkの変数をサジェスト
+        if (args.length == 4) {
+            return searchIfVariable(args[3]);
+        }
+
+        // CStationの名前をサジェスト
+        if (args.length == 5) {
+            var cstations = plugin.getCStationCacheSet().get();
+            return TabCompleteUtil.searchInList(args[4], cstations);
+        }
+
+        // offsetは前の項目次第
+        if (args.length == 6) {
+            var list = store.get(trainName);
+            if (list == null || list.isEmpty())
+                return null;
+
+            // リストがあって項目もあるなら最後尾の項目からサジェストする
+            var entry = list.get(list.size() - 1);
+            return List.of(String.valueOf(entry.getSecondsOffset()));
+        }
+
+        // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
+        if (args.length == 7) {
+            return searchIfVariable(args[6]);
+        }
+
+        return null;
+    }
+
     // createコマンド
     private void create(CommandSender sender, String[] args) {
         // コマンドで1つ、リスト名で1つ
@@ -470,6 +657,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         sender.sendMessage("リスト " + args[1] + " を作成しました。");
 
+    }
+
+    private List<String> createTab(String[] args) {
+        // 列車に紐づけて作るのでTrainPresetの登録名をサジェスト
+        if (args.length == 2) {
+            var trains = plugin.getTrainPresetStore().keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     // removeコマンド
@@ -499,6 +696,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         sender.sendMessage("リスト " + args[1] + " の " + index + "番目の項目が削除されました。");
 
         // おわり
+    }
+
+    private List<String> removeTab(String[] args) {
+        // 登録済みリストをサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     // viewコマンド
@@ -550,6 +757,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         }
 
         // おわり
+    }
+
+    private List<String> viewTab(String[] args) {
+        // 登録済みリストをサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
     }
 
     // infoを一つだけ表示する用
@@ -614,6 +831,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         );
     }
 
+    private List<String> rmlistTab(String[] args) {
+        // 登録済みリストをサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        return null;
+    }
+
     // copyコマンド
     private void copy(CommandSender sender, String[] args) {
         // コマンド指定で1つ、コピー元と先指定で2つ
@@ -634,6 +861,22 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         // おわり
         sender.sendMessage("コピーが完了しました。");
+    }
+
+    private List<String> copyTab(String[] args) {
+        // 登録済みリストをサジェスト
+        if (args.length == 2) {
+            var trains = store.keysList();
+            return TabCompleteUtil.searchInList(args[1], trains);
+        }
+
+        // 列車に紐づけて作るのでTrainPresetの登録名をサジェスト
+        if (args.length == 3) {
+            var trains = plugin.getTrainPresetStore().keysList();
+            return TabCompleteUtil.searchInList(args[2], trains);
+        }
+
+        return null;
     }
 
     // saveコマンド
@@ -726,6 +969,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         // 各コマンドの詳細なサジェスト
         return switch (args[0]) {
+            case "create" -> createTab(args);
+            case "add" -> addTab(args);
+            case "remove" -> removeTab(args);
+            case "view" -> viewTab(args);
+            case "rmlist" -> rmlistTab(args);
+            case "copy" -> copyTab(args);
+            case "replace" -> replaceTab(args);
+            case "insert" -> insertTab(args);
+            case "autoset" -> autosetTab(args);
+            case "autoclean" -> autocleanTab(args);
             default -> null;
         };
     }

@@ -34,6 +34,9 @@ commands:
   redit:
     aliases: [redit]
     usage: /<command> <action> <arguments...>
+  trl:
+    aliases: [trl]
+    usage: /<command> <action> <arguments...>
 permissions:
   advancedautotrain.*:
     default: false

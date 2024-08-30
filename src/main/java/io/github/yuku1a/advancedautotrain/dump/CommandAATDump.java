@@ -1,16 +1,19 @@
 package io.github.yuku1a.advancedautotrain.dump;
 
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
+import io.github.yuku1a.advancedautotrain.utils.TabCompleteUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class CommandAATDump implements CommandExecutor {
+public class CommandAATDump implements CommandExecutor, TabCompleter {
     public boolean rail(CommandSender sender, String[] args) {
         // コマンドとワールド選択で2
         if (args.length != 2)
@@ -115,6 +118,15 @@ public class CommandAATDump implements CommandExecutor {
         return true;
     }
 
+    private List<String> optimerTab(String[] args) {
+        if (args.length == 2) {
+            var optimers = plugin.getOperationTimerStore().keysList();
+            return TabCompleteUtil.searchInList(args[1], optimers);
+        }
+
+        return null;
+    }
+
     private boolean help(CommandSender sender) {
         sender.sendMessage(
             "AdvancedAutoTrainやTrainCartsのデータを",
@@ -125,6 +137,21 @@ public class CommandAATDump implements CommandExecutor {
                     "optimer: 指定されたOPTimerに紐づけられたすべてのデータをダンプします"
         );
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission(plugin.UsePermission))
+            return null;
+
+        if (args.length == 1) {
+            return List.of("rail", "optimer");
+        }
+
+        return switch (args[0]) {
+            case "optimer" -> optimerTab(args);
+            default -> null;
+        };
     }
 
     @Override

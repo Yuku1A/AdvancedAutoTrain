@@ -8,6 +8,7 @@ import io.github.yuku1a.advancedautotrain.arrivallist.ScheduledSignSetStore;
 import io.github.yuku1a.advancedautotrain.cstation.CStationCacheSet;
 import io.github.yuku1a.advancedautotrain.cstation.CommandCStationCache;
 import io.github.yuku1a.advancedautotrain.dump.CommandAATDump;
+import io.github.yuku1a.advancedautotrain.dump.TrainRelationStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
 import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
@@ -105,6 +106,10 @@ public final class Advancedautotrain extends JavaPlugin {
     private TrainArrivalSignStore trainArrivalSignStore;
     public TrainArrivalSignStore getTrainArrivalSignStore() { return trainArrivalSignStore; }
 
+    // AATDump (TrainRelation) 関連
+    private TrainRelationStore trainRelationStore;
+    public TrainRelationStore getTrainRelationStore() { return trainRelationStore; }
+
     @Override
     public void onLoad() {
         // TrainCartsの参照の取得
@@ -164,6 +169,10 @@ public final class Advancedautotrain extends JavaPlugin {
         ConfigurationSerialization.registerClass(ArrivalSignEntry.class);
         trainArrivalSignStore = new TrainArrivalSignStore(this);
         trainArrivalSignStore.load();
+
+        // AATDump (TrainRelation) 関連の初期化
+        trainRelationStore = new TrainRelationStore(this);
+        trainRelationStore.load();
 
         getLogger().log(Level.INFO, "loaded!");
     }
@@ -243,6 +252,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
         // TrainArrivalList絡みの処理
         trainArrivalSignStore.save();
+
+        // AATDump (TrainRelation) まわりの処理
+        trainRelationStore.save();
     }
 
     private void commandRegister(String label, CommandExecutor commandInstance) {

@@ -15,11 +15,6 @@ public class TabCompleteUtil {
      * @return 文字列に合う候補
      */
     public static List<String> searchInList(String query, List<String> list) {
-        var resultList = new ArrayList<String>();
-        for (var content : list) {
-            if (content.startsWith(query))
-                resultList.add(content);
-        }
-        return resultList;
+        return Util.searchInList(query, list);
     }
 }

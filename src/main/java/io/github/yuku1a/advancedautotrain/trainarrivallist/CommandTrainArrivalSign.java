@@ -505,7 +505,7 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
     private void view(CommandSender sender, String[] args) {
         // コマンド指定で1つ、テンプレート指定で1つ、ページ指定含め計3つ
         if ((2 > args.length) || (args.length > 3)) {
-            commandsHelp(sender, "view <template> <page>");
+            commandsHelp(sender, "view <trainname> <page>");
             return;
         }
 

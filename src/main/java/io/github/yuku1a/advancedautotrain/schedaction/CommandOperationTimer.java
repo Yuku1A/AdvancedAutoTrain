@@ -242,7 +242,7 @@ public class CommandOperationTimer implements CommandExecutor, TabCompleter {
 
         // 最初の引数はコマンド指定
         if (args.length == 1) {
-            return List.of("create", "remove", "list", "modify");
+            return List.of("create", "remove", "list", "modify", "view");
         }
 
         // それぞれのコマンドのTab補完はそれぞれにメソッドを作る

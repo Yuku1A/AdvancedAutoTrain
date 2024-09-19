@@ -69,15 +69,14 @@ public class CommandCStationListTemplate implements CommandExecutor, TabComplete
         // 追加の場合、最後の要素と同じようなものを追加することが多いのでそれに合うようにサジェスト
         // 最後のnameのサジェストが無効にならないようにちゃんと範囲を限定する
         var template = store.get(templateName);
-        if ((template == null || template.isEmpty()) && args.length <= 5)
-            return null;
 
-        var lastInfo = template.get(template.size() - 1);
+        if ((!(template == null || template.isEmpty())) && args.length <= 5) {
+            var lastInfo = template.get(template.size() - 1);
 
-        // <acceleration> <speed> <delay> だけだったら共通化できる
-        if (args.length <= 5) {
+            // <acceleration> <speed> <delay> だけだったら共通化できる
             return configTabComplete(Arrays.copyOfRange(args, 2, args.length), lastInfo);
-        }
+        } else if ((template == null || template.isEmpty()) && args.length <= 5)
+            return null;
 
         // <name>
         if (args.length == 6) {

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.12.3'
+version = '0.12.4'
 version = version + "-dist"
 
 repositories {

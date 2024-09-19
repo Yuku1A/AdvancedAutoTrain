@@ -151,7 +151,7 @@ public class CommandRouteEdit implements TabExecutor {
 
     private void replace(CommandSender sender, String[] args) {
         // コマンドで1つ、ルート指定で1つ、インデックスで1つ、パラメータが4つ
-        if (args.length < 7) {
+        if (args.length < 4) {
             commandsHelp(sender, "replace <route> <index> <destination>");
             return;
         }

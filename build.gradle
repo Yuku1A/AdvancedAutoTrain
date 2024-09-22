@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.12.4'
+version = '0.12.5'
 version = version + "-dist"
 
 repositories {
@@ -24,8 +24,8 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.20.6-v1'
-    compileOnly 'com.bergerkiller.bukkit:SignLink:1.20.4-v1'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.21.1-v1'
+    compileOnly 'com.bergerkiller.bukkit:SignLink:1.21.1-v1'
     compileOnly 'org.incendo:cloud-paper'
     compileOnly 'org.incendo:cloud-annotations'
     compileOnly 'org.incendo:cloud-minecraft-extras'

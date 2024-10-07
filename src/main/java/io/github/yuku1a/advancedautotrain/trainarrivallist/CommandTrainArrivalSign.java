@@ -356,9 +356,19 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
             return TabCompleteUtil.searchInList(trainName, trainNames);
         }
 
+        // リストがあればそれに基づくサジェスト
+        var list = store.get(trainName);
+        var isListEmpty = list == null || list.isEmpty();
+
         // displayNameに使うためのSignLinkの変数をサジェスト
         if (args.length == 3) {
-            return searchIfVariable(args[2]);
+            if (isListEmpty)
+                return searchIfVariable(args[2]);
+
+            if (args[2].startsWith("%"))
+                return searchIfVariable(args[2]);
+            else
+                return List.of(list.get(list.size() - 1).getTrainName());
         }
 
         // CStationの名前をサジェスト
@@ -369,8 +379,7 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         // offsetは前の項目次第
         if (args.length == 5) {
-            var list = store.get(trainName);
-            if (list == null || list.isEmpty())
+            if (isListEmpty)
                 return null;
 
             // リストがあって項目もあるなら最後尾の項目からサジェストする
@@ -380,7 +389,13 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
         if (args.length == 6) {
-            return searchIfVariable(args[5]);
+            if (isListEmpty)
+                return searchIfVariable(args[5]);
+
+            if (args[5].startsWith("%"))
+                return searchIfVariable(args[5]);
+            else
+                return List.of(list.get(list.size() - 1).getTrainDescription());
         }
 
         return null;
@@ -501,9 +516,27 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
             return TabCompleteUtil.searchInList(trainName, trainNames);
         }
 
+        // インデックスまでしかない
+        if (args.length == 3)
+            return null;
+
+        // 挿入先のリストと一つ前の項目を探す
+        var list = store.get(trainName);
+        if (list == null || list.isEmpty())
+            return null;
+
+        var index = CommandUtil.tryParseIndexSilent(list, args[2]);
+        if (index < 0)
+            return null;
+
+        var entry = list.get(index);
+
         // displayNameに使うためのSignLinkの変数をサジェスト
         if (args.length == 4) {
-            return searchIfVariable(args[3]);
+            if (args[3].startsWith("%"))
+                return searchIfVariable(args[3]);
+            else
+                return List.of(entry.getTrainName());
         }
 
         // CStationの名前をサジェスト
@@ -514,18 +547,16 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
 
         // offsetは前の項目次第
         if (args.length == 6) {
-            var list = store.get(trainName);
-            if (list == null || list.isEmpty())
-                return null;
-
             // リストがあって項目もあるなら最後尾の項目からサジェストする
-            var entry = list.get(list.size() - 1);
             return List.of(String.valueOf(entry.getSecondsOffset()));
         }
 
         // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
         if (args.length == 7) {
-            return searchIfVariable(args[6]);
+            if (args[6].startsWith("%"))
+                return searchIfVariable(args[6]);
+            else
+                return List.of(entry.getTrainDescription());
         }
 
         return null;
@@ -605,7 +636,7 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
         if (args.length <= 1)
             return null;
 
-        // insert <list> <index> <displayname> <cstationname> [offset] [description]
+        // replace <list> <index> <displayname> <cstationname> [offset] [description]
 
         // 列車名のサジェスト
         var trainName = args[1];
@@ -614,31 +645,50 @@ public class CommandTrainArrivalSign implements CommandExecutor, TabCompleter {
             return TabCompleteUtil.searchInList(trainName, trainNames);
         }
 
+        // インデックスまでしかない
+        if (args.length == 3)
+            return null;
+
+        // インデックス以降がある
+        // 置き換え対象があるかどうかをチェック
+        var list = store.get(trainName);
+        if (list == null)
+            return null;
+
+        var indexStr = args[2];
+        var index = CommandUtil.tryParseIndexSilent(list, indexStr);
+        // インデックスが不正
+        if (index < 0)
+            return null;
+
+        var oldValue = list.get(index);
+
         // displayNameに使うためのSignLinkの変数をサジェスト
+        // 置き換えなので最初は同じものをサジェスト
         if (args.length == 4) {
-            return searchIfVariable(args[3]);
+            if (args[3].startsWith("%"))
+                return searchIfVariable(args[3]);
+            else
+                return List.of(oldValue.getTrainName());
         }
 
         // CStationの名前をサジェスト
+        // 置き換えなので同じものをサジェスト
         if (args.length == 5) {
-            var cstations = plugin.getCStationCacheSet().get();
-            return TabCompleteUtil.searchInList(args[4], cstations);
+            return List.of(oldValue.getCStationName());
         }
 
         // offsetは前の項目次第
-        if (args.length == 6) {
-            var list = store.get(trainName);
-            if (list == null || list.isEmpty())
-                return null;
-
-            // リストがあって項目もあるなら最後尾の項目からサジェストする
-            var entry = list.get(list.size() - 1);
-            return List.of(String.valueOf(entry.getSecondsOffset()));
+        if (args.length == 6) {// リストがあって項目もあるなら最後尾の項目からサジェストする
+            return List.of(String.valueOf(oldValue.getSecondsOffset()));
         }
 
         // descriptionはSignLinkの変数を使うことも多いのでそれをサジェスト
         if (args.length == 7) {
-            return searchIfVariable(args[6]);
+            if (args[6].startsWith(("%")))
+                return searchIfVariable(args[6]);
+            else
+                return List.of(oldValue.getTrainDescription());
         }
 
         return null;

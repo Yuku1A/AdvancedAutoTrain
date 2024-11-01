@@ -26,5 +26,19 @@ AATDump: TrainRecordやその他のデータを外部のソフトウェアで解
 ## つかいかた
 [CStation](docs/CStation.md)について
 
+## コマンド一覧
+`<command> help`とするとそれぞれコマンドのサブコマンド一覧が表示されます  
+[cslt](docs/commands/cslt.md): どのCStationにとまるのかなどをまとめたリストを列車とは独立して設定するコマンド(列車には他の機能を使用して紐づけられる)    
+[optimer](docs/commands/optimer.md): OPTimerの設定をするコマンド     
+[lspn](docs/commands/lspn.md): LSpawnの情報を設定するコマンド  
+[tpreset](docs/commands/tpreset.md): TrainPresetを設定するために使用するコマンド    
+[trec](docs/commands/trec.md): TrainRecordの記録や管理用に使用するコマンド   
+[ar](docs/commands/ar.md): CStationごとに表示される列車の情報を制御する(直接使用することは推奨されません)  
+[tal](docs/commands/tal.md): TrainRecordと列車単位で事前設定された情報に基づいてArrivalListを自動設定するために使用するコマンド     
+[aatdump](docs/commands/aatdump.md): このプラグインに関するデータを外部に出力して解析できるようにする   
+[trl](docs/commands/trl.md): aatdumpの使用時にOPTimerごとに出力する列車の情報を選択してデータの肥大化を軽減する     
+[cstationcache](docs/commands/cstationcache.md): CStationのサジェスト元のデータを編集するコマンド(0.12.0より前に使い始めた人向け)   
+[redit](docs/commands/redit): TrainCarts内で保存されるRouteの情報を直接編集するコマンド
+
 ## 注意事項
 このプラグインは、TrainCartsの`destroyAllOnShutdown`という機能が有効化されていることを前提とした仕様になっています。

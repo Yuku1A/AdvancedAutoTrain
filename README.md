@@ -16,6 +16,13 @@ TrainPreset: スポーンした列車にその列車についている名前(セ
 LSpawn: spawn看板に似た看板からどのような列車をどのタイミングでスポーンさせるかを任意のタイミングで決めることができる機能  
 OPTimer: LSpawnや他の時間に依存する機能の基準になるタイマーの機能
 
+### 旅客案内用機能
+ArrivalList: (trigger看板ではなく)CStationを基準として事前に記録したデータを元にSignLinkと連動して看板に列車情報を表示する機能
+
+### データ管理用機能
+TrainRecord: 列車ごとにCStationの発車タイミングなどを記録する機能  
+AATDump: TrainRecordやその他のデータを外部のソフトウェアで解析できるように出力する機能
+
 ## つかいかた
 [CStation](docs/CStation.md)について
 

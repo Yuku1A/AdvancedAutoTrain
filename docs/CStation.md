@@ -16,6 +16,10 @@ cstation
 
 ### 列車に設定するデータの準備
 ```
+cslt create (template)
+```
+とコマンドを打った後、  
+```
 cslt add (template) (acceleration) (speed) (delay) (name) (announce)
 ```
 とコマンドを打つ(クライアントの場合はスラッシュを先頭につける)  

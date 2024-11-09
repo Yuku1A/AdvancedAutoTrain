@@ -24,7 +24,9 @@ TrainRecord: 列車ごとにCStationの発車タイミングなどを記録す�
 AATDump: TrainRecordやその他のデータを外部のソフトウェアで解析できるように出力する機能
 
 ## つかいかた
-[CStation](docs/CStation.md)について
+[CStation](docs/CStation.md)について  
+[ワールド内に必要な設備](docs/SettingInWorld.md)について  
+[列車ごとの設定](docs/Train.md)について  
 
 ## コマンド一覧
 `<command> help`とするとそれぞれコマンドのサブコマンド一覧が表示されます  

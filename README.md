@@ -17,7 +17,7 @@ TrainPreset: スポーンした列車にその列車についている名前(セ
 [OPTimer](docs/OPTimer.md): LSpawnや他の時間に依存する機能の基準になるタイマーの機能
 
 ### 旅客案内用機能
-ArrivalList: (trigger看板ではなく)CStationを基準として事前に記録したデータを元にSignLinkと連動して看板に列車情報を表示する機能
+[ArrivalList](docs/ArrivalList.md): (trigger看板ではなく)CStationを基準として事前に記録したデータを元にSignLinkと連動して看板に列車情報を表示する機能
 
 ### データ管理用機能
 TrainRecord: 列車ごとにCStationの発車タイミングなどを記録する機能  

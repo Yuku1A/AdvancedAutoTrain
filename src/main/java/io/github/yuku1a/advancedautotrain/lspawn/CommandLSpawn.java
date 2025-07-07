@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandLSpawn implements CommandExecutor, TabCompleter {
@@ -270,8 +271,8 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
     // ↓ここから個別の項目に対しての操作
     private boolean unregister(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、時間指定で1
-        if (args.length != 3)
-            return commandsHelp(sender, "lspn unregister <list> <time>");
+        if (args.length < 3)
+            return commandsHelp(sender, "lspn unregister <list> <time...>");
 
         // リストを出す
         var list = store.get(args[1]);
@@ -281,11 +282,15 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // 時間を出す
-        var time = ParseUtil.parseTime(args[2]);
+        // 複数の登録を一気に解除できるようにする
+        var timestrarray = Arrays.copyOfRange(args, 2, args.length);
+        for (var timestr : timestrarray) {
+            // 時間を出す
+            var time = ParseUtil.parseTime(timestr);
 
-        // 削除
-        list.remove(time);
+            // 削除
+            list.remove(time);
+        }
 
         // おわり
         sender.sendMessage("指定された項目を削除しました。");
@@ -304,26 +309,22 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         // 対象の時刻をサジェスト
-        if (args.length == 3) {
-            var spawnsSet = store.get(args[1]);
-            if (spawnsSet == null)
-                return null;
-            var spawnList = spawnsSet.asList();
+        var spawnsSet = store.get(args[1]);
+        if (spawnsSet == null)
+            return null;
+        var spawnList = spawnsSet.asList();
 
-            var timesListLong = new ArrayList<Long>();
-            for (var entry : spawnList) {
-                timesListLong.add(entry.getScheduletime());
-            }
-
-            var timesListStr = new ArrayList<String>();
-            var fmt = new TimeDurationFormat("HH:mm:ss");
-            for (var entry : timesListLong) {
-                timesListStr.add(fmt.format(entry));
-            }
-            return timesListStr;
+        var timesListLong = new ArrayList<Long>();
+        for (var entry : spawnList) {
+            timesListLong.add(entry.getScheduletime());
         }
 
-        return null;
+        var timesListStr = new ArrayList<String>();
+        var fmt = new TimeDurationFormat("HH:mm:ss");
+        for (var entry : timesListLong) {
+            timesListStr.add(fmt.format(entry));
+        }
+        return timesListStr;
     }
 
     // addとreplaceを兼ねる

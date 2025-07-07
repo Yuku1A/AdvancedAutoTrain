@@ -282,6 +282,9 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // 削除した項目を表示するための準備
+        var listOfList = list.asList();
+        var deletedList = new ArrayList<ScheduledSpawn>();
         // 複数の登録を一気に解除できるようにする
         var timestrarray = Arrays.copyOfRange(args, 2, args.length);
         for (var timestr : timestrarray) {
@@ -290,10 +293,19 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
 
             // 削除
             list.remove(time);
+
+            // 削除したものを記録する
+            listOfList.stream()
+                .filter(v -> v.getScheduletime() == time)
+                .forEach(deletedList::add);
         }
 
         // おわり
         sender.sendMessage("指定された項目を削除しました。");
+
+        // 削除された項目の内容を表示する
+        viewParts(sender, deletedList);
+
         return true;
     }
 

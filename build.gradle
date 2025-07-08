@@ -4,7 +4,7 @@ plugins {
 
 group = 'io.github.yuku1a'
 version = '0.12.7'
-version = version + "-dev"
+version = version + "-dist"
 
 repositories {
     mavenCentral()

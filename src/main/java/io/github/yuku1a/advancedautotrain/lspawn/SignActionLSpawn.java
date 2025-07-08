@@ -8,6 +8,7 @@ import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 
 public class SignActionLSpawn extends SignAction {
+    // TODO: TrainCarts-1.21.5-v2(or later)がリリースされたらTrainCartsSignActionを使うようにする
     private Advancedautotrain plugin;
     public SignActionLSpawn(Advancedautotrain plugin) { this.plugin = plugin; }
 

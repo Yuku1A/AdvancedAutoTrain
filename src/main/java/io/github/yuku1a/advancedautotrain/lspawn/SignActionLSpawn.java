@@ -9,7 +9,7 @@ import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 
 public class SignActionLSpawn extends SignAction {
     // TODO: TrainCarts-1.21.5-v2(or later)がリリースされたらTrainCartsSignActionを使うようにする
-    private Advancedautotrain plugin;
+    private final Advancedautotrain plugin;
     public SignActionLSpawn(Advancedautotrain plugin) { this.plugin = plugin; }
 
     @Override

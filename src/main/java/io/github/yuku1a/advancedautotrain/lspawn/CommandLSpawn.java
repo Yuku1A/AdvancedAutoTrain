@@ -275,7 +275,8 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             return commandsHelp(sender, "lspn unregister <list> <time...>");
 
         // リストを出す
-        var list = store.get(args[1]);
+        var listname = args[1];
+        var list = store.get(listname);
 
         if (list == null) {
             sender.sendMessage("指定されたリストは存在しません。");
@@ -301,7 +302,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         // おわり
-        sender.sendMessage("指定された項目を削除しました。");
+        sender.sendMessage("lspawnlist " + listname +  " から指定された項目を削除しました。");
 
         // 削除された項目の内容を表示する
         viewParts(sender, deletedList);

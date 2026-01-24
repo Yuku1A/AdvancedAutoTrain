@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.21.5-v1'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.21.11-v2'
     compileOnly 'com.bergerkiller.bukkit:SignLink:1.21.5-v1'
     compileOnly 'org.incendo:cloud-paper'
     compileOnly 'org.incendo:cloud-annotations'

@@ -2,23 +2,15 @@ package io.github.yuku1a.advancedautotrain.lspawn;
 
 import com.bergerkiller.bukkit.tc.events.SignActionEvent;
 import com.bergerkiller.bukkit.tc.events.SignChangeActionEvent;
-import com.bergerkiller.bukkit.tc.signactions.SignAction;
-import com.bergerkiller.bukkit.tc.signactions.SignActionMode;
+import com.bergerkiller.bukkit.tc.signactions.TrainCartsSignAction;
 import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 
-public class SignActionLSpawn extends SignAction {
-    // TODO: TrainCarts-1.21.5-v2(or later)がリリースされたらTrainCartsSignActionを使うようにする
+public class SignActionLSpawn extends TrainCartsSignAction {
     private final Advancedautotrain plugin;
-    public SignActionLSpawn(Advancedautotrain plugin) { this.plugin = plugin; }
-
-    @Override
-    public boolean match(SignActionEvent info) {
-        if (info == null)
-            return false;
-        if (info.getMode() == SignActionMode.NONE)
-            return false;
-        return info.isType("lspawn");
+    public SignActionLSpawn(Advancedautotrain plugin) {
+        super("lspawn");
+        this.plugin = plugin;
     }
 
     @Override

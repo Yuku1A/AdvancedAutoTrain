@@ -2,25 +2,14 @@ package io.github.yuku1a.advancedautotrain;
 
 import com.bergerkiller.bukkit.tc.events.SignActionEvent;
 import com.bergerkiller.bukkit.tc.events.SignChangeActionEvent;
-import com.bergerkiller.bukkit.tc.signactions.SignAction;
-import com.bergerkiller.bukkit.tc.signactions.SignActionAnnounce;
-import com.bergerkiller.bukkit.tc.signactions.SignActionStation;
-import com.bergerkiller.bukkit.tc.signactions.SignActionMode;
-import com.bergerkiller.bukkit.tc.signactions.SignActionType;
+import com.bergerkiller.bukkit.tc.signactions.*;
 import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
 
 /**
  * Configurable Station SignActionを実装するためのクラス
  */
-public class SignActionCStation extends SignAction {
-    // TODO: TrainCarts-1.21.5-v2(or later)がリリースされたらTrainCartsSignActionを使うようにする
+public class SignActionCStation extends TrainCartsSignAction {
     private final Advancedautotrain plugin;
-    @Override
-    public boolean match(SignActionEvent info) {
-        if (info.getMode() == SignActionMode.NONE)
-            return false;
-        return info.isType("cstation");
-    }
 
     @Override
     public void execute(SignActionEvent info) {
@@ -163,6 +152,7 @@ public class SignActionCStation extends SignAction {
     }
 
     public SignActionCStation(Advancedautotrain plugin) {
+        super("cstation");
         this.plugin = plugin;
     }
 }

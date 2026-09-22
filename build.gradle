@@ -3,8 +3,8 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.12.8'
-version = version + "-dist"
+version = '0.12.9'
+version = version + "-dev"
 
 repositories {
     mavenCentral()
@@ -17,6 +17,10 @@ repositories {
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
     maven {
+        name = 'sonatype2'
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+    }
+    maven {
         name = 'mg-dev'
         url = 'https://ci.mg-dev.eu/plugin/repository/everything'
     }
@@ -24,8 +28,8 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:1.21.11-v2'
-    compileOnly 'com.bergerkiller.bukkit:SignLink:1.21.5-v1'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:2.0.0'
+    compileOnly 'com.bergerkiller.bukkit:SignLink:2.0.0'
     compileOnly 'org.incendo:cloud-paper'
     compileOnly 'org.incendo:cloud-annotations'
     compileOnly 'org.incendo:cloud-minecraft-extras'

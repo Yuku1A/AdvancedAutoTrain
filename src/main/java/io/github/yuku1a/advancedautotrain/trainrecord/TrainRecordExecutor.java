@@ -5,7 +5,7 @@ import com.bergerkiller.bukkit.tc.events.GroupRemoveEvent;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CStationEnterEvent;
 import io.github.yuku1a.advancedautotrain.CStationLeaveEvent;
-import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEvent;
+import io.github.yuku1a.advancedautotrain.trainpreset.NamedTrainSpawnEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

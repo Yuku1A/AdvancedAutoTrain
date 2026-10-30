@@ -1,4 +1,4 @@
-package io.github.yuku1a.advancedautotrain.lspawn;
+package io.github.yuku1a.advancedautotrain.trainpreset;
 
 import com.bergerkiller.bukkit.tc.events.GroupCreateEvent;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;

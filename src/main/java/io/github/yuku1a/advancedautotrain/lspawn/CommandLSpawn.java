@@ -222,7 +222,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
     private boolean immediate(CommandSender sender, String[] args) {
         // コマンドで1、リストで1、内容で1
         if (args.length != 3) {
-            return commandsHelp(sender, "lspn imm <list> <savedtrainname>");
+            return commandsHelp(sender, "lspn imm <list> <trainname>");
         }
 
         // リストを出し検証
@@ -233,15 +233,15 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         // 引数の取り出し
-        var savedtrainname = args[2];
+        var trainname = args[2];
 
         // 新規登録の代わりに置き換え
-        list.setImmediate(new ScheduledSpawn(0, savedtrainname, null));
+        list.setImmediate(new ScheduledSpawn(0, trainname));
 
         // おわり
         sender.sendMessage("登録した列車が約10秒後にスポーンします。");
         // UI
-        sender.sendMessage("(savedtrainname)");
+        sender.sendMessage("(trainname)");
 
         // 情報の表示
         sender.sendMessage(args[2]);
@@ -343,13 +343,13 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
     // addとreplaceを兼ねる
     private boolean register(CommandSender sender, String[] args) {
         // コマンドで1つ、リストで1つ、
-        // savedtrainname、時刻で2
+        // trainname、時刻で2
         // 合計4個
         if (args.length != 4) {
             return commandsHelp(
                 sender,
                 "lspn " + args[0] + " <listname> " +
-                "<savedtrainname> <time>"
+                "<trainname> <time>"
             );
         }
 
@@ -362,14 +362,14 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         }
 
         // 引数の取り出し
-        var savedtrainname = args[2];
+        var trainname = args[2];
         var timetext = args[3];
 
         // 時刻指定が正確かチェックする
         var time = ParseUtil.parseTime(timetext);
 
         // インスタンス作成
-        var sspawn = new ScheduledSpawn(time, savedtrainname, null);
+        var sspawn = new ScheduledSpawn(time, trainname);
 
         // 新規登録の代わりに置き換え
         set.remove(time);
@@ -408,7 +408,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         var fmt = new TimeDurationFormat("HH:mm:ss");
 
         // UI
-        sender.sendMessage("(time) (savedtrainname)");
+        sender.sendMessage("(time) (trainname)");
 
         // 情報の表示
         list.forEach((v) -> viewOne(sender, v, fmt));
@@ -417,7 +417,7 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
     private void viewOne(CommandSender sender, ScheduledSpawn entry, TimeDurationFormat fmt) {
         sender.sendMessage(
             fmt.format(entry.getScheduletime()) + " | " +
-                entry.getSavedTrainName());
+                entry.getSpawnTrainName());
     }
 
     private boolean help(CommandSender sender) {

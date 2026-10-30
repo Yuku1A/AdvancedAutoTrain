@@ -65,13 +65,26 @@ public class LSpawnSign {
         if (!chunkHolder.isLoaded())
             return;
 
+        // 各種情報の取得のためにnextActionを取得
+        final var nextSpawn = spawnList.getNextAction();
+        final var spawnTrainName = nextSpawn.getSpawnTrainName();
+
+        // 使用するsavedTrainの名前を取得する
+        String savedTrainName;
+        final var trainPreset = plugin.getTrainPresetStore().get(spawnTrainName);
+        if (trainPreset == null) {
+            savedTrainName = spawnTrainName;
+        } else {
+            savedTrainName = trainPreset.getTrainName();
+        }
+
         // ロードされているのでここでFakeSignを作る
         var signBlock = offlineSign.getLoadedBlock();
         var rail = RailLookup.discoverRailPieceFromSign(signBlock);
         var fakesign = new TrackedFakeSignimpl(rail, BlockUtil.getFacing(signBlock));
         fakesign.setLine(0, firstLine);
         fakesign.setLine(1, "spawn" + secondLineOptions);
-        fakesign.setLine(2, spawnList.getNextAction().getSavedTrainName());
+        fakesign.setLine(2, savedTrainName);
 
         // 実行
         var event = fakesign.createEvent(SignActionType.REDSTONE_ON);

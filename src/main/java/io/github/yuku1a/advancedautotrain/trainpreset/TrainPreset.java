@@ -15,6 +15,7 @@ public class TrainPreset implements ConfigurationSerializable {
     private final String cstationListName;
     private final String routeName;
     private final List<String> tag;
+    private final String savedTrainName;
 
     /**
      * コンストラクタ。設定されていない要素にはnullを使用してください。
@@ -23,11 +24,18 @@ public class TrainPreset implements ConfigurationSerializable {
      * @param routeName DestinationRouteの名前
      * @param tag 列車につけるタグ
      */
-    public TrainPreset(String trainName, String cstationListName, String routeName, List<String> tag) {
+    public TrainPreset(
+        String trainName,
+        String cstationListName,
+        String routeName,
+        List<String> tag,
+        String savedTrainName
+    ) {
         this.trainName = trainName;
         this.cstationListName = cstationListName;
         this.routeName = routeName;
         this.tag = tag;
+        this.savedTrainName = savedTrainName;
     }
 
     public String getTrainName() {
@@ -48,7 +56,8 @@ public class TrainPreset implements ConfigurationSerializable {
             (String) map.get("trainName"),
             (String) map.get("cstationListName"),
             (String) map.get("routeName"),
-            (ArrayList<String>) map.get("tag")
+            (ArrayList<String>) map.get("tag"),
+            (String) map.get("savedTrainName")
         );
     }
 
@@ -63,6 +72,7 @@ public class TrainPreset implements ConfigurationSerializable {
         map.put("cstationListName", cstationListName);
         map.put("routeName", routeName);
         map.put("tag", tag);
+        map.put("savedTrainName", savedTrainName);
         return map;
     }
 }

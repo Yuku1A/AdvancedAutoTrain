@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.yuku1a'
-version = '0.12.9'
+version = '0.13.0'
 version = version + "-dev"
 
 repositories {
@@ -11,10 +11,6 @@ repositories {
     maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
     }
     maven {
         name = 'sonatype2'
@@ -28,7 +24,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT'
-    compileOnly 'com.bergerkiller.bukkit:TrainCarts:2.0.0'
+    compileOnly 'com.bergerkiller.bukkit:TrainCarts:2.0.3'
     compileOnly 'com.bergerkiller.bukkit:SignLink:2.0.0'
     compileOnly 'org.incendo:cloud-paper'
     compileOnly 'org.incendo:cloud-annotations'

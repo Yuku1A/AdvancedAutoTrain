@@ -12,7 +12,7 @@ import io.github.yuku1a.advancedautotrain.dump.CommandTrainRelation;
 import io.github.yuku1a.advancedautotrain.dump.TrainRelationStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
-import io.github.yuku1a.advancedautotrain.lspawn.NamedTrainSpawnEventExecutor;
+import io.github.yuku1a.advancedautotrain.trainpreset.NamedTrainSpawnEventExecutor;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSet;
 import io.github.yuku1a.advancedautotrain.lspawn.SignActionLSpawn;
@@ -35,6 +35,7 @@ import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordExecutor;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordList;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordStore;
 import io.github.yuku1a.advancedautotrain.trainrecord.TrainRecordingManager;
+import io.github.yuku1a.advancedautotrain.upgrade.AllDataUpgrader;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,6 +63,9 @@ public final class Advancedautotrain extends JavaPlugin {
 
 
     // このプラグインのもの
+    // データバージョン
+    public final int DataVersion = 2;
+
     // CStation関連
     private SignActionCStation signActionCStation;
     private CStationListProperty cStationListProperty;
@@ -116,6 +120,9 @@ public final class Advancedautotrain extends JavaPlugin {
         // TrainCartsの参照の取得
         trainCarts = getPlugin(TrainCarts.class);
         propreg = trainCarts.getPropertyRegistry();
+
+        // アップグレード
+        AllDataUpgrader.upgrade(this);
 
         // CStationの初期化
         // 他のものが動かないのでデータ系から有効化する

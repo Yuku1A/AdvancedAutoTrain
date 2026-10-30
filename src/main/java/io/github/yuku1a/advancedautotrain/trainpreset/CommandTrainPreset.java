@@ -164,7 +164,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             tags = null;
 
         // 生成して登録
-        var preset = new TrainPreset(trainname, cstationlist, route, tags);
+        var preset = new TrainPreset(trainname, cstationlist, route, tags, trainname);
         store.put(trainname, preset);
 
         // おわり

@@ -247,7 +247,7 @@ public class CommandTrainPreset implements CommandExecutor, TabCompleter {
             case "add" -> add(sender, args);
             case "view" -> view(sender, args);
             default -> help(sender);
-        };
+        }
 
         return true;
     }

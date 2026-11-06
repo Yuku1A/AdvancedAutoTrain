@@ -4,6 +4,7 @@ import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 import com.bergerkiller.bukkit.tc.properties.TrainPropertiesStore;
 import io.github.yuku1a.advancedautotrain.Advancedautotrain;
 import io.github.yuku1a.advancedautotrain.CStationList;
+import io.github.yuku1a.advancedautotrain.namedtrain.NamedTrainSpawnEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

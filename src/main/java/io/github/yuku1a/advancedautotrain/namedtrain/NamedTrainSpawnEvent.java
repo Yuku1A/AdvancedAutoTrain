@@ -1,4 +1,4 @@
-package io.github.yuku1a.advancedautotrain.trainpreset;
+package io.github.yuku1a.advancedautotrain.namedtrain;
 
 
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;

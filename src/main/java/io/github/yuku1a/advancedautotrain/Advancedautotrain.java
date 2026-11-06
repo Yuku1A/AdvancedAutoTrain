@@ -12,7 +12,7 @@ import io.github.yuku1a.advancedautotrain.dump.CommandTrainRelation;
 import io.github.yuku1a.advancedautotrain.dump.TrainRelationStore;
 import io.github.yuku1a.advancedautotrain.lspawn.CommandLSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.LSpawnSignManager;
-import io.github.yuku1a.advancedautotrain.trainpreset.NamedTrainSpawnEventExecutor;
+import io.github.yuku1a.advancedautotrain.namedtrain.NamedTrainSpawnEventExecutor;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawn;
 import io.github.yuku1a.advancedautotrain.lspawn.ScheduledSpawnSet;
 import io.github.yuku1a.advancedautotrain.lspawn.SignActionLSpawn;

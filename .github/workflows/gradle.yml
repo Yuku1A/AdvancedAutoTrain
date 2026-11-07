@@ -55,7 +55,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_VERSION: ${{ inputs.version }}
       run: |
-        gh release create "$RELEASE_VERSION" \
+        gh release create "${{ inputs.version }}" \
           --draft \
-          --title "$RELEASE_VERSION" \
+          --title "${{ inputs.version }}" \
           build/libs/*.jar

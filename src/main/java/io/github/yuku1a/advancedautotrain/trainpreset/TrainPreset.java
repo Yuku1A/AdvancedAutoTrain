@@ -54,6 +54,10 @@ public class TrainPreset implements ConfigurationSerializable {
         return tag;
     }
 
+    public String getSavedTrainName() {
+        return savedTrainName;
+    }
+
     @SuppressWarnings("unchecked")
     public static TrainPreset deserialize(Map<String, Object> map) {
         return new TrainPreset(

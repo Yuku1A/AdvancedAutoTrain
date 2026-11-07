@@ -75,7 +75,7 @@ public class LSpawnSign {
         if (trainPreset == null) {
             savedTrainName = spawnTrainName;
         } else {
-            savedTrainName = trainPreset.getTrainName();
+            savedTrainName = trainPreset.getSavedTrainName();
         }
 
         // ロードされているのでここでFakeSignを作る

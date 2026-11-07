@@ -11,8 +11,11 @@ permissions:
   contents: read
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Create Version
+        required: true
 
 jobs:
   build:
@@ -50,4 +53,9 @@ jobs:
     - name: upload release asset
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: find build/libs/*.jar | xargs gh release upload ${{ github.ref_name }} 
+        RELEASE_VERSION: ${{ inputs.version }}
+      run: |
+        gh release create "$VERSION" \
+          --draft \
+          --title "$VERSION"
+          build/libs/*.jar

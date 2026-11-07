@@ -50,6 +50,10 @@ public class TrainPreset implements ConfigurationSerializable {
         return routeName;
     }
 
+    public List<String> getTag() {
+        return tag;
+    }
+
     @SuppressWarnings("unchecked")
     public static TrainPreset deserialize(Map<String, Object> map) {
         return new TrainPreset(
@@ -59,10 +63,6 @@ public class TrainPreset implements ConfigurationSerializable {
             (ArrayList<String>) map.get("tag"),
             (String) map.get("savedTrainName")
         );
-    }
-
-    public List<String> getTag() {
-        return tag;
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class CommandLSpawn implements CommandExecutor, TabCompleter {
@@ -259,9 +260,9 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             return TabCompleteUtil.searchInList(args[1], lists);
         }
 
-        // savedTrainNameのサジェスト
+        // savedTrainNameとtrainNameのサジェスト
         if (args.length == 3) {
-            var trainNames = plugin.getTrainCarts().getSavedTrains().getNames();
+            final var trainNames = retrieveTrainNameCandidate();
             return TabCompleteUtil.searchInList(args[2], trainNames);
         }
 
@@ -394,9 +395,9 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
             return TabCompleteUtil.searchInList(args[1], lists);
         }
 
-        // savedTrainNameのサジェスト
+        // savedTrainNameとtrainNameのサジェスト
         if (args.length == 3) {
-            var trainNames = plugin.getTrainCarts().getSavedTrains().getNames();
+            final var trainNames = retrieveTrainNameCandidate();
             return TabCompleteUtil.searchInList(args[2], trainNames);
         }
 
@@ -418,6 +419,12 @@ public class CommandLSpawn implements CommandExecutor, TabCompleter {
         sender.sendMessage(
             fmt.format(entry.getScheduletime()) + " | " +
                 entry.getSpawnTrainName());
+    }
+
+    private List<String> retrieveTrainNameCandidate() {
+        final var trainNames = new HashSet<>(plugin.getTrainCarts().getSavedTrains().getNames());
+        trainNames.addAll(plugin.getTrainPresetStore().keysList());
+        return new ArrayList<>(trainNames);
     }
 
     private boolean help(CommandSender sender) {

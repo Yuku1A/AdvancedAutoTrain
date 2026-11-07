@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class CommandAATDump implements CommandExecutor, TabCompleter {
@@ -113,18 +114,29 @@ public class CommandAATDump implements CommandExecutor, TabCompleter {
         var presetstore = plugin.getTrainPresetStore();
         // あとのroute用
         var routelist = new ArrayList<String>();
+        // 同じ方法でCStationListものせる
+        var csltList = new HashSet<String>();
         for (var targetTrain : targetNames) {
-            var value = presetstore.get(targetTrain);
-            var routename = value.getRouteName();
+            var preset = presetstore.get(targetTrain);
+            var routename = preset.getRouteName();
             if (routename != null)
                 routelist.add(routename);
-            ymlpreset.set(targetTrain, value);
+            var csltName = preset.getCstationListName();
+            if (csltName != null)
+                csltList.add(csltName);
+            ymlpreset.set(targetTrain, preset);
         }
 
         // Route
         var ymlroute = yamlcfg.createSection("route");
         for (var routename : routelist) {
             ymlroute.set(routename, plugin.getTrainCarts().getRouteManager().findRoute(routename));
+        }
+
+        // CStation
+        final var ymlCslt = yamlcfg.createSection("cStationListTemplate");
+        for (final var csltName : csltList) {
+            ymlCslt.set(csltName, plugin.getCStationListTemplateStore().get(csltName));
         }
 
         // どうにかして保存したいが・・・
